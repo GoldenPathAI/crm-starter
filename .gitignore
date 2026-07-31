@@ -1,0 +1,16 @@
+node_modules
+.next
+.turbo
+out
+dist
+coverage
+.data
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.env
+.env.local
+playwright-report
+test-results
+.playwright-mcp
+.claude-tmp

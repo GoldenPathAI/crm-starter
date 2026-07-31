@@ -1,0 +1,225 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f5f5f7;
+  --color-bg-tint: #f5f5f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f5f7;
+  --color-surface-3: #e8e8ed;
+  --color-border: #e8e8ed;
+  --color-border-strong: #d2d2d7;
+  --color-hairline: rgb(0 0 0 / 0.06);
+  --color-foreground: #1d1d1f;
+  --color-muted: #6e6e73;
+  --color-muted-soft: #86868b;
+
+  --color-primary: #0071e3;
+  --color-primary-hover: #0077ed;
+  --color-primary-soft: #e8f1fd;
+  --color-primary-foreground: #ffffff;
+
+  --color-blue: #0071e3;
+  --color-blue-soft: #e8f1fd;
+  --color-blue-text: #0060c2;
+  --color-green: #34c759;
+  --color-green-soft: #e9f8ee;
+  --color-green-text: #1d8a3e;
+  --color-orange: #ff9500;
+  --color-orange-soft: #fff4e5;
+  --color-orange-text: #b25e00;
+  --color-red: #ff3b30;
+  --color-red-soft: #ffecec;
+  --color-red-text: #d70015;
+  --color-purple: #af52de;
+  --color-purple-soft: #f6ecfc;
+  --color-purple-text: #8a3ab5;
+  --color-teal: #30b0c7;
+  --color-teal-soft: #e9f7fa;
+  --color-teal-text: #147687;
+  --color-pink: #ff2d55;
+  --color-pink-soft: #ffebef;
+  --color-pink-text: #d21f43;
+  --color-indigo: #5856d6;
+  --color-indigo-soft: #eeeefb;
+  --color-indigo-text: #4644b8;
+  --color-cyan: #32ade6;
+  --color-cyan-soft: #eaf6fd;
+  --color-cyan-text: #1178ab;
+
+  --color-accent: #1d8a3e;
+  --color-accent-soft: #e9f8ee;
+  --color-warning: #b25e00;
+  --color-warning-soft: #fff4e5;
+  --color-danger: #d70015;
+  --color-danger-soft: #ffecec;
+
+  --color-ring: #0071e3;
+  --color-scrim: rgb(29 29 31 / 0.25);
+
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  --radius-md: 0.75rem;
+
+  --breakpoint-3xl: 1920px;
+  --breakpoint-4xl: 2560px;
+  --breakpoint-5xl: 3840px;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-lifted: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 12px 32px -8px rgba(0, 0, 0, 0.14);
+}
+
+/* The theme is always an explicit attribute on <html>: the inline script in the root
+   layout resolves the "system" preference before first paint, so no media query is
+   needed here and there is no flash of the wrong theme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root[data-theme="dark"] {
+  --color-bg: #0e0e10;
+  --color-bg-tint: #0e0e10;
+  --color-surface: #18181b;
+  --color-surface-2: #202024;
+  --color-surface-3: #2c2c31;
+  --color-border: #2c2c31;
+  --color-border-strong: #3d3d43;
+  --color-hairline: rgb(255 255 255 / 0.09);
+  --color-foreground: #f5f5f7;
+  --color-muted: #a1a1a8;
+  --color-muted-soft: #8a8a91;
+
+  --color-primary: #0a84ff;
+  --color-primary-hover: #3d9bff;
+  --color-primary-soft: rgb(10 132 255 / 0.18);
+  --color-primary-foreground: #ffffff;
+
+  --color-blue: #0a84ff;
+  --color-blue-soft: rgb(10 132 255 / 0.18);
+  --color-blue-text: #6cb6ff;
+  --color-green: #30d158;
+  --color-green-soft: rgb(48 209 88 / 0.18);
+  --color-green-text: #47dd76;
+  --color-orange: #ff9f0a;
+  --color-orange-soft: rgb(255 159 10 / 0.18);
+  --color-orange-text: #ffb340;
+  --color-red: #ff453a;
+  --color-red-soft: rgb(255 69 58 / 0.18);
+  --color-red-text: #ff6b61;
+  --color-purple: #bf5af2;
+  --color-purple-soft: rgb(191 90 242 / 0.18);
+  --color-purple-text: #d183f7;
+  --color-teal: #40c8e0;
+  --color-teal-soft: rgb(64 200 224 / 0.18);
+  --color-teal-text: #6fd8ea;
+  --color-pink: #ff375f;
+  --color-pink-soft: rgb(255 55 95 / 0.18);
+  --color-pink-text: #ff6b8a;
+  --color-indigo: #7d7aff;
+  --color-indigo-soft: rgb(125 122 255 / 0.18);
+  --color-indigo-text: #9d9bff;
+  --color-cyan: #64d2ff;
+  --color-cyan-soft: rgb(100 210 255 / 0.18);
+  --color-cyan-text: #8adcff;
+
+  --color-accent: #30d158;
+  --color-accent-soft: rgb(48 209 88 / 0.18);
+  --color-warning: #ff9f0a;
+  --color-warning-soft: rgb(255 159 10 / 0.18);
+  --color-danger: #ff453a;
+  --color-danger-soft: rgb(255 69 58 / 0.18);
+
+  --color-ring: #0a84ff;
+  --color-scrim: rgb(0 0 0 / 0.6);
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-lifted: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--color-border);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  select:not(:disabled),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  /* The dark primary-soft is a translucent blue, so blue-on-blue would be unreadable. */
+  :root[data-theme="dark"] ::selection {
+    color: var(--color-foreground);
+  }
+
+  /* Fallback focus ring for hand-rolled interactive elements. Zero specificity via
+     :where(), so components carrying their own focus-visible ring recipe (which set
+     outline-none in the utilities layer) override it. */
+  :where(button, [role="button"], a, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-lifted {
+    box-shadow: var(--shadow-lifted);
+  }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
