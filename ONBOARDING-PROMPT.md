@@ -226,5 +226,3 @@ Projdi si celý postup a odhadni, jak dlouho to zabere a kolikrát tě budu muse
 vyhradit čas.
 
 Pak začni Fází 1.
-
-Začni Fází 1.
