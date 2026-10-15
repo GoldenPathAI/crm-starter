@@ -19,7 +19,7 @@ export default async function NovyKlientPage({ params }: NovyKlientPageProps) {
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <PageHeader
         title="Nový klient"
-        description="Založ firmu v AI partnershipu a primární kontakt"
+        description="Založ firmu a primární kontakt"
         breadcrumb={[
           { label: "Klienti", href: orgHref(ctx.org.slug, "/klienti") },
           { label: "Nový klient", href: orgHref(ctx.org.slug, "/klienti/novy") },

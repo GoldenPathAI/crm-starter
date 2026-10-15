@@ -2,6 +2,9 @@
 // reserved for credentials; anything a reader could see in a screenshot belongs here.
 export const config = {
   appName: "CRM",
+  // Subtitle on the login screen. A fork replaces it together with appName and the
+  // BrandMark glyph, which is the whole branding surface outside globals.css.
+  appTagline: "Klienti, obchody a projekty",
   defaultPageSize: 25,
   // Business timezone. Every "today" the app reasons about (úkoly due today, overdue
   // badges, dashboard columns) is resolved in this zone, not in the server's.

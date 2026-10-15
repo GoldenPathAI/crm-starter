@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
 import { ClientErrorReporter } from "@/app/_components/ClientErrorReporter"
 import { themeInitScript } from "@/app/_lib/theme"
+import { config } from "@/lib/config"
 import "./globals.css"
 
 export const metadata: Metadata = {
   title: {
-    default: "CRM",
-    template: "%s - CRM",
+    default: config.appName,
+    template: `%s - ${config.appName}`,
   },
-  description: "Interní CRM pro klienty, dealy a projekty",
+  description: config.appTagline,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
