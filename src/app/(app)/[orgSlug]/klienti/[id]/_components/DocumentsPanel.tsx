@@ -11,9 +11,9 @@ import { useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { Doc } from "@/core/types/crm.types"
-import { SoftBadge } from "../../_components/SoftBadge"
-import { badgeFor, type EnumView } from "../../_lib/enums"
-import { formatCzkOrDash } from "../../_lib/format"
+import { SoftBadge } from "@/app/(app)/[orgSlug]/klienti/_components/SoftBadge"
+import { badgeFor, type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
+import { formatCzkOrDash } from "@/app/(app)/[orgSlug]/klienti/_lib/format"
 import { emptyDocumentValues, type DocumentFormValues } from "../_lib/documentForm"
 import {
   createDocumentAction,

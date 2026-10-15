@@ -1,9 +1,9 @@
 import { deletePerson, getPerson, setPrimaryPerson, updatePerson } from "@/lib/crm/store/people"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { route } from "../../../_lib/route"
-import { withApiAudit } from "../../../_lib/api-auth"
-import { badRequest, ok, readJsonObject } from "../../../_lib/http"
-import { hasPersonPatch, parseUpdatePerson, wantsPrimary } from "../../../_lib/parse-body"
+import { route } from "@/app/api/internal/crm/_lib/route"
+import { withApiAudit } from "@/app/api/internal/crm/_lib/api-auth"
+import { badRequest, ok, readJsonObject } from "@/app/api/internal/crm/_lib/http"
+import { hasPersonPatch, parseUpdatePerson, wantsPrimary } from "@/app/api/internal/crm/_lib/parse-body"
 import type { Person } from "@/core/types/crm.types"
 
 export const runtime = "nodejs"

@@ -1,5 +1,5 @@
 import type { Activity, ActivityType } from "@/core/types/crm.types"
-import { actorLabel } from "../../_components/activity"
+import { actorLabel } from "@/app/(app)/[orgSlug]/klienti/_components/activity"
 
 // Only hand-logged activities can be edited or deleted from the timeline; system
 // rows are a record of what happened and stay read-only.

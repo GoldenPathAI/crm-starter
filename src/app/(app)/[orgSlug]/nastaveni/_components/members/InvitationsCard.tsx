@@ -15,7 +15,7 @@ import { useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import { config } from "@/lib/config"
 import { formatCzechDate } from "@/lib/dates"
-import { inviteMemberAction, revokeInvitationAction } from "../../actions"
+import { inviteMemberAction, revokeInvitationAction } from "@/app/(app)/[orgSlug]/nastaveni/actions"
 import { actionToast } from "./notify"
 import { ROLE_BADGE, ROLE_LABEL } from "./roles"
 

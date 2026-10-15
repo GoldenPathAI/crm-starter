@@ -1,9 +1,9 @@
 import { deleteClient, getClient, updateClient } from "@/lib/crm/store/clients"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { route } from "../../../_lib/route"
-import { withApiAudit } from "../../../_lib/api-auth"
-import { readJsonObject, notFound, ok } from "../../../_lib/http"
-import { parseUpdateClient } from "../../../_lib/parse-body"
+import { route } from "@/app/api/internal/crm/_lib/route"
+import { withApiAudit } from "@/app/api/internal/crm/_lib/api-auth"
+import { readJsonObject, notFound, ok } from "@/app/api/internal/crm/_lib/http"
+import { parseUpdateClient } from "@/app/api/internal/crm/_lib/parse-body"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"

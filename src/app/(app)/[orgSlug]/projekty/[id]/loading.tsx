@@ -1,5 +1,5 @@
 import { Skeleton } from "@/app/_ui/Skeleton"
-import { BoardSkeleton, PageHeaderSkeleton } from "../../_components/PageSkeletons"
+import { BoardSkeleton, PageHeaderSkeleton } from "@/app/(app)/[orgSlug]/_components/PageSkeletons"
 
 export default function Loading() {
   return (

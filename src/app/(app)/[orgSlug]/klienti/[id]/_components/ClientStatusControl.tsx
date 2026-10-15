@@ -8,7 +8,7 @@ import { useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { ClientStatus } from "@/core/types/crm.types"
-import { badgeFor, type EnumView } from "../../_lib/enums"
+import { badgeFor, type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
 import { updateClientStatusAction } from "../actions"
 
 interface ClientStatusControlProps {

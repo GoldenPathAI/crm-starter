@@ -1,9 +1,9 @@
 import { createRapportEntry, listRapportEntries } from "@/lib/crm/store/rapport"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { route } from "../../../../_lib/route"
-import { withApiAudit } from "../../../../_lib/api-auth"
-import { created, ok, readJsonObject } from "../../../../_lib/http"
-import { parseCreateRapportEntry } from "../../../../_lib/parse-body"
+import { route } from "@/app/api/internal/crm/_lib/route"
+import { withApiAudit } from "@/app/api/internal/crm/_lib/api-auth"
+import { created, ok, readJsonObject } from "@/app/api/internal/crm/_lib/http"
+import { parseCreateRapportEntry } from "@/app/api/internal/crm/_lib/parse-body"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"

@@ -1,8 +1,8 @@
 import { requireInternalToken } from "@/lib/auth/internal-token"
 import { getDashboardData } from "@/lib/crm/store/dashboard"
-import { resolveOrgScope } from "../../_lib/org-scope"
-import { errorResponse, ok } from "../../_lib/http"
-import type { RouteContext } from "../../_lib/http"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { errorResponse, ok } from "@/app/api/internal/crm/_lib/http"
+import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"
 
 export const runtime = "nodejs"

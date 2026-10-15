@@ -12,8 +12,8 @@ import { useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
-import { ClientFormFields, type ClientFieldErrors } from "../../_components/ClientFormFields"
-import { type EnumView } from "../../_lib/enums"
+import { ClientFormFields, type ClientFieldErrors } from "@/app/(app)/[orgSlug]/klienti/_components/ClientFormFields"
+import { type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
 import { createClientAction } from "../actions"
 
 interface NewClientFormProps {

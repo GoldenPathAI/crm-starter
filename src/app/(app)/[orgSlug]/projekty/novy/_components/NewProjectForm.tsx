@@ -11,8 +11,8 @@ import {
   emptyProjectValues,
   parseBudget,
   type ProjectFormValues,
-} from "../../_components/ProjectFormFields"
-import type { FormSelectOption } from "../../_components/types"
+} from "@/app/(app)/[orgSlug]/projekty/_components/ProjectFormFields"
+import type { FormSelectOption } from "@/app/(app)/[orgSlug]/projekty/_components/types"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
 import type { EnumOption } from "@/core/types/crm.types"

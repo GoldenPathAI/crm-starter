@@ -21,8 +21,8 @@ import { useUndoToast } from "@/app/_lib/useUndoToast"
 import type { Client } from "@/core/types/crm.types"
 import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
-import { ClientFormFields } from "../../_components/ClientFormFields"
-import { type EnumView } from "../../_lib/enums"
+import { ClientFormFields } from "@/app/(app)/[orgSlug]/klienti/_components/ClientFormFields"
+import { type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
 import { deleteClientAction, endClientAction, updateClientAction } from "../actions"
 
 interface EditClientDialogProps {

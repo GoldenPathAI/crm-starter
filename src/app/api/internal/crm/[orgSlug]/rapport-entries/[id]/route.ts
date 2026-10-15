@@ -1,7 +1,7 @@
 import { deleteRapportEntry } from "@/lib/crm/store/rapport"
-import { route } from "../../../_lib/route"
-import { withApiAudit } from "../../../_lib/api-auth"
-import { ok } from "../../../_lib/http"
+import { route } from "@/app/api/internal/crm/_lib/route"
+import { withApiAudit } from "@/app/api/internal/crm/_lib/api-auth"
+import { ok } from "@/app/api/internal/crm/_lib/http"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"

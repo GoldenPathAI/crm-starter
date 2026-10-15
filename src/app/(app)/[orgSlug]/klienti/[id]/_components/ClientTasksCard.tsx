@@ -12,7 +12,7 @@ import { formatCzechDate } from "@/lib/dates"
 import { cn } from "@/lib/cn"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { TicketWithAssignees } from "@/core/types/crm.types"
-import { badgeFor, type EnumView } from "../../_lib/enums"
+import { badgeFor, type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
 import { setClientTaskStatusAction } from "../clientTaskActions"
 
 interface ClientTasksCardProps {

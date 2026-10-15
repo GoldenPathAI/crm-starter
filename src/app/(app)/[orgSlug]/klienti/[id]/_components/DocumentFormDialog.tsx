@@ -20,7 +20,7 @@ import { useOrg } from "@/app/_components/org/OrgProvider"
 import { config } from "@/lib/config"
 import type { ActionState } from "@/app/_lib/actionState"
 import { presignDocumentUploadAction } from "../documentActions"
-import { selectOptions, type EnumView } from "../../_lib/enums"
+import { selectOptions, type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
 import { emptyDocumentValues, isDocKind, type DocumentFormValues } from "../_lib/documentForm"
 
 const formatBytes = (bytes: number): string => {

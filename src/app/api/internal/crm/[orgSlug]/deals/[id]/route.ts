@@ -1,9 +1,9 @@
 import { requireInternalToken } from "@/lib/auth/internal-token"
 import { deleteDeal, updateDeal } from "@/lib/crm/store/deals"
-import { resolveOrgScope } from "../../../_lib/org-scope"
-import { readJsonObject, errorResponse, ok } from "../../../_lib/http"
-import { parseUpdateDeal } from "../../../_lib/parse-body"
-import type { RouteContext } from "../../../_lib/http"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { readJsonObject, errorResponse, ok } from "@/app/api/internal/crm/_lib/http"
+import { parseUpdateDeal } from "@/app/api/internal/crm/_lib/parse-body"
+import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"
 
 export const runtime = "nodejs"

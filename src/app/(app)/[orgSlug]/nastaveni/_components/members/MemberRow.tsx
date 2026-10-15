@@ -12,7 +12,7 @@ import { Select } from "@/app/_ui/Select"
 import { Spinner } from "@/app/_ui/Spinner"
 import { useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
-import { changeMemberRoleAction, removeMemberAction } from "../../actions"
+import { changeMemberRoleAction, removeMemberAction } from "@/app/(app)/[orgSlug]/nastaveni/actions"
 import { actionToast } from "./notify"
 import { ROLE_BADGE, ROLE_LABEL } from "./roles"
 
