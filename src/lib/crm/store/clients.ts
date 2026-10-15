@@ -15,7 +15,7 @@ import { getDocumentsByClientId } from "@/lib/crm/store/documents"
 import { attachTicketAssignees } from "@/lib/crm/store/assignees"
 import { userNamesByIds } from "@/lib/crm/store/members"
 import { assertValidValue, loadOrgEnums } from "@/lib/crm/enums/service"
-import { todayIso } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 import { config } from "@/lib/config"
 import type { Paginated, SortOption } from "@/core/types/query.types"
 import type {

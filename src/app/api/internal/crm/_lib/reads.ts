@@ -5,7 +5,7 @@ import { activities, clients, documents, projects, tickets } from "@/lib/db/sche
 import { toActivity, toDoc, toTicket } from "@/lib/crm/store/mappers"
 import { attachTicketAssignees } from "@/lib/crm/store/assignees"
 import { isOverdueTicket } from "@/lib/crm/store/predicates"
-import { todayIso } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 import { HttpError } from "./http"
 import type { TicketListItem } from "@/lib/crm/store/tickets"
 import type { Paginated } from "@/core/types/query.types"

@@ -3,7 +3,7 @@ import { PageShell } from "@/app/_ui/PageShell"
 import { applyDefaultSavedView } from "@/app/_lib/defaultView"
 import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { listClients } from "@/lib/crm/queries"
+import { listClients } from "@/lib/crm/store/clients"
 import { listRapportPeople } from "@/lib/crm/store/people"
 import { SortDirection } from "@/core/types/query.types"
 import {

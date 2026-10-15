@@ -7,12 +7,13 @@ import type {
   BrowserFilterOption,
   BrowserGroupConfig,
 } from "@/app/_components/browser/types"
-import { badgeStyleFor, optionBadgeStyle, styleMap, todayIso, type BadgeStyle } from "@/lib/crm/config"
+import { badgeStyleFor, optionBadgeStyle, styleMap, type BadgeStyle } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 import { formatCzechDate } from "@/lib/dates"
 import { cn } from "@/lib/cn"
 import type { SortDirection } from "@/core/types/query.types"
 import type { EnumOption } from "@/core/types/crm.types"
-import type { ProjectListItem } from "@/lib/crm/queries"
+import type { ProjectListItem } from "@/lib/crm/store/projects"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
 import { formatCzk } from "../_lib/format"

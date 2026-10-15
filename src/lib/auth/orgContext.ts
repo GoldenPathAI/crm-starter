@@ -8,8 +8,6 @@ import { auth } from "@/lib/auth/auth";
 import { db } from "@/lib/db/client";
 import { organizationMembers, organizations } from "@/lib/db/schema/org";
 
-export type { OrgRole };
-
 interface SessionUser {
   id: string;
   name: string;

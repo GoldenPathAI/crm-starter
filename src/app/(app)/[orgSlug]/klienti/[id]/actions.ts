@@ -1,16 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import {
-  addActivity,
-  createPerson,
-  deleteClient,
-  deletePerson,
-  setPrimaryPerson,
-  updateClient,
-  updatePerson,
-  type UpdateClientPatch,
-} from "@/lib/crm/mutations"
+import { addActivity } from "@/lib/crm/store/activities"
+import { createPerson, deletePerson, setPrimaryPerson, updatePerson } from "@/lib/crm/store/people"
+import { deleteClient, updateClient, type UpdateClientPatch } from "@/lib/crm/store/clients"
 import { deleteActivity, updateActivity } from "@/lib/crm/store/activities"
 import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"

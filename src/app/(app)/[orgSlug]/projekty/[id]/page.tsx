@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ChevronRight } from "lucide-react"
-import { getProject } from "@/lib/crm/queries"
+import { getProject } from "@/lib/crm/store/projects"
 import { listClients } from "@/lib/crm/store/clients"
 import { requireOrgContext } from "@/lib/auth/orgContext"
 import { listAuditForEntity } from "@/lib/crm/audit/queries"

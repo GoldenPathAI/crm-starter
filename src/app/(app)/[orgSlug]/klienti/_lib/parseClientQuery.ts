@@ -1,11 +1,6 @@
 import { SortDirection } from "@/core/types/query.types"
 import { parseGroupLevels } from "@/app/_components/browser/queryHelpers"
-import type {
-  ClientGroupField,
-  ClientListFilters,
-  ClientListQuery,
-  ClientSortField,
-} from "@/lib/crm/queries"
+import type { ClientGroupField, ClientListFilters, ClientListQuery, ClientSortField } from "@/lib/crm/store/clients"
 
 export type ClientSearchParams = Record<string, string | string[] | undefined>
 

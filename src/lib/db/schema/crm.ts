@@ -27,8 +27,6 @@ import type {
   TicketStatus,
 } from "@/core/types/crm.types";
 
-export { crmSchema };
-
 export const clients = crmSchema.table(
   "clients",
   {

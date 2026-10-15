@@ -39,7 +39,7 @@ import { formatCzechDate } from "@/lib/dates"
 import { cn } from "@/lib/cn"
 import type { ActionState } from "@/app/_lib/actionState"
 import type { EnumOption, OrgMember, TicketRecurrence } from "@/core/types/crm.types"
-import type { TicketListItem } from "@/lib/crm/queries"
+import type { TicketListItem } from "@/lib/crm/store/tickets"
 import type { TicketQueryState, TicketView } from "../_lib/parseTicketQuery"
 import { TICKET_VIEWS } from "../_lib/parseTicketQuery"
 import {

@@ -5,7 +5,7 @@ import { toClient, toProject, toTicket } from "@/lib/crm/store/mappers"
 import { attachTicketAssignees } from "@/lib/crm/store/assignees"
 import { assertValidValue } from "@/lib/crm/enums/service"
 import { createId } from "@/lib/ids"
-import { todayIso } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 import type {
   Client,
   OrgScope,

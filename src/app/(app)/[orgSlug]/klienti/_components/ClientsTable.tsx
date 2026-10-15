@@ -20,12 +20,7 @@ import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { SortDirection, type SortOption } from "@/core/types/query.types"
 import type { ActionState } from "@/app/_lib/actionState"
-import type {
-  ClientGroupField,
-  ClientListFilters,
-  ClientListItem,
-  ClientSortField,
-} from "@/lib/crm/queries"
+import type { ClientGroupField, ClientListFilters, ClientListItem, ClientSortField } from "@/lib/crm/store/clients"
 import { SoftBadge } from "./SoftBadge"
 import { badgeFor, type EnumView } from "../_lib/enums"
 import { formatCzk, formatCzkOrDash, relativeDate } from "../_lib/format"

@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { updateTicketStatus } from "@/lib/crm/mutations"
+import { updateTicketStatus } from "@/lib/crm/store/tickets"
 import { deleteTicket, patchTicket, updateTicket } from "@/lib/crm/store/tickets"
 import { setTicketAssignees } from "@/lib/crm/store/assignees"
 import { getBySemantic } from "@/lib/crm/enums/service"

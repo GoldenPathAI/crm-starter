@@ -1,6 +1,6 @@
 import { format } from "date-fns"
 import { cs } from "date-fns/locale"
-import { getDashboardData } from "@/lib/crm/queries"
+import { getDashboardData } from "@/lib/crm/store/dashboard"
 import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { loadTodayPanel } from "@/lib/crm/store/today"

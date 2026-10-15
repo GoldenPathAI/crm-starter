@@ -3,14 +3,13 @@ import { Plus } from "lucide-react"
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { PageShell } from "@/app/_ui/PageShell"
 import { Button } from "@/app/_ui/Button"
-import { listProjects } from "@/lib/crm/queries"
+import { listProjects, type ProjectListItem } from "@/lib/crm/store/projects"
 import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { orgHref } from "@/lib/nav"
 import { parseGroupLevels } from "@/app/_components/browser/queryHelpers"
 import { applyDefaultSavedView } from "@/app/_lib/defaultView"
 import { SortDirection } from "@/core/types/query.types"
-import type { ProjectListItem } from "@/lib/crm/queries"
 import {
   ProjectsTable,
   type ProjectGroupValue,

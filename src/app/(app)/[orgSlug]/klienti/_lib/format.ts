@@ -1,6 +1,6 @@
 import { differenceInCalendarDays, format, parseISO } from "date-fns"
 import { cs } from "date-fns/locale"
-import { todayIso } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 
 const czk = new Intl.NumberFormat("cs-CZ", {
   style: "currency",

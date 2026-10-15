@@ -3,7 +3,7 @@ import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { ExpandableText } from "@/app/_ui/ExpandableText"
-import { todayIso } from "@/lib/crm/config"
+import { todayIso } from "@/lib/dates"
 import type {
   Activity,
   Client,
