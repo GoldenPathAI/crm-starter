@@ -29,6 +29,10 @@ rozšíří sám. Kód větví na stabilním anglickém `semantic`, nikdy na hod
 trigger se snapshotem před a po. Jedna akce v UI je jedna vratná dávka, undo je
 deterministické, žádné LLM.
 
+**Testy.** Vitest. Unit testy leží vedle kódu, integrační testy běží jen proti databázi,
+jejíž název končí na `_test`. Žádný test nesáhne mimo localhost: síťová pojistka
+v `src/test-support` zablokuje každý odchozí požadavek a smaže z procesu přístupové klíče.
+
 **API a CLI.** `/api/internal/crm/[orgSlug]/*` s tokenovou autentizací a `pnpm crm` nad
 ním. Co jde udělat klikáním, jde udělat i z terminálu nebo skriptu.
 
@@ -79,6 +83,8 @@ a ověření změny v běžící aplikaci.
 pnpm dev
 pnpm typecheck
 pnpm lint
+pnpm test
+pnpm test:integration
 pnpm code:check
 pnpm db:migrate
 pnpm db:studio

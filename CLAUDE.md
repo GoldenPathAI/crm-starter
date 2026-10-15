@@ -84,7 +84,12 @@ enum's members as a literal list in a second file.
   `scope.actor`. This is the canonical write layer and it encodes the invariants: system
   activity on deal create and move, client delete refuses when related rows exist, ticket
   `clientId` denormalization on project reassignment, the one-primary-contact rule.
-- `src/lib/crm/queries.ts` and `mutations.ts` are thin facades re-exporting the store.
+- Callers import a store function from the module that owns it
+  (`@/lib/crm/store/clients`, ...). There are no facades or barrels: a re-export is a lint
+  error.
+- `src/core/listFields.ts` holds the sort and group keys of the store list queries. They
+  travel in URLs, saved views and the API query string, so they are readonly tuples (see
+  Conventions), shared by the pages and the API parsers.
 - Server actions live in colocated `actions.ts` files returning `ActionState`
   (`src/app/_lib/actionState.ts`); the UI kit is `src/app/_ui/*`.
 - Úkoly can be client-level: `tickets.project_id` is nullable, so a task hangs off a
@@ -157,7 +162,7 @@ unknown values with a 400.
 
 Shared helpers sit in `src/app/api/internal/crm/_lib/` (underscore-prefixed so Next does
 not route them): `http.ts` (responses, body parsing, field coercion, `HttpError`),
-`enums.ts`, `query.ts`, `parseBody.ts` (per-entity body validation mapped to the store
+`query.ts`, `parseBody.ts` (per-entity body validation mapped to the store
 input types; dates are calendar-checked, not just pattern-matched), `reads.ts`. Routes
 stay thin: auth, validate, call store, JSON.
 
@@ -204,7 +209,8 @@ lists audit batches with per-batch undo.
 ## Migrations
 
 Hand-written idempotent SQL in `drizzle/`, applied by `pnpm db:migrate`
-(`src/scripts/migrate.ts`), tracked in `crm._migrations`. Files run in filename order
+(`src/scripts/migrate.ts`), tracked in `crm._migrations`. The runner itself is
+`applyMigrations` in `src/lib/db/migrations.ts`, shared with the integration test setup. Files run in filename order
 inside a transaction each. Drizzle-kit is used only to read the schema
 (`pnpm db:studio`), never to auto-apply.
 
@@ -217,12 +223,55 @@ Document files upload via presigned URLs to a private S3 bucket (`src/lib/files/
 bucket and region in `config.files`, credentials from the default AWS provider chain).
 Without AWS credentials the document module still works, it just cannot attach files.
 
+## Quality gate and tests
+
+`pnpm code:check` runs `eslint .`, `tsc --noEmit` and the vitest unit suite, and it has to
+be green before every push. `eslint.config.mjs` is the shared GoldenPath gate:
+typescript-eslint `recommendedTypeChecked`, no `any` and no casts to `any`, to `never` or
+through `unknown`, no re-exports and no barrel files, no dynamic `import()` outside
+`src/instrumentation.ts` and tests, explicit member accessibility, `no-floating-promises`,
+`require-await`, `functional/immutable-data`, camelCase or PascalCase file names, the enum
+rules below and the Next rules. A rule is never switched off for a file or a line; the code
+changes instead.
+
+Unit tests sit next to the code as `*.test.ts` (`vitest.config.ts`, `pnpm test`).
+Integration tests are `src/**/*.integration.test.ts` (`vitest.integration.config.ts`) and
+run with `DATABASE_URL=postgresql://.../crm_starter_test pnpm test:integration`. Vitest does
+not read `.env`, so the URL comes from the shell. The setup refuses any database whose name
+does not end in `_test`, migrates it first and runs the files one at a time.
+
+**No test ever touches the outside world.** Both configs load a setup file from
+`src/test-support` that deletes the outbound credentials (`RESEND_API_KEY`,
+`INTERNAL_API_TOKEN`, the AWS keys) from the process and makes `fetch`, `http.request`,
+`https.request` and every socket to a non-local host fail with
+`OutboundRequestBlockedError`. The Postgres host of the `_test` database and servers a test
+starts on localhost stay reachable. A new outbound integration therefore needs a mock
+(`vi.mock`) in every suite that reaches it, otherwise the suite fails loudly.
+`src/test-support/networkGuard.test.ts` is the proof that the guard holds; never weaken it
+to make a suite pass.
+
 ## Conventions
 
 - Env vars are ONLY for secrets. All other config lives in `src/lib/config.ts` or in code.
 - Strict types: no `any`, avoid casting; `unknown` is used only at the HTTP input boundary
   with type guards. Import from source files, not barrels.
-- Immutable patterns (spread, map, filter) over mutation. No empty catch blocks.
+- Immutable patterns (spread, map, filter) over mutation, enforced by
+  `functional/immutable-data`. `src/lib/collections.ts` has the copy-on-write helpers
+  (`insertAt`, `toggleMember`, `recordFromKeys`); drizzle `and()` drops `undefined`
+  conditions, so optional filters go in as `cond ? eq(...) : undefined`. State that
+  genuinely has to mutate lives inside a small class. No empty catch blocks.
+- Enums. A fixed set of values that never leaves the process (UI variants, internal
+  states) is a TypeScript `enum` whose member key equals its PascalCase value
+  (`ToastVariant.Error = "Error"`). A string-literal union type alias or a const object
+  pseudo-enum is a lint error. Values stored in the database, carried in URLs and saved
+  views, or exchanged over the API and CLI keep their spelling and are typed from a
+  readonly tuple: `export const ORG_ROLES = ["owner", "admin", "member"] as const`,
+  `type OrgRole = (typeof ORG_ROLES)[number]`, narrowed with `isOneOf`
+  (`src/lib/literals.ts`). Each tuple has one home and every other file imports it.
+  Per-workspace číselníky stay `string`, as described above.
+- File names are camelCase for modules and PascalCase for components. A `"use server"`
+  module exports only async functions; a type a client component needs lives in a plain
+  module next to it (`pipeline/_lib/types.ts`).
 - No em dashes anywhere, no emojis, no trailing period on headings or labels. Money is
   formatted `80 000 Kč`.
 - Comment only non-trivial "why", never "what".

@@ -49,7 +49,7 @@ in a new migration modelled on `drizzle/0002_audit_triggers.sql`, and to `UNDO_T
 - Refuse rather than cascade silently: `deleteClient` refuses when related rows exist and
   says so. Copy that shape.
 
-Re-export from `src/lib/crm/queries.ts` and `mutations.ts`.
+Callers import straight from the store module. Re-exports and barrel files are lint errors.
 
 ## 4. API routes
 
