@@ -415,6 +415,24 @@ export default defineConfig(
     },
   },
 
+  // React refs are mutable by design (`ref.current` is React's escape hatch for values
+  // that must not re-render), and DOM properties such as document.title or an element's
+  // style only change by assignment. Component files may therefore assign to exactly
+  // these accessors; everything else stays strictly immutable.
+  {
+    files: ["**/*.tsx"],
+    rules: {
+      "functional/immutable-data": [
+        "error",
+        {
+          ignoreClasses: true,
+          ignoreImmediateMutation: true,
+          ignoreAccessorPattern: ["**.current", "document.title", "**.style.*"],
+        },
+      ],
+    },
+  },
+
   // Enforce @/ import aliases, no deep relative imports.
   {
     files: ["src/**/*.ts", "src/**/*.tsx"],
