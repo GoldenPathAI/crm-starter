@@ -5,7 +5,7 @@ import { CalendarClock, Plus } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { Checkbox } from "@/app/_ui/Checkbox"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useTaskDetail } from "@/app/_components/task-detail/TaskDetailProvider"
 import { AvatarStack } from "@/app/_components/AvatarStack"
 import { formatCzechDate } from "@/lib/dates"
@@ -52,7 +52,7 @@ export function ClientTasksCard({ clientId, tasks, today, priorityView }: Client
       markTaskDone(ticketId)
       const result = await setClientTaskStatusAction(orgSlug, { ticketId, clientId, status: "done" })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

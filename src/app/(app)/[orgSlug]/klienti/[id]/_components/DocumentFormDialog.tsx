@@ -15,7 +15,7 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Select } from "@/app/_ui/Select"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { config } from "@/lib/config"
 import type { ActionState } from "@/app/_lib/actionState"
@@ -101,7 +101,7 @@ export function DocumentFormDialog({
     const presigned = await presignDocumentUploadAction(orgSlug, file.name, file.type, file.size)
     if (presigned.status === "error") {
       setError(presigned.message)
-      toast({ variant: "error", title: presigned.message })
+      toast({ variant: ToastVariant.Error, title: presigned.message })
 
       return null
     }
@@ -114,7 +114,7 @@ export function DocumentFormDialog({
     if (!response.ok) {
       const message = "Nahrání souboru selhalo."
       setError(message)
-      toast({ variant: "error", title: message })
+      toast({ variant: ToastVariant.Error, title: message })
 
       return null
     }
@@ -140,11 +140,11 @@ export function DocumentFormDialog({
 
       const result = await onSubmit({ ...values, title: trimmedTitle, file: uploaded ?? undefined })
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         onOpenChange(false)
       } else if (result.status === "error") {
         setError(result.message)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

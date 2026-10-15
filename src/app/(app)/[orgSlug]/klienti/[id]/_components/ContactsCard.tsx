@@ -18,7 +18,7 @@ import {
 import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { cn } from "@/lib/cn"
@@ -66,7 +66,7 @@ export function ContactsCard({
       if (result.status === "success") {
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -216,7 +216,7 @@ function PersonRow({
               toastWithUndo(result, () => router.refresh())
               router.refresh()
             } else if (result.status === "error") {
-              toast({ variant: "error", title: result.message })
+              toast({ variant: ToastVariant.Error, title: result.message })
             }
           }}
         />
@@ -292,10 +292,10 @@ function AddPersonDialog({ clientId }: { clientId: string }) {
 
   useEffect(() => {
     if (state.status === "success") {
-      toast({ variant: "success", title: state.message })
+      toast({ variant: ToastVariant.Success, title: state.message })
       setOpen(false)
     } else if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast])
 
@@ -350,10 +350,10 @@ function EditPersonDialog({ person, clientId }: { person: Person; clientId: stri
 
   useEffect(() => {
     if (state.status === "success") {
-      toast({ variant: "success", title: state.message })
+      toast({ variant: ToastVariant.Success, title: state.message })
       setOpen(false)
     } else if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast])
 

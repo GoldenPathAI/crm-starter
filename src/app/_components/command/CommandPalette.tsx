@@ -24,7 +24,7 @@ import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
 import { Kbd } from "@/app/_ui/Kbd"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { cn } from "@/lib/cn"
 import {
@@ -414,7 +414,7 @@ export function CommandPalette() {
           prev.filter((item) => !(item.type === "ticket" && item.id === ticketId)),
         )
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     } finally {
       setBusyRowKey(null)
@@ -433,7 +433,7 @@ export function CommandPalette() {
       if (result.status === "success") {
         toastWithUndo(result)
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     } finally {
       setBusyRowKey(null)
@@ -469,7 +469,7 @@ export function CommandPalette() {
                 : [pin, ...prev]
               : prev.filter((entry) => entry.id !== entityId),
           )
-          toast({ variant: "error", title: result.message })
+          toast({ variant: ToastVariant.Error, title: result.message })
         }
       })
       .catch(() => {

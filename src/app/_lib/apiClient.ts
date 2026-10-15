@@ -14,7 +14,14 @@ export class ApiError extends Error {
   }
 }
 
-type Method = "GET" | "POST" | "PATCH" | "DELETE"
+// Members spell the HTTP token itself: fetch upper-cases GET, POST and DELETE on its
+// own but sends PATCH exactly as written.
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
+}
 
 interface RequestOptions {
   query?: Record<string, string | number | boolean | string[] | undefined>
@@ -51,11 +58,11 @@ function buildQuery(query: RequestOptions["query"]): string {
 
 export async function crmApi<T>(
   orgSlug: string,
-  method: Method,
+  method: HttpMethod,
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const mutation = method !== "GET"
+  const mutation = method !== HttpMethod.GET
   const headers: Record<string, string> = {}
   if (options.body !== undefined) {
     headers["content-type"] = "application/json"

@@ -1,7 +1,7 @@
 import { AlertTriangle, CircleCheck, CircleDollarSign, Scale } from "lucide-react"
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { PageShell } from "@/app/_ui/PageShell"
-import { StatCard } from "@/app/_ui/Stat"
+import { StatCard, StatHue } from "@/app/_ui/Stat"
 import { listClientOptions, listDealsByStage } from "@/lib/crm/store/deals"
 import { listOrgMembers } from "@/lib/crm/store/members"
 import { requireOrgContext } from "@/lib/auth/orgContext"
@@ -24,15 +24,19 @@ import { SortDirection } from "@/core/types/query.types"
 import type { EnumOption, OrgMember } from "@/core/types/crm.types"
 import type { DealCard } from "@/lib/crm/store/deals"
 import { PipelineBoard } from "./_components/PipelineBoard"
-import { PipelineList, type DealListSortField, type DealListState } from "./_components/PipelineList"
+import { PipelineList, type DealListState } from "./_components/PipelineList"
+import {
+  DEAL_LIST_GROUPS,
+  DEAL_LIST_SORT_FIELDS,
+  PIPELINE_VIEWS,
+  type DealListSortField,
+} from "./_lib/listQuery"
 import { ViewToggle } from "./_components/ViewToggle"
 import { NewDealButton } from "./_components/NewDealButton"
 import { formatCzk } from "./_lib/format"
 
 export const dynamic = "force-dynamic"
 
-const DEAL_LIST_SORT_FIELDS: ReadonlyArray<DealListSortField> = ["hodnota", "dni", "uzavreni"]
-const DEAL_LIST_GROUPS = ["faze", "klient"] as const
 
 const pluralDeals = (count: number): string => {
   if (count === 1) {
@@ -68,7 +72,7 @@ export default async function PipelinePage({
 }) {
   const resolvedParams = await searchParams
   const { orgSlug } = await params
-  const view = single(resolvedParams.view) === "list" ? "list" : "kanban"
+  const view = matchEnum(single(resolvedParams.view), PIPELINE_VIEWS) ?? "kanban"
   const deepLinkDealId = cleanText(single(resolvedParams.deal))
 
   const ctx = await requireOrgContext(orgSlug)
@@ -118,21 +122,21 @@ export default async function PipelinePage({
           label="Otevřená pipeline"
           value={formatCzk(openPipelineCzk)}
           hint={`${pluralDeals(openDealsCount)} v jednání`}
-          hue="blue"
+          hue={StatHue.Blue}
           icon={CircleDollarSign}
         />
         <StatCard
           label="Vážená pipeline"
           value={formatCzk(weightedPipelineCzk)}
           hint="Podle pravděpodobnosti uzavření"
-          hue="indigo"
+          hue={StatHue.Indigo}
           icon={Scale}
         />
         <StatCard
           label="Vyžaduje pozornost"
           value={String(attentionCount)}
           hint={attentionCount === 0 ? "Vše se hýbe včas" : "Bez pohybu 21+ dní nebo po termínu"}
-          hue={attentionCount === 0 ? "green" : "red"}
+          hue={attentionCount === 0 ? StatHue.Green : StatHue.Red}
           icon={attentionCount === 0 ? CircleCheck : AlertTriangle}
           emphasize={attentionCount > 0}
         />

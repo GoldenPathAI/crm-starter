@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react"
 import { Check, ChevronDown } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { badgeStyleFor, optionBadgeStyle, styleMap } from "@/lib/crm/config"
 import { cn } from "@/lib/cn"
@@ -32,7 +32,7 @@ export function ProjectStatusMenu({
     startTransition(async () => {
       const result = await changeProjectStatusAction(orgSlug, { projectId: project.id, status })
       toast({
-        variant: result.status === "success" ? "success" : "error",
+        variant: result.status === "success" ? ToastVariant.Success : ToastVariant.Error,
         title: result.status === "idle" ? undefined : result.message,
       })
     })

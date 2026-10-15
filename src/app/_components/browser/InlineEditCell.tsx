@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import type { KeyboardEvent } from "react"
 import type { ActionState } from "@/app/_lib/actionState"
@@ -71,7 +71,7 @@ export function InlineEditCell({
       const result = await onSave(next)
       if (result.status === "error") {
         // Discard the rejected draft: the cell falls back to the stored value.
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setEditing(false)
 
         return

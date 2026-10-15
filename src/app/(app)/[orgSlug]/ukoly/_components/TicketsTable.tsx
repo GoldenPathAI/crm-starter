@@ -27,7 +27,7 @@ import { Checkbox } from "@/app/_ui/Checkbox"
 import { ConfirmDialog } from "@/app/_ui/ConfirmDialog"
 import { DatePicker } from "@/app/_ui/DatePicker"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { useTaskDetail } from "@/app/_components/task-detail/TaskDetailProvider"
 import { InlineAssigneeCell } from "@/app/_components/InlineAssigneeCell"
@@ -430,7 +430,7 @@ function TicketsBulkActions({
         onDone()
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -564,7 +564,7 @@ function TicketsBulkActions({
             onDone()
             router.refresh()
           } else if (result.status === "error") {
-            toast({ variant: "error", title: result.message })
+            toast({ variant: ToastVariant.Error, title: result.message })
           }
         }}
       />
@@ -616,7 +616,7 @@ function TitleQuickEdit({ ticket, orgSlug }: { ticket: TicketListItem; orgSlug: 
         patch: { title: next },
       })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -690,7 +690,7 @@ function StatusQuickEdit({
         status,
       })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -766,7 +766,7 @@ function DoneQuickToggle({
         status: nextStatus,
       })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -815,7 +815,7 @@ function PriorityQuickEdit({
         labels: ticket.labels,
       })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -900,7 +900,7 @@ function DueQuickEdit({
         labels: ticket.labels,
       })
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

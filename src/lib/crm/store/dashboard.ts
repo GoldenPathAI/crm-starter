@@ -39,7 +39,10 @@ export interface OverdueTicketItem {
   priority: TicketPriority
 }
 
-export type StuckDealReason = "no_next_step" | "stale"
+// Part of the /dashboard API response.
+export const STUCK_DEAL_REASONS = ["no_next_step", "stale"] as const
+
+export type StuckDealReason = (typeof STUCK_DEAL_REASONS)[number]
 
 export interface StuckDealItem {
   id: string

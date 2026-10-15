@@ -2,15 +2,16 @@ import type { ReactNode } from "react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/cn"
 
-export type StatHue =
-  | "neutral"
-  | "blue"
-  | "green"
-  | "orange"
-  | "red"
-  | "purple"
-  | "teal"
-  | "indigo"
+export enum StatHue {
+  Neutral = "Neutral",
+  Blue = "Blue",
+  Green = "Green",
+  Orange = "Orange",
+  Red = "Red",
+  Purple = "Purple",
+  Teal = "Teal",
+  Indigo = "Indigo",
+}
 
 interface StatCardProps {
   label: string
@@ -22,32 +23,32 @@ interface StatCardProps {
 }
 
 const iconTileClasses: Readonly<Record<StatHue, string>> = {
-  neutral: "bg-surface-3/60 text-muted",
-  blue: "bg-blue-soft text-blue-text",
-  green: "bg-green-soft text-green-text",
-  orange: "bg-orange-soft text-orange-text",
-  red: "bg-red-soft text-red-text",
-  purple: "bg-purple-soft text-purple-text",
-  teal: "bg-teal-soft text-teal-text",
-  indigo: "bg-indigo-soft text-indigo-text",
+  [StatHue.Neutral]: "bg-surface-3/60 text-muted",
+  [StatHue.Blue]: "bg-blue-soft text-blue-text",
+  [StatHue.Green]: "bg-green-soft text-green-text",
+  [StatHue.Orange]: "bg-orange-soft text-orange-text",
+  [StatHue.Red]: "bg-red-soft text-red-text",
+  [StatHue.Purple]: "bg-purple-soft text-purple-text",
+  [StatHue.Teal]: "bg-teal-soft text-teal-text",
+  [StatHue.Indigo]: "bg-indigo-soft text-indigo-text",
 }
 
 const valueClasses: Readonly<Record<StatHue, string>> = {
-  neutral: "text-foreground",
-  blue: "text-blue-text",
-  green: "text-green-text",
-  orange: "text-orange-text",
-  red: "text-red-text",
-  purple: "text-purple-text",
-  teal: "text-teal-text",
-  indigo: "text-indigo-text",
+  [StatHue.Neutral]: "text-foreground",
+  [StatHue.Blue]: "text-blue-text",
+  [StatHue.Green]: "text-green-text",
+  [StatHue.Orange]: "text-orange-text",
+  [StatHue.Red]: "text-red-text",
+  [StatHue.Purple]: "text-purple-text",
+  [StatHue.Teal]: "text-teal-text",
+  [StatHue.Indigo]: "text-indigo-text",
 }
 
 export function StatCard({
   label,
   value,
   hint,
-  hue = "neutral",
+  hue = StatHue.Neutral,
   icon: Icon,
   emphasize = false,
 }: StatCardProps) {

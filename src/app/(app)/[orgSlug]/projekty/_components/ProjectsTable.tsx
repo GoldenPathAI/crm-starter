@@ -17,10 +17,7 @@ import type { ProjectListItem } from "@/lib/crm/store/projects"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
 import { formatCzk } from "../_lib/format"
-
-export type ProjectSortField = "name" | "due" | "status"
-
-export type ProjectGroupValue = "status" | "klient"
+import type { ProjectGroupValue, ProjectSortField } from "../_lib/listQuery"
 
 interface ProjectsTableProps {
   rows: ProjectListItem[]

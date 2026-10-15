@@ -57,7 +57,10 @@ export async function listActivitiesByClient(orgId: string, clientId: string): P
   return rows.map(toActivity)
 }
 
-export type TicketDueWindow = "dnes" | "tyden"
+// The `due` query param of GET /tickets and the CLI verbs `tickets dnes|tyden`.
+export const TICKET_DUE_WINDOWS = ["dnes", "tyden"] as const
+
+export type TicketDueWindow = (typeof TICKET_DUE_WINDOWS)[number]
 
 // "Due today" and "due within a week" are supersets of the store's overdue view
 // (dueAt not null, not done) bounded at the top by today / today + 7 days. The

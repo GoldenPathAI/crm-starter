@@ -13,14 +13,15 @@ import type {
 import { Button } from "@/app/_ui/Button"
 import { ConfirmDialog } from "@/app/_ui/ConfirmDialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { cn } from "@/lib/cn"
 import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { SortDirection, type SortOption } from "@/core/types/query.types"
 import type { ActionState } from "@/app/_lib/actionState"
-import type { ClientGroupField, ClientListFilters, ClientListItem, ClientSortField } from "@/lib/crm/store/clients"
+import type { ClientListFilters, ClientListItem } from "@/lib/crm/store/clients"
+import type { ClientGroupField, ClientSortField } from "@/core/listFields"
 import { SoftBadge } from "./SoftBadge"
 import { badgeFor, type EnumView } from "../_lib/enums"
 import { formatCzk, formatCzkOrDash, relativeDate } from "../_lib/format"
@@ -288,7 +289,7 @@ function ClientsBulkActions({
         onDone()
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -347,7 +348,7 @@ function ClientsBulkActions({
             onDone()
             router.refresh()
           } else if (result.status === "error") {
-            toast({ variant: "error", title: result.message })
+            toast({ variant: ToastVariant.Error, title: result.message })
           }
         }}
       />

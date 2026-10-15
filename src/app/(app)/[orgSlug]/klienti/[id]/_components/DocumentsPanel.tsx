@@ -7,7 +7,7 @@ import { Button } from "@/app/_ui/Button"
 import { ConfirmDialog } from "@/app/_ui/ConfirmDialog"
 import { EmptyState } from "@/app/_ui/EmptyState"
 import { Table, TBody, TD, TH, THead, TR } from "@/app/_ui/Table"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { Doc } from "@/core/types/crm.types"
@@ -80,7 +80,7 @@ export function DocumentsPanel({ clientId, documents, docKindView }: DocumentsPa
     if (result.status === "success") {
       window.open(result.url, "_blank", "noopener,noreferrer")
     } else if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
     }
   }
 
@@ -90,7 +90,7 @@ export function DocumentsPanel({ clientId, documents, docKindView }: DocumentsPa
       toastWithUndo(result, () => router.refresh())
       router.refresh()
     } else if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
     }
   }
 

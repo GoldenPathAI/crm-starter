@@ -11,6 +11,7 @@ import { todayIso } from "@/lib/dates"
 import { config } from "@/lib/config"
 import { createId } from "@/lib/ids"
 import { SortDirection, type Paginated, type SortOption } from "@/core/types/query.types"
+import type { TicketGroupField, TicketSortField } from "@/core/listFields"
 import type {
   OrgScope,
   Ticket,
@@ -53,9 +54,6 @@ export interface UpdateTicketInput {
   labels?: string[]
   recurrence?: TicketRecurrence | null
 }
-
-export type TicketSortField = "dueAt" | "priority" | "createdAt"
-export type TicketGroupField = "status" | "client" | "priority"
 
 export interface TicketListFilters {
   clientId?: string

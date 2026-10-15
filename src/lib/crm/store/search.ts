@@ -4,7 +4,10 @@ import { activities, clients, deals, projects, tickets } from "@/lib/db/schema/c
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import type { OrgScope } from "@/core/types/crm.types"
 
-export type SearchResultType = "client" | "deal" | "project" | "ticket" | "email"
+// Part of the /search API response and the CLI output.
+export const SEARCH_RESULT_TYPES = ["client", "deal", "project", "ticket", "email"] as const
+
+export type SearchResultType = (typeof SEARCH_RESULT_TYPES)[number]
 
 export interface SearchResult {
   type: SearchResultType

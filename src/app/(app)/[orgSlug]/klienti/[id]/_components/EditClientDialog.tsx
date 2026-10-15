@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/app/_ui/Dialog"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState, type ActionState } from "@/app/_lib/actionState"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import type { Client } from "@/core/types/crm.types"
@@ -46,10 +46,10 @@ export function EditClientDialog({ client, hasRelated, statusView, serviceView }
 
   useEffect(() => {
     if (state.status === "success") {
-      toast({ variant: "success", title: state.message })
+      toast({ variant: ToastVariant.Success, title: state.message })
       setOpen(false)
     } else if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast])
 
@@ -66,7 +66,7 @@ export function EditClientDialog({ client, hasRelated, statusView, serviceView }
             router.refresh()
           }
         } else if (result.status === "error") {
-          toast({ variant: "error", title: result.message })
+          toast({ variant: ToastVariant.Error, title: result.message })
         }
 
         resolve()

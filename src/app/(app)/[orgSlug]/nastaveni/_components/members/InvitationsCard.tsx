@@ -11,7 +11,7 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Select } from "@/app/_ui/Select"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import { config } from "@/lib/config"
 import { formatCzechDate } from "@/lib/dates"
@@ -58,9 +58,9 @@ export function InvitationsCard({
     const link = `${config.authBaseUrl}/invite/${invitationId}`
     try {
       await navigator.clipboard.writeText(link)
-      toast({ variant: "success", title: "Odkaz zkopírován" })
+      toast({ variant: ToastVariant.Success, title: "Odkaz zkopírován" })
     } catch {
-      toast({ variant: "error", title: "Odkaz se nepodařilo zkopírovat" })
+      toast({ variant: ToastVariant.Error, title: "Odkaz se nepodařilo zkopírovat" })
     }
   }
 

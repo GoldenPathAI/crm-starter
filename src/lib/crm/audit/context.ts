@@ -4,7 +4,10 @@ import { db } from "@/lib/db/client"
 import type { CrmDbc } from "@/lib/db/client"
 import { createId } from "@/lib/ids"
 
-export type AuditSource = "ui" | "assistant" | "internal_api" | "cli" | "script" | "undo" | "system"
+// Written into crm.audit_log.source by the trigger, so the values keep their spelling.
+export const AUDIT_SOURCES = ["ui", "assistant", "internal_api", "cli", "script", "undo", "system"] as const
+
+export type AuditSource = (typeof AUDIT_SOURCES)[number]
 
 export interface AuditMeta {
   orgId: string

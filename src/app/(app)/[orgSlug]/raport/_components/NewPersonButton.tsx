@@ -16,8 +16,8 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Select } from "@/app/_ui/Select"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
-import { crmApi } from "@/app/_lib/apiClient"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
+import { crmApi, HttpMethod } from "@/app/_lib/apiClient"
 import type { EnumOption, Person } from "@/core/types/crm.types"
 import type { RapportClientOption } from "@/app/_components/rapport/PersonRapportDialog"
 
@@ -51,7 +51,7 @@ export function NewPersonButton({
 
     startTransition(async () => {
       try {
-        await crmApi<Person>(orgSlug, "POST", "/people", {
+        await crmApi<Person>(orgSlug, HttpMethod.POST, "/people", {
           body: {
             name: trimmed,
             kind,
@@ -66,7 +66,7 @@ export function NewPersonButton({
         router.refresh()
       } catch (error) {
         toast({
-          variant: "error",
+          variant: ToastVariant.Error,
           title: error instanceof Error ? error.message : "Osobu se nepodařilo přidat.",
         })
       }

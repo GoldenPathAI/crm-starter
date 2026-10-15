@@ -20,7 +20,7 @@ import {
   extractClosestEdge,
   type Edge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge"
-import type { ColorToken, EnumKind, EnumOption } from "@/core/types/crm.types"
+import { COLOR_TOKENS, type ColorToken, type EnumKind, type EnumOption } from "@/core/types/crm.types"
 import { REQUIRED_SEMANTICS } from "@/core/enumDefaults"
 import { optionBadgeStyle } from "@/lib/crm/config"
 import { cn } from "@/lib/cn"
@@ -28,7 +28,7 @@ import { Button } from "@/app/_ui/Button"
 import { Input } from "@/app/_ui/Input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import {
   archiveEnumOptionAction,
   createEnumOptionAction,
@@ -36,18 +36,6 @@ import {
   unarchiveEnumOptionAction,
   updateEnumOptionAction,
 } from "./actions"
-
-const COLOR_TOKENS: ReadonlyArray<ColorToken> = [
-  "slate",
-  "blue",
-  "green",
-  "orange",
-  "red",
-  "purple",
-  "teal",
-  "indigo",
-  "cyan",
-]
 
 const VALUE_PATTERN = /^[a-z][a-z0-9_]*$/
 
@@ -164,7 +152,7 @@ export function EnumEditor({
     startTransition(async () => {
       const result = await reorderEnumOptionsAction(orgSlug, kind, orderedIds)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setRows(previous)
       }
     })
@@ -203,7 +191,7 @@ export function EnumEditor({
     startTransition(async () => {
       const result = await updateEnumOptionAction(orgSlug, id, patch)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setRows(previous)
       }
     })
@@ -215,7 +203,7 @@ export function EnumEditor({
     startTransition(async () => {
       const result = await archiveEnumOptionAction(orgSlug, id)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setRows(previous)
       }
     })
@@ -227,7 +215,7 @@ export function EnumEditor({
     startTransition(async () => {
       const result = await unarchiveEnumOptionAction(orgSlug, id)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setRows(previous)
       }
     })
@@ -683,10 +671,10 @@ function AddOptionRow({ kind, orgSlug }: { kind: EnumKind; orgSlug: string }) {
         color,
       })
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         reset()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

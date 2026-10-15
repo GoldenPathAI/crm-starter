@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
-import { useToast } from "@/app/_ui/Toast";
+import { ToastVariant, useToast } from "@/app/_ui/Toast";
 import { cn } from "@/lib/cn";
 
 interface CopyButtonProps {
@@ -22,7 +22,7 @@ export function CopyButton({ value, label, className }: CopyButtonProps) {
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
       toast({
-        variant: "error",
+        variant: ToastVariant.Error,
         title: "Hodnotu se nepodařilo zkopírovat",
         description: "Označ ji a zkopíruj ručně.",
       });

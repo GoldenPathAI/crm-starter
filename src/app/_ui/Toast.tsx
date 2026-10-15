@@ -14,7 +14,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { CheckCircle2, Info, X, XCircle } from "lucide-react"
 import { cn } from "@/lib/cn"
 
-type ToastVariant = "success" | "error" | "info"
+export enum ToastVariant {
+  Success = "Success",
+  Error = "Error",
+  Info = "Info",
+}
 
 interface ToastAction {
   label: string
@@ -47,19 +51,19 @@ const DISMISS_MS = 4000
 const DISMISS_LONG_MS = 8000
 
 const variantIcon: Readonly<Record<ToastVariant, typeof Info>> = {
-  success: CheckCircle2,
-  error: XCircle,
-  info: Info,
+  [ToastVariant.Success]: CheckCircle2,
+  [ToastVariant.Error]: XCircle,
+  [ToastVariant.Info]: Info,
 }
 
 const variantAccent: Readonly<Record<ToastVariant, string>> = {
-  success: "bg-accent-soft text-accent",
-  error: "bg-danger-soft text-danger",
-  info: "bg-primary-soft text-primary",
+  [ToastVariant.Success]: "bg-accent-soft text-accent",
+  [ToastVariant.Error]: "bg-danger-soft text-danger",
+  [ToastVariant.Info]: "bg-primary-soft text-primary",
 }
 
 function dismissAfterMs(item: ToastItem): number {
-  if (item.action || item.variant === "error") return DISMISS_LONG_MS
+  if (item.action || item.variant === ToastVariant.Error) return DISMISS_LONG_MS
 
   return DISMISS_MS
 }
@@ -120,7 +124,7 @@ function ToastCard({ item, reduceMotion, onDismiss }: ToastCardProps) {
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: 24, scale: 0.96 }}
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      role={item.variant === "error" ? "alert" : "status"}
+      role={item.variant === ToastVariant.Error ? "alert" : "status"}
       onPointerEnter={() => {
         hoveredRef.current = true
         pauseTimer()
@@ -197,7 +201,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     idRef.current += 1
     const item: ToastItem = {
       id: idRef.current,
-      variant: options.variant ?? "info",
+      variant: options.variant ?? ToastVariant.Info,
       title: options.title,
       description: options.description,
       action: options.action,

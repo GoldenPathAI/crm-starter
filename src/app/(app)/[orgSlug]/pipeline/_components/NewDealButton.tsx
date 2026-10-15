@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/_ui/Dialog"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { DealStage, EnumOption, OrgMember } from "@/core/types/crm.types"
 import type { ClientOption } from "@/lib/crm/store/deals"
@@ -37,11 +37,11 @@ export function NewDealButton({
     startTransition(async () => {
       const result = await createDealAction(orgSlug, values, stage, assigneeIds)
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         setAssigneeIds([])
         setOpen(false)
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

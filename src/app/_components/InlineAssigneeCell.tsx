@@ -7,7 +7,7 @@ import type { OrgMember } from "@/core/types/crm.types"
 import type { ActionState } from "@/app/_lib/actionState"
 import { AssigneePicker } from "@/app/_components/AssigneePicker"
 import { AvatarStack } from "@/app/_components/AvatarStack"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 
 interface InlineAssigneeCellProps {
@@ -58,7 +58,7 @@ export function InlineAssigneeCell({
       const result = await onSave(next)
       if (result.status === "error") {
         setSelected(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       } else {
         router.refresh()
       }

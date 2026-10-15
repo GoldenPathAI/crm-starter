@@ -10,18 +10,13 @@ import { orgHref } from "@/lib/nav"
 import { parseGroupLevels } from "@/app/_components/browser/queryHelpers"
 import { applyDefaultSavedView } from "@/app/_lib/defaultView"
 import { SortDirection } from "@/core/types/query.types"
-import {
-  ProjectsTable,
-  type ProjectGroupValue,
-  type ProjectSortField,
-} from "./_components/ProjectsTable"
+import { ProjectsTable } from "./_components/ProjectsTable"
+import { PROJECT_GROUP_VALUES, PROJECT_SORT_FIELDS, type ProjectSortField } from "./_lib/listQuery"
 
 export const dynamic = "force-dynamic"
 
 type SearchParams = Record<string, string | string[] | undefined>
 
-const SORT_FIELDS: ReadonlyArray<ProjectSortField> = ["name", "due", "status"]
-const GROUP_VALUES: ReadonlyArray<ProjectGroupValue> = ["status", "klient"]
 
 const single = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value
@@ -77,9 +72,9 @@ export default async function ProjektyPage({
   const statuses = parseStatuses(query.status, statusValues)
   const q = single(query.q)?.trim() ?? ""
   const sortFieldRaw = single(query.sortField)
-  const sortField = SORT_FIELDS.find((field) => field === sortFieldRaw)
+  const sortField = PROJECT_SORT_FIELDS.find((field) => field === sortFieldRaw)
   const sortDir = single(query.sortDir) === SortDirection.Desc ? SortDirection.Desc : SortDirection.Asc
-  const groups = parseGroupLevels(query.group, GROUP_VALUES, { default: [], maxLevels: 2 })
+  const groups = parseGroupLevels(query.group, PROJECT_GROUP_VALUES, { default: [], maxLevels: 2 })
 
   const all = await listProjects(ctx.scope)
   const needle = q.toLowerCase()

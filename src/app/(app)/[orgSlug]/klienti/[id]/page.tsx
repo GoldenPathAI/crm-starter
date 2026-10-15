@@ -15,15 +15,14 @@ import { formatCzk } from "../_lib/format"
 import { ClientPinButton } from "./_components/ClientPinButton"
 import { ClientStatusControl } from "./_components/ClientStatusControl"
 import { EditClientDialog } from "./_components/EditClientDialog"
-import { ClientTabs, type ClientTabKey } from "./_components/ClientTabs"
+import { ClientTabs } from "./_components/ClientTabs"
+import { CLIENT_TAB_KEYS } from "./_components/clientTabKeys"
 import { OverviewPanel } from "./_components/OverviewPanel"
 import { ActivityTimelinePanel } from "./_components/ActivityTimelinePanel"
 import { ProjectsPanel } from "./_components/ProjectsPanel"
 import { DocumentsPanel } from "./_components/DocumentsPanel"
 
 export const dynamic = "force-dynamic"
-
-const TAB_KEYS: ReadonlyArray<ClientTabKey> = ["prehled", "aktivita", "projekty", "dokumenty"]
 
 interface KlientDetailPageProps {
   params: Promise<{ orgSlug: string; id: string }>
@@ -57,7 +56,7 @@ export default async function KlientDetailPage({ params, searchParams }: KlientD
   const tabParam = Array.isArray(resolvedSearchParams.tab)
     ? resolvedSearchParams.tab[0]
     : resolvedSearchParams.tab
-  const initialTab = TAB_KEYS.find((key) => key === tabParam) ?? "prehled"
+  const initialTab = CLIENT_TAB_KEYS.find((key) => key === tabParam) ?? "prehled"
 
   const clientHistory = buildClientHistoryItems(await listAuditForClient(ctx.scope.orgId, id, 8))
   const historyHref = orgHref(ctx.org.slug, "/nastaveni?tab=historie")

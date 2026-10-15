@@ -7,6 +7,7 @@ import {
   userSavedViews,
 } from "@/lib/db/schema/userPersonalization"
 import { createId } from "@/lib/ids"
+import { isOneOf } from "@/lib/literals"
 import {
   RECENT_ITEM_TYPES,
   type PinnedClient,
@@ -21,7 +22,7 @@ const PIN_LIMIT = 12
 const VIEW_LIMIT = 20
 
 const isRecentItemType = (value: string): value is RecentItemType =>
-  (RECENT_ITEM_TYPES as readonly string[]).includes(value)
+  isOneOf(RECENT_ITEM_TYPES, value)
 
 export interface RecordRecentItemInput {
   itemType: RecentItemType

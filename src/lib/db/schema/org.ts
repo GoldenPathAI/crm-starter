@@ -1,8 +1,7 @@
 import { text, timestamp, uniqueIndex } from "drizzle-orm/pg-core"
 import { users } from "./auth"
+import type { OrgRole } from "@/core/types/crm.types"
 import { crmSchema } from "./schema"
-
-type OrgRole = "owner" | "admin" | "member"
 
 export const organizations = crmSchema.table("organizations", {
   id: text("id").primaryKey(),

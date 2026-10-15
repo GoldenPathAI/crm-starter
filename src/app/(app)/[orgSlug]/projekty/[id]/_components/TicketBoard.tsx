@@ -16,7 +16,7 @@ import { Check, ListChecks, MoreHorizontal, Plus } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import { EmptyState } from "@/app/_ui/EmptyState"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useTaskDetail } from "@/app/_components/task-detail/TaskDetailProvider"
 import { AvatarStack } from "@/app/_components/AvatarStack"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -169,7 +169,7 @@ export function TicketBoard({
       const result = await changeTicketStatusAction(orgSlug, { ticketId, status, projectId })
       if (result.status === "error") {
         setLocalTickets(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -206,7 +206,7 @@ export function TicketBoard({
       const result = await reorderTicketAction(orgSlug, { ticketId, status, orderedIds, projectId })
       if (result.status === "error") {
         setLocalTickets(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

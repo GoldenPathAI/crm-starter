@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { Input } from "@/app/_ui/Input"
 import { Label } from "@/app/_ui/Label"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { authClient } from "@/lib/auth/authClient"
 
 export function ProfileCard({ name, email }: { name: string; email: string }) {
@@ -34,12 +34,12 @@ export function ProfileCard({ name, email }: { name: string; email: string }) {
     startTransition(async () => {
       const result = await authClient.updateUser({ name: trimmed })
       if (result.error !== null) {
-        toast({ variant: "error", title: "Jméno se nepodařilo uložit" })
+        toast({ variant: ToastVariant.Error, title: "Jméno se nepodařilo uložit" })
 
         return
       }
 
-      toast({ variant: "success", title: "Jméno uloženo" })
+      toast({ variant: ToastVariant.Success, title: "Jméno uloženo" })
       setEditing(false)
       router.refresh()
     })

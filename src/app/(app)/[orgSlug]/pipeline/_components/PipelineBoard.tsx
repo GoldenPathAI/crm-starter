@@ -32,7 +32,7 @@ import { Button } from "@/app/_ui/Button"
 import { Dialog, DialogContent } from "@/app/_ui/Dialog"
 import { Textarea } from "@/app/_ui/Textarea"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { cn } from "@/lib/cn"
 import { formatCzechDate } from "@/lib/dates"
@@ -371,7 +371,7 @@ export function PipelineBoard({
     startTransition(async () => {
       const result = await moveDealStageAction(orgSlug, dealId, toStage)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setBoard(previous)
       }
     })
@@ -387,7 +387,7 @@ export function PipelineBoard({
       if (result.status === "success") {
         toastWithUndo(result, () => router.refresh())
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setBoard(previous)
       }
     })
@@ -408,7 +408,7 @@ export function PipelineBoard({
     }
 
     if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
       setBoard(previous)
     }
 
@@ -430,7 +430,7 @@ export function PipelineBoard({
     }
 
     if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
       setBoard(previous)
     }
 
@@ -453,7 +453,7 @@ export function PipelineBoard({
     if (result.status === "success") {
       toastWithUndo(result, () => router.refresh())
     } else if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
       setBoard(previous)
     }
   }
@@ -465,7 +465,7 @@ export function PipelineBoard({
     startTransition(async () => {
       const result = await updateDealNextStepAction(orgSlug, dealId, trimmed)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setBoard(previous)
       }
     })
@@ -481,7 +481,7 @@ export function PipelineBoard({
     startTransition(async () => {
       const result = await setDealAssigneesAction(orgSlug, dealId, userIds)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setBoard(previous)
       }
     })
@@ -560,7 +560,7 @@ export function PipelineBoard({
     startTransition(async () => {
       const result = await reorderDealAction(orgSlug, dealId, toStage, orderedIds)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
         setBoard(previous)
       }
     })

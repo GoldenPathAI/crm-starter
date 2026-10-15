@@ -18,6 +18,7 @@ import { assertValidValue, loadOrgEnums } from "@/lib/crm/enums/service"
 import { todayIso } from "@/lib/dates"
 import { config } from "@/lib/config"
 import type { Paginated, SortOption } from "@/core/types/query.types"
+import type { ClientGroupField, ClientSortField } from "@/core/listFields"
 import type {
   Activity,
   Client,
@@ -46,9 +47,6 @@ export interface ClientListItem extends Client {
   overdueTicketsCount: number
   primaryPerson: Person | null
 }
-
-export type ClientSortField = "name" | "mrr" | "lastContactAt" | "pipeline"
-export type ClientGroupField = "status" | "service" | "industry"
 
 export interface ClientListFilters {
   statuses?: ClientStatus[]

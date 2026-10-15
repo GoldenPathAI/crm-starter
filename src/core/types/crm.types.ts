@@ -1,10 +1,22 @@
 import type { CrmDbc } from "@/lib/db/client";
+import { isOneOf } from "@/lib/literals";
 
 // Enum values are per-organization rows in crm.enum_options. The string aliases stay
 // for readability, but the real contract is runtime validation against the org's
 // options (assertValidValue) plus branching on option.semantic, never value literals.
-export type ColorToken =
-  "slate" | "blue" | "green" | "orange" | "red" | "purple" | "teal" | "indigo" | "cyan";
+// Stored in crm.enum_options.color, so the values keep their spelling.
+export const COLOR_TOKENS = [
+  "slate",
+  "blue",
+  "green",
+  "orange",
+  "red",
+  "purple",
+  "teal",
+  "indigo",
+  "cyan",
+] as const;
+export type ColorToken = (typeof COLOR_TOKENS)[number];
 
 export type DealStage = string;
 export type ClientStatus = string;
@@ -23,19 +35,22 @@ export type RapportEntryKind = string;
 export const TICKET_RECURRENCE_VALUES = ["weekly", "biweekly", "monthly", "quarterly"] as const;
 export type TicketRecurrence = (typeof TICKET_RECURRENCE_VALUES)[number];
 export const isTicketRecurrence = (value: string): value is TicketRecurrence =>
-  (TICKET_RECURRENCE_VALUES as readonly string[]).includes(value);
+  isOneOf(TICKET_RECURRENCE_VALUES, value);
 
-export type EnumKind =
-  | "deal_stage"
-  | "client_status"
-  | "service_kind"
-  | "project_status"
-  | "ticket_status"
-  | "ticket_priority"
-  | "doc_kind"
-  | "activity_type"
-  | "person_kind"
-  | "rapport_entry_kind";
+// Stored in crm.enum_options.kind.
+export const ENUM_KINDS = [
+  "deal_stage",
+  "client_status",
+  "service_kind",
+  "project_status",
+  "ticket_status",
+  "ticket_priority",
+  "doc_kind",
+  "activity_type",
+  "person_kind",
+  "rapport_entry_kind",
+] as const;
+export type EnumKind = (typeof ENUM_KINDS)[number];
 
 export interface EnumOption {
   id: string;
@@ -59,7 +74,10 @@ export interface OrgScope {
   db?: CrmDbc;
 }
 
-export type OrgRole = "owner" | "admin" | "member";
+// Stored by the better-auth organization plugin in crm.organization_members.role.
+export const ORG_ROLES = ["owner", "admin", "member"] as const;
+export type OrgRole = (typeof ORG_ROLES)[number];
+export const isOrgRole = (value: string): value is OrgRole => isOneOf(ORG_ROLES, value);
 
 export interface OrgMember {
   userId: string;
@@ -216,7 +234,8 @@ export interface Doc {
 
 // Notification center entity refs. The bell maps these to an in-app link; a value
 // outside the union stays a plain non-clickable row.
-export type NotificationEntityType = "ticket" | "deal" | "client" | "project";
+export const NOTIFICATION_ENTITY_TYPES = ["ticket", "deal", "client", "project"] as const;
+export type NotificationEntityType = (typeof NOTIFICATION_ENTITY_TYPES)[number];
 
 export interface Notification {
   id: string;

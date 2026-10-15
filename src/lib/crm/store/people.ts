@@ -5,6 +5,7 @@ import { clients, people, rapportEntries } from "@/lib/db/schema/crm"
 import { createId } from "@/lib/ids"
 import { toPerson } from "@/lib/crm/store/mappers"
 import { SortDirection } from "@/core/types/query.types"
+import type { RapportSortField } from "@/core/listFields"
 import type { CrmDbc } from "@/lib/db/client"
 import type { OrgScope, Person } from "@/core/types/crm.types"
 
@@ -34,8 +35,6 @@ export interface PersonWithRapport extends Person {
   entryCount: number
   lastEntryAt?: string
 }
-
-export type RapportSortField = "name" | "createdAt" | "lastEntryAt"
 
 export interface RapportPeopleQuery {
   kinds?: string[]

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { authClient } from "@/lib/auth/authClient"
 
 const MIN_PASSWORD_LENGTH = 8
@@ -62,7 +62,7 @@ export function PasswordCard() {
 
     form.reset()
     toast({
-      variant: "success",
+      variant: ToastVariant.Success,
       title: "Heslo změněno",
       description: "Ostatní zařízení byla odhlášena",
     })

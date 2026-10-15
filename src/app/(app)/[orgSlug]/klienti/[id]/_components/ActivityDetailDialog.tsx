@@ -19,7 +19,7 @@ import { Input } from "@/app/_ui/Input"
 import { Markdown } from "@/app/_ui/Markdown"
 import { Spinner } from "@/app/_ui/Spinner"
 import { Textarea } from "@/app/_ui/Textarea"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -142,7 +142,7 @@ function ActivityDetailFooter({
         toastWithUndo(result, () => router.refresh())
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -184,11 +184,11 @@ function EditActivityDialog({
 
   useEffect(() => {
     if (state.status === "success") {
-      toast({ variant: "success", title: state.message })
+      toast({ variant: ToastVariant.Success, title: state.message })
       setOpen(false)
       router.refresh()
     } else if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast, router])
 

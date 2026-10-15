@@ -5,7 +5,7 @@ import Link from "next/link"
 import { FolderPlus } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import {
   ProjectFormFields,
   emptyProjectValues,
@@ -69,7 +69,7 @@ export function NewProjectForm({ clientOptions, statusOptions, prefill, dealId }
       })
       if (result.status === "error") {
         setError(result.message)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

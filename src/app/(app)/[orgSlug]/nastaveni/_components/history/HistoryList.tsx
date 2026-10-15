@@ -6,7 +6,7 @@ import { History, Undo2 } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import { EmptyState } from "@/app/_ui/EmptyState"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { undoUiAction } from "@/app/_lib/undoActions"
 import { cn } from "@/lib/cn"
 import { HistoryFilter, type EntityFilterOption } from "./HistoryFilter"
@@ -66,10 +66,10 @@ function HistoryBatchCard({ orgSlug, batch }: { orgSlug: string; batch: HistoryB
     startTransition(async () => {
       const result = await undoUiAction(orgSlug, requestId)
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

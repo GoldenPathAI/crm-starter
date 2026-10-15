@@ -16,12 +16,11 @@ import { Input } from "@/app/_ui/Input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
 import { Spinner } from "@/app/_ui/Spinner"
 import { Textarea } from "@/app/_ui/Textarea"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { addClientActivityAction } from "../actions"
-
-type ActivityKind = "hovor" | "schuzka" | "poznamka"
+import { ACTIVITY_KINDS, type ActivityKind } from "../_lib/activityKinds"
 
 interface DialogCopy {
   label: string
@@ -67,8 +66,6 @@ const COPY: Readonly<Record<ActivityKind, DialogCopy>> = {
   },
 }
 
-const MENU_KINDS: ReadonlyArray<ActivityKind> = ["hovor", "schuzka", "poznamka"]
-
 const CardIconButton = forwardRef<
   HTMLButtonElement,
   { label: string } & React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -108,7 +105,7 @@ export function LogActivityMenu({ clientId }: { clientId: string }) {
           <CardIconButton label="Zalogovat aktivitu" />
         </PopoverTrigger>
         <PopoverContent align="end" className="w-56">
-          {MENU_KINDS.map((kind) => {
+          {ACTIVITY_KINDS.map((kind) => {
             const copy = COPY[kind]
             const Icon = copy.icon
 
@@ -168,11 +165,11 @@ function ActivityDialog({
 
   useEffect(() => {
     if (state.status === "success") {
-      toast({ variant: "success", title: state.message })
+      toast({ variant: ToastVariant.Success, title: state.message })
       onOpenChange(false)
       formRef.current?.reset()
     } else if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast, onOpenChange])
 

@@ -30,7 +30,7 @@ import { Button } from "@/app/_ui/Button"
 import { Checkbox } from "@/app/_ui/Checkbox"
 import { DatePicker } from "@/app/_ui/DatePicker"
 import { EmptyState } from "@/app/_ui/EmptyState"
-import { Input } from "@/app/_ui/Input"
+import { Input, InputVariant } from "@/app/_ui/Input"
 import { Kbd } from "@/app/_ui/Kbd"
 import { Pagination } from "@/app/_ui/Pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
@@ -758,7 +758,7 @@ export function Browser<R>({
           <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-soft" />
           <Input
             ref={searchRef}
-            variant="search"
+            variant={InputVariant.Search}
             value={localSearch}
             onChange={(event) => setLocalSearch(event.target.value)}
             placeholder={searchPlaceholder}

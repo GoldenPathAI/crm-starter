@@ -4,7 +4,7 @@ import { useOptimistic, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Check, ChevronDown } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { ClientStatus } from "@/core/types/crm.types"
@@ -40,7 +40,7 @@ export function ClientStatusControl({ clientId, status, statusView }: ClientStat
       if (result.status === "success") {
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

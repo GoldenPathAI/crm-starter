@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -32,7 +32,7 @@ export function NewClientForm({ statusView, serviceView }: NewClientFormProps) {
 
   useEffect(() => {
     if (state.status === "error") {
-      toast({ variant: "error", title: state.message })
+      toast({ variant: ToastVariant.Error, title: state.message })
     }
   }, [state, toast])
 

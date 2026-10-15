@@ -16,6 +16,8 @@ import {
   parseServices,
 } from "../_lib/clientFormParse"
 import type { ActionState } from "@/app/_lib/actionState"
+import { isOneOf } from "@/lib/literals"
+import { ACTIVITY_KINDS, type ActivityKind } from "./_lib/activityKinds"
 
 const errorMessage = (error: unknown, fallback: string): string =>
   error instanceof Error ? error.message : fallback
@@ -35,7 +37,7 @@ export async function addClientActivityAction(
     return { status: "error", message: "Chybí identifikátor klienta." }
   }
 
-  if (type !== "poznamka" && type !== "hovor" && type !== "schuzka") {
+  if (typeof type !== "string" || !isOneOf(ACTIVITY_KINDS, type)) {
     return { status: "error", message: "Neplatný typ aktivity." }
   }
 
@@ -46,7 +48,7 @@ export async function addClientActivityAction(
   const body =
     typeof bodyValue === "string" && bodyValue.trim().length > 0 ? bodyValue.trim() : undefined
 
-  const SUCCESS_MESSAGE: Readonly<Record<typeof type, string>> = {
+  const SUCCESS_MESSAGE: Readonly<Record<ActivityKind, string>> = {
     hovor: "Hovor byl zalogován.",
     schuzka: "Schůzka byla zalogována.",
     poznamka: "Poznámka byla přidána.",

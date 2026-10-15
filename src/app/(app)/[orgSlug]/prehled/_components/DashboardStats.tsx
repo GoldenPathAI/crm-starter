@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { animate, motion, useReducedMotion } from "framer-motion"
 import { Repeat, TrendingUp, Users, type LucideIcon } from "lucide-react"
-import { StatCard, type StatHue } from "@/app/_ui/Stat"
+import { StatCard, StatHue } from "@/app/_ui/Stat"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
 import { formatCzk } from "./format"
@@ -78,7 +78,7 @@ export function DashboardStats({
       key: "clients",
       label: "Aktivní klienti",
       value: activeClientsCount,
-      hue: "green",
+      hue: StatHue.Green,
       icon: Users,
       href: orgHref(orgSlug, "/klienti?status=aktivni"),
     },
@@ -87,7 +87,7 @@ export function DashboardStats({
       label: "MRR",
       value: mrrCzk,
       hint: `Ročně ${formatCzk(mrrCzk * 12)}`,
-      hue: "teal",
+      hue: StatHue.Teal,
       icon: Repeat,
       format: formatCzk,
       href: orgHref(orgSlug, "/klienti"),
@@ -97,7 +97,7 @@ export function DashboardStats({
       label: "Otevřená pipeline",
       value: openPipelineCzk,
       hint: `${openDealsCount} ${dealWord(openDealsCount)}, vážená ${formatCzk(weightedPipelineCzk)}`,
-      hue: "blue",
+      hue: StatHue.Blue,
       icon: TrendingUp,
       format: formatCzk,
       href: orgHref(orgSlug, "/pipeline"),

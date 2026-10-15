@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/app/_ui/Dialog"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import type { EnumOption, Project } from "@/core/types/crm.types"
 import {
@@ -97,12 +97,12 @@ export function ProjectActions({ project, clientOptions, statusOptions, ticketCo
         budgetCzk: parseBudget(values.budget),
       })
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         setOpen(false)
         router.refresh()
       } else if (result.status === "error") {
         setError(result.message)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -114,7 +114,7 @@ export function ProjectActions({ project, clientOptions, statusOptions, ticketCo
         toastWithUndo(result, () => router.refresh())
         router.push(orgHref(orgSlug, "/projekty"))
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

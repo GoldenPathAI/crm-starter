@@ -5,7 +5,7 @@ import { Pencil } from "lucide-react"
 import { ExpandToggle } from "@/app/_ui/ExpandableText"
 import { Input } from "@/app/_ui/Input"
 import { Textarea } from "@/app/_ui/Textarea"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { idleState } from "@/app/_lib/actionState"
 import { useClampedOverflow } from "@/app/_lib/useClampedOverflow"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -79,7 +79,7 @@ export function ClientFieldEditor({
       const result = await updateClientFieldAction(orgSlug, idleState, formData)
       if (result.status === "error") {
         setCurrent(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

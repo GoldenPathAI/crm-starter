@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { CheckCircle2 } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { changeProjectStatusAction } from "../actions"
 
@@ -25,10 +25,10 @@ export function CompleteProjectButton({
     startTransition(async () => {
       const result = await changeProjectStatusAction(orgSlug, { projectId, status: doneStatus })
       if (result.status === "success") {
-        toast({ variant: "success", title: "Projekt dokončen." })
+        toast({ variant: ToastVariant.Success, title: "Projekt dokončen." })
         router.refresh()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

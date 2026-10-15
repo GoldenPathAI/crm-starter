@@ -3,7 +3,8 @@ import { setTicketAssignees } from "@/lib/crm/store/assignees"
 import { createTicket, listTickets } from "@/lib/crm/store/tickets"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { buildTicketListQuery } from "@/app/api/internal/crm/_lib/query"
-import { listTicketsDue } from "@/app/api/internal/crm/_lib/reads"
+import { listTicketsDue, TICKET_DUE_WINDOWS } from "@/app/api/internal/crm/_lib/reads"
+import { isOneOf } from "@/lib/literals"
 import { resolveAssigneeUserIds } from "@/app/api/internal/crm/_lib/assignees"
 import { resolveOrgScope } from "@/app/api/internal/crm/_lib/orgScope"
 import { badRequest, readJsonObject, created, errorResponse, ok } from "@/app/api/internal/crm/_lib/http"
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest, context: Context) {
     const scope = await resolveOrgScope(orgSlug)
     const due = request.nextUrl.searchParams.get("due")?.trim()
     if (due !== undefined && due.length > 0) {
-      if (due !== "dnes" && due !== "tyden") {
+      if (!isOneOf(TICKET_DUE_WINDOWS, due)) {
         return badRequest("Parametr due musí být dnes nebo tyden.")
       }
 

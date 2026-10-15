@@ -7,15 +7,11 @@ import {
   single,
   type BrowserSearchParams,
 } from "@/app/_components/browser/queryHelpers"
-import type { RapportPeopleQuery, RapportSortField } from "@/lib/crm/store/people"
+import type { RapportPeopleQuery } from "@/lib/crm/store/people"
+import { RAPPORT_SORT_FIELDS } from "@/core/listFields"
 
 export type RaportSearchParams = BrowserSearchParams
 
-const RAPPORT_SORT_FIELDS: ReadonlyArray<RapportSortField> = [
-  "name",
-  "createdAt",
-  "lastEntryAt",
-]
 
 export const RAPPORT_GROUP_FIELDS = ["kind", "client"] as const
 export type RaportGroupField = (typeof RAPPORT_GROUP_FIELDS)[number]

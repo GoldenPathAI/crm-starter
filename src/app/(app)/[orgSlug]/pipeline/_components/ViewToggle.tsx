@@ -4,8 +4,7 @@ import { useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Columns3, List } from "lucide-react"
 import { cn } from "@/lib/cn"
-
-type PipelineView = "kanban" | "list"
+import type { PipelineView } from "../_lib/listQuery"
 
 const options: Array<{ value: PipelineView; label: string; icon: typeof List }> = [
   { value: "kanban", label: "Kanban", icon: Columns3 },

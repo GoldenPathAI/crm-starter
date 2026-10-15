@@ -1,7 +1,7 @@
 "use client"
 
 import { useOrg } from "@/app/_components/org/OrgProvider"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { undoUiAction } from "@/app/_lib/undoActions"
 import type { ActionState } from "@/app/_lib/actionState"
 
@@ -22,7 +22,7 @@ export function useUndoToast(): UndoToast {
   const toastWithUndo = (result: SuccessState, onReverted?: () => void): void => {
     const requestId = result.requestId
     toast({
-      variant: "success",
+      variant: ToastVariant.Success,
       title: result.message,
       action:
         requestId !== undefined
@@ -32,10 +32,10 @@ export function useUndoToast(): UndoToast {
                 void (async () => {
                   const undo = await undoUiAction(orgSlug, requestId)
                   if (undo.status === "success") {
-                    toast({ variant: "success", title: undo.message })
+                    toast({ variant: ToastVariant.Success, title: undo.message })
                     onReverted?.()
                   } else if (undo.status === "error") {
-                    toast({ variant: "error", title: undo.message })
+                    toast({ variant: ToastVariant.Error, title: undo.message })
                   }
                 })()
               },

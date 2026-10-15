@@ -1,11 +1,16 @@
-export type ThemePreference = "light" | "dark" | "system"
+import { isOneOf } from "@/lib/literals"
+
+// Stored in localStorage and read by the inline init script, so the spelling is fixed.
+export const THEME_PREFERENCES = ["light", "dark", "system"] as const
+
+export type ThemePreference = (typeof THEME_PREFERENCES)[number]
 
 export const THEME_STORAGE_KEY = "crm-theme"
 
 export const THEME_CHANGE_EVENT = "crm-theme-change"
 
-export const isThemePreference = (value: unknown): value is ThemePreference =>
-  value === "light" || value === "dark" || value === "system"
+export const isThemePreference = (value: string | null): value is ThemePreference =>
+  value !== null && isOneOf(THEME_PREFERENCES, value)
 
 export const resolveTheme = (
   preference: ThemePreference,

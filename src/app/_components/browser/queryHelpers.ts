@@ -1,4 +1,5 @@
 import { SortDirection } from "@/core/types/query.types"
+import { isOneOf } from "@/lib/literals"
 
 // Shared searchParams parsing primitives. Every list surface parses its URL the
 // same way: single scalars, comma-or-repeat multi-values, enum coercion, page.
@@ -13,7 +14,7 @@ export const matchEnum = <T extends string>(
   value: string | undefined,
   allowed: readonly T[],
 ): T | undefined =>
-  value !== undefined ? allowed.find((candidate) => candidate === value) : undefined
+  value !== undefined && isOneOf(allowed, value) ? value : undefined
 
 export const cleanText = (value: string | undefined): string | undefined => {
   if (value === undefined) {
@@ -38,9 +39,7 @@ export const enumList = <T extends string>(
   value: string | string[] | undefined,
   allowed: readonly T[],
 ): T[] =>
-  cleanList(value).filter((entry): entry is T =>
-    allowed.some((candidate) => candidate === entry),
-  )
+  cleanList(value).filter((entry): entry is T => isOneOf(allowed, entry))
 
 export const cleanIsoDate = (value: string | undefined): string | undefined => {
   const trimmed = cleanText(value)

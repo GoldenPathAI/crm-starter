@@ -22,7 +22,7 @@ import { DescriptionEditor } from "@/app/_ui/DescriptionEditor"
 import { Dialog, DialogContent, DialogTitle } from "@/app/_ui/Dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { cn } from "@/lib/cn"
 import type { OrgMember, TicketRecurrence, TicketStatus } from "@/core/types/crm.types"
 import { HistorySection } from "@/app/_components/HistorySection"
@@ -216,7 +216,7 @@ function EditView({
       const result = await patchTaskAction(orgSlug, { ticketId, patch })
       if (result.status === "error") {
         setData(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -257,7 +257,7 @@ function EditView({
       const result = await setTicketAssigneesAction(orgSlug, ticketId, userIds)
       if (result.status === "error") {
         setData(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -278,7 +278,7 @@ function EditView({
       const result = await toggleSubtaskAction(orgSlug, { subtaskId })
       if (result.status === "error") {
         setData(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -307,7 +307,7 @@ function EditView({
                 subtasks: current.subtasks.filter((subtask) => subtask.id !== tempId),
               },
         )
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
 
         return
       }
@@ -327,7 +327,7 @@ function EditView({
       const result = await deleteTaskAction(orgSlug, { ticketId: subtaskId })
       if (result.status === "error") {
         setData(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       } else if (result.status === "success") {
         toastWithUndo(result, () => void reload())
       }
@@ -340,7 +340,7 @@ function EditView({
       toastWithUndo(result, () => router.refresh())
       onClose()
     } else if (result.status === "error") {
-      toast({ variant: "error", title: result.message })
+      toast({ variant: ToastVariant.Error, title: result.message })
     }
   }
 
@@ -632,10 +632,10 @@ function CreateView({
         recurrence: draft.recurrence ?? "",
       })
       if (result.status === "success") {
-        toast({ variant: "success", title: result.message })
+        toast({ variant: ToastVariant.Success, title: result.message })
         onClose()
       } else if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

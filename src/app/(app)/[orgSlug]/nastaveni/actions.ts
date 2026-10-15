@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
-import type { OrgRole } from "@/core/types/crm.types"
+import { isOrgRole, type OrgRole } from "@/core/types/crm.types"
 import { auth, takeInvitationEmailOutcome } from "@/lib/auth/auth"
 import { requireOrgContext, requireRole } from "@/lib/auth/orgContext"
 import {
@@ -14,11 +14,7 @@ import { orgHref } from "@/lib/nav"
 import type { ActionState } from "@/app/_lib/actionState"
 
 function parseRole(value: string): OrgRole | null {
-  if (value === "owner" || value === "admin" || value === "member") {
-    return value
-  }
-
-  return null
+  return isOrgRole(value) ? value : null
 }
 
 function errorMessage(error: unknown, fallback: string): string {

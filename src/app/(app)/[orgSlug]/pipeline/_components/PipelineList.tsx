@@ -11,7 +11,7 @@ import type {
   BrowserFilterOption,
   BrowserGroupConfig,
 } from "@/app/_components/browser/types"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { InlineAssigneeCell } from "@/app/_components/InlineAssigneeCell"
 import { orgHref } from "@/lib/nav"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -28,9 +28,8 @@ import {
   setDealAssigneesAction,
 } from "../actions"
 import { formatCzk, formatPercent } from "../_lib/format"
+import type { DealListGroup, DealListSortField } from "../_lib/listQuery"
 import { DealDetail, LostDialog, WonDialog } from "./dealDetail"
-
-export type DealListSortField = "hodnota" | "dni" | "uzavreni"
 
 export interface DealListState {
   stages: string[]
@@ -39,7 +38,7 @@ export interface DealListState {
   sortField?: DealListSortField
   sortDir: SortDirection
   // Active group levels as URL values, primary first; empty = ungrouped.
-  groups: ("faze" | "klient")[]
+  groups: DealListGroup[]
 }
 
 interface PipelineListProps {
@@ -122,7 +121,7 @@ export function PipelineList({
     void (async () => {
       const result = await moveDealStageAction(orgSlug, dealId, toStage)
       toast({
-        variant: result.status === "success" ? "success" : "error",
+        variant: result.status === "success" ? ToastVariant.Success : ToastVariant.Error,
         title: result.status === "idle" ? undefined : result.message,
       })
       if (result.status === "success") {
@@ -161,7 +160,7 @@ export function PipelineList({
 
     const result = await moveDealStageAction(orgSlug, dealId, wonStage)
     toast({
-      variant: result.status === "success" ? "success" : "error",
+      variant: result.status === "success" ? ToastVariant.Success : ToastVariant.Error,
       title: result.status === "idle" ? undefined : result.message,
     })
     if (result.status === "success") {
@@ -176,7 +175,7 @@ export function PipelineList({
   const runLost = async (dealId: string, reason: string): Promise<boolean> => {
     const result = await markDealLostAction(orgSlug, dealId, reason)
     toast({
-      variant: result.status === "success" ? "success" : "error",
+      variant: result.status === "success" ? ToastVariant.Success : ToastVariant.Error,
       title: result.status === "idle" ? undefined : result.message,
     })
     if (result.status === "success") {
@@ -191,7 +190,7 @@ export function PipelineList({
   const runDelete = async (dealId: string): Promise<void> => {
     const result = await deleteDealAction(orgSlug, dealId)
     toast({
-      variant: result.status === "success" ? "success" : "error",
+      variant: result.status === "success" ? ToastVariant.Success : ToastVariant.Error,
       title: result.status === "idle" ? undefined : result.message,
     })
     if (result.status === "success") {
@@ -204,7 +203,7 @@ export function PipelineList({
     void (async () => {
       const result = await setDealAssigneesAction(orgSlug, dealId, userIds)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
 
         return
       }

@@ -9,8 +9,8 @@ import { DescriptionEditor } from "@/app/_ui/DescriptionEditor"
 import { Dialog, DialogContent, DialogTitle } from "@/app/_ui/Dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
-import { crmApi } from "@/app/_lib/apiClient"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
+import { crmApi, HttpMethod } from "@/app/_lib/apiClient"
 import { badgeStyleFor, styleMap } from "@/lib/crm/config"
 import { cn } from "@/lib/cn"
 import { formatCzechDate, todayIso } from "@/lib/dates"
@@ -67,11 +67,11 @@ export function PersonRapportDialog({
   }, [person])
 
   const reloadEntries = useCallback(() => {
-    void crmApi<RapportEntry[]>(orgSlug, "GET", `/people/${person.id}/rapport`)
+    void crmApi<RapportEntry[]>(orgSlug, HttpMethod.GET, `/people/${person.id}/rapport`)
       .then(setEntries)
       .catch((error: unknown) => {
         toast({
-          variant: "error",
+          variant: ToastVariant.Error,
           title: error instanceof Error ? error.message : "Raport se nepodařilo načíst.",
         })
       })
@@ -95,12 +95,12 @@ export function PersonRapportDialog({
       ...(patch.role !== undefined ? { role: patch.role ?? undefined } : {}),
       ...(patch.note !== undefined ? { note: patch.note ?? undefined } : {}),
     }))
-    void crmApi<Person>(orgSlug, "PATCH", `/people/${person.id}`, { body: patch })
+    void crmApi<Person>(orgSlug, HttpMethod.PATCH, `/people/${person.id}`, { body: patch })
       .then(() => onChanged())
       .catch((error: unknown) => {
         setDraft(person)
         toast({
-          variant: "error",
+          variant: ToastVariant.Error,
           title: error instanceof Error ? error.message : "Změnu se nepodařilo uložit.",
         })
       })
@@ -108,13 +108,13 @@ export function PersonRapportDialog({
 
   const remove = async (): Promise<void> => {
     try {
-      await crmApi(orgSlug, "DELETE", `/people/${person.id}`)
+      await crmApi(orgSlug, HttpMethod.DELETE, `/people/${person.id}`)
       onOpenChange(false)
       onChanged()
       onDeleted?.()
     } catch (error) {
       toast({
-        variant: "error",
+        variant: ToastVariant.Error,
         title: error instanceof Error ? error.message : "Osobu se nepodařilo smazat.",
       })
     }
@@ -563,14 +563,14 @@ function EntriesSection({
 
     startSubmit(async () => {
       try {
-        await crmApi(orgSlug, "POST", `/people/${personId}/rapport`, {
+        await crmApi(orgSlug, HttpMethod.POST, `/people/${personId}/rapport`, {
           body: { content: trimmed, kind },
         })
         setContent("")
         onChanged()
       } catch (error) {
         toast({
-          variant: "error",
+          variant: ToastVariant.Error,
           title: error instanceof Error ? error.message : "Záznam se nepodařilo uložit.",
         })
       }
@@ -578,11 +578,11 @@ function EntriesSection({
   }
 
   const removeEntry = (id: string): void => {
-    void crmApi(orgSlug, "DELETE", `/rapport-entries/${id}`)
+    void crmApi(orgSlug, HttpMethod.DELETE, `/rapport-entries/${id}`)
       .then(() => onChanged())
       .catch((error: unknown) => {
         toast({
-          variant: "error",
+          variant: ToastVariant.Error,
           title: error instanceof Error ? error.message : "Záznam se nepodařilo smazat.",
         })
       })

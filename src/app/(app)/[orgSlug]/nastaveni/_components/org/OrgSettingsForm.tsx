@@ -8,7 +8,7 @@ import { Button } from "@/app/_ui/Button"
 import { Input } from "@/app/_ui/Input"
 import { Label } from "@/app/_ui/Label"
 import { Spinner } from "@/app/_ui/Spinner"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { updateOrganizationNameAction, updateOrgSettingsAction } from "./actions"
 
 export function OrgSettingsForm({
@@ -72,10 +72,10 @@ function NameField({
     startTransition(async () => {
       const result = await updateOrganizationNameAction(orgSlug, trimmed)
       if (result.status === "success") {
-        onToast({ variant: "success", title: result.message })
+        onToast({ variant: ToastVariant.Success, title: result.message })
         setEditing(false)
       } else if (result.status === "error") {
-        onToast({ variant: "error", title: result.message })
+        onToast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -155,9 +155,9 @@ function SettingsFields({
     startTransition(async () => {
       const result = await updateOrgSettingsAction(orgSlug, { staleDealDays: parsedDays })
       if (result.status === "success") {
-        onToast({ variant: "success", title: result.message })
+        onToast({ variant: ToastVariant.Success, title: result.message })
       } else if (result.status === "error") {
-        onToast({ variant: "error", title: result.message })
+        onToast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }

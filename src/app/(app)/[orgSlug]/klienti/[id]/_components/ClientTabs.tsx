@@ -2,8 +2,7 @@
 
 import { useState, type ReactNode } from "react"
 import { cn } from "@/lib/cn"
-
-export type ClientTabKey = "prehled" | "aktivita" | "projekty" | "dokumenty"
+import type { ClientTabKey } from "./clientTabKeys"
 
 const TABS: ReadonlyArray<{ key: ClientTabKey; label: string }> = [
   { key: "prehled", label: "Přehled" },

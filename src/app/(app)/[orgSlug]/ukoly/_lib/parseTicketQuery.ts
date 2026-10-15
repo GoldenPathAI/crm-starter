@@ -3,20 +3,22 @@ import { parseGroupLevels } from "@/app/_components/browser/queryHelpers"
 
 export type TicketSearchParams = Record<string, string | string[] | undefined>
 
-export type TicketTableSortField = "due" | "title" | "priority"
+const SORT_FIELDS = ["due", "title", "priority"] as const
+
+export type TicketTableSortField = (typeof SORT_FIELDS)[number]
 
 // The primary daily lens over the ticket list. Presets partition tickets by
 // urgency so the morning question "na cem delam dnes" is answered in zero clicks.
-export type TicketView = "otevrene" | "po-terminu" | "dnes" | "tyden" | "bez-terminu" | "hotove"
-
-export const TICKET_VIEWS: ReadonlyArray<TicketView> = [
+export const TICKET_VIEWS = [
   "otevrene",
   "po-terminu",
   "dnes",
   "tyden",
   "bez-terminu",
   "hotove",
-]
+] as const
+
+export type TicketView = (typeof TICKET_VIEWS)[number]
 
 export const DEFAULT_TICKET_VIEW: TicketView = "otevrene"
 
@@ -35,20 +37,13 @@ export interface TicketQueryState {
   page: number
 }
 
-export type TicketGroupValue = "status" | "klient" | "priorita" | "resitel"
+export const TICKET_GROUP_VALUES = ["status", "klient", "priorita", "resitel"] as const
 
-export const TICKET_GROUP_VALUES: ReadonlyArray<TicketGroupValue> = [
-  "status",
-  "klient",
-  "priorita",
-  "resitel",
-]
+export type TicketGroupValue = (typeof TICKET_GROUP_VALUES)[number]
 
 export const DEFAULT_TICKET_GROUPS: ReadonlyArray<TicketGroupValue> = ["klient", "resitel"]
 
 export const TICKET_GROUP_MAX_LEVELS = 2
-
-const SORT_FIELDS: ReadonlyArray<TicketTableSortField> = ["due", "title", "priority"]
 
 const single = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value

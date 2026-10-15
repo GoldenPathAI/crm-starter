@@ -2,18 +2,18 @@ import { and, desc, eq, isNull, sql } from "drizzle-orm"
 import { resolveDbc } from "@/lib/crm/store/db"
 import { notifications } from "@/lib/db/schema/notifications"
 import { createId } from "@/lib/ids"
-import type {
-  Notification,
-  NotificationEntityType,
-  OrgScope,
+import {
+  NOTIFICATION_ENTITY_TYPES,
+  type Notification,
+  type NotificationEntityType,
+  type OrgScope,
 } from "@/core/types/crm.types"
+import { isOneOf } from "@/lib/literals"
 
 type NotificationRow = typeof notifications.$inferSelect
 
-const ENTITY_TYPES: readonly NotificationEntityType[] = ["ticket", "deal", "client", "project"]
-
 const asEntityType = (value: string | null): NotificationEntityType | undefined =>
-  ENTITY_TYPES.find((candidate) => candidate === value)
+  value !== null && isOneOf(NOTIFICATION_ENTITY_TYPES, value) ? value : undefined
 
 const toNotification = (row: NotificationRow): Notification => ({
   id: row.id,

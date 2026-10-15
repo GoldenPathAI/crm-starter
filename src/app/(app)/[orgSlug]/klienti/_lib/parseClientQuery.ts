@@ -1,57 +1,18 @@
 import { SortDirection } from "@/core/types/query.types"
-import { parseGroupLevels } from "@/app/_components/browser/queryHelpers"
-import type { ClientGroupField, ClientListFilters, ClientListQuery, ClientSortField } from "@/lib/crm/store/clients"
+import {
+  cleanList,
+  cleanText,
+  matchEnum,
+  parseGroupLevels,
+  parsePage,
+  single,
+} from "@/app/_components/browser/queryHelpers"
+import type { ClientListFilters, ClientListQuery } from "@/lib/crm/store/clients"
+import { CLIENT_GROUP_FIELDS, CLIENT_SORT_FIELDS, type ClientGroupField } from "@/core/listFields"
 
 export type ClientSearchParams = Record<string, string | string[] | undefined>
 
-const CLIENT_SORT_FIELDS: ReadonlyArray<ClientSortField> = [
-  "name",
-  "mrr",
-  "lastContactAt",
-  "pipeline",
-]
-const CLIENT_GROUP_FIELDS: ReadonlyArray<ClientGroupField> = ["status", "service", "industry"]
-
 export const CLIENT_GROUP_MAX_LEVELS = 2
-
-const single = (value: string | string[] | undefined): string | undefined =>
-  Array.isArray(value) ? value[0] : value
-
-const matchEnum = <T extends string>(
-  value: string | undefined,
-  allowed: readonly T[],
-): T | undefined =>
-  value !== undefined ? allowed.find((candidate) => candidate === value) : undefined
-
-const cleanText = (value: string | undefined): string | undefined => {
-  if (value === undefined) {
-    return undefined
-  }
-
-  const trimmed = value.trim()
-
-  return trimmed.length > 0 ? trimmed : undefined
-}
-
-const cleanList = (value: string | string[] | undefined): string[] =>
-  [
-    ...new Set(
-      (Array.isArray(value) ? value : value !== undefined ? [value] : [])
-        .flatMap((entry) => entry.split(","))
-        .map((entry) => entry.trim())
-        .filter((entry) => entry.length > 0),
-    ),
-  ]
-
-const parsePage = (value: string | undefined): number => {
-  if (value === undefined) {
-    return 1
-  }
-
-  const parsed = Number.parseInt(value, 10)
-
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
-}
 
 // Active group levels, primary first. The parse-level default is empty: the
 // bare-URL resting default injects `group=status` through effectiveParams, so

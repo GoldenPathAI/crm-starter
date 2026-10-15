@@ -34,7 +34,7 @@ import { TaskSubtasks } from "@/app/_components/task-detail/TaskSubtasks"
 import { useTaskDetail } from "@/app/_components/task-detail/TaskDetailProvider"
 import { deleteTaskAction, toggleSubtaskAction } from "@/app/_components/task-detail/actions"
 import type { TaskSubtask } from "@/app/_components/task-detail/types"
-import { useToast } from "@/app/_ui/Toast"
+import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { useUndoToast } from "@/app/_lib/useUndoToast"
 import { orgHref } from "@/lib/nav"
 import { DescriptionEditor } from "@/app/_ui/DescriptionEditor"
@@ -146,7 +146,7 @@ export function DealDetail({
     startSave(async () => {
       const result = await updateDealTitleAction(orgSlug, deal.id, title)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -155,7 +155,7 @@ export function DealDetail({
     startSave(async () => {
       const result = await updateDealDescriptionAction(orgSlug, deal.id, description)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -164,7 +164,7 @@ export function DealDetail({
     startSave(async () => {
       const result = await quickEditDealAction(orgSlug, deal.id, patch)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -173,7 +173,7 @@ export function DealDetail({
     startSave(async () => {
       const result = await updateDealNextStepAction(orgSlug, deal.id, nextStep)
       if (result.status === "error") {
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -189,7 +189,7 @@ export function DealDetail({
       const result = await toggleSubtaskAction(orgSlug, { subtaskId: ticketId })
       if (result.status === "error") {
         setTickets(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       }
     })
   }
@@ -210,7 +210,7 @@ export function DealDetail({
         setTickets((current) =>
           current === null ? current : current.filter((t) => t.id !== tempId),
         )
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
 
         return
       }
@@ -230,7 +230,7 @@ export function DealDetail({
       const result = await deleteTaskAction(orgSlug, { ticketId })
       if (result.status === "error") {
         setTickets(previous)
-        toast({ variant: "error", title: result.message })
+        toast({ variant: ToastVariant.Error, title: result.message })
       } else if (result.status === "success") {
         toastWithUndo(result, () => void reloadTickets())
       }

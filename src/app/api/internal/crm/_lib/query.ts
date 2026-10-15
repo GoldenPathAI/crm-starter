@@ -5,7 +5,7 @@ import {
   RAPPORT_SORT_FIELDS,
   TICKET_GROUP_FIELDS,
   TICKET_SORT_FIELDS,
-} from "./enums"
+} from "@/core/listFields"
 import type { OrgEnums } from "@/lib/crm/enums/service"
 import type { ClientListFilters, ClientListQuery } from "@/lib/crm/store/clients"
 import type { RapportPeopleQuery } from "@/lib/crm/store/people"
