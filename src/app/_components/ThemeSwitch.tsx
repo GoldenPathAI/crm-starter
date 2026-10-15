@@ -30,8 +30,8 @@ const readPreference = (): ThemePreference => {
 const applyPreference = (preference: ThemePreference): void => {
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
   const theme = resolveTheme(preference, prefersDark)
+  // color-scheme follows data-theme in globals.css, so the attribute is the only write.
   document.documentElement.setAttribute("data-theme", theme)
-  document.documentElement.style.colorScheme = theme
 }
 
 export function useThemePreference(): {

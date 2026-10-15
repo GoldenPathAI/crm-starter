@@ -51,7 +51,7 @@ const parseDocument = (values: DocumentFormValues): ParsedDocument | null => {
   }
 }
 
-export type PresignUploadResult =
+type PresignUploadResult =
   | { status: "success"; key: string; url: string }
   | { status: "error"; message: string }
 
@@ -87,7 +87,7 @@ export async function presignDocumentUploadAction(
   }
 }
 
-export type PresignDownloadResult =
+type PresignDownloadResult =
   | { status: "success"; url: string }
   | { status: "error"; message: string }
 

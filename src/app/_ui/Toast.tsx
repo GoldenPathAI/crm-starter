@@ -13,6 +13,7 @@ import { createPortal } from "react-dom"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { CheckCircle2, Info, X, XCircle } from "lucide-react"
 import { cn } from "@/lib/cn"
+import { createId } from "@/lib/ids"
 
 export enum ToastVariant {
   Success = "Success",
@@ -33,7 +34,7 @@ interface ToastOptions {
 }
 
 interface ToastItem {
-  id: number
+  id: string
   title?: string
   description?: string
   variant: ToastVariant
@@ -71,7 +72,7 @@ function dismissAfterMs(item: ToastItem): number {
 interface ToastCardProps {
   item: ToastItem
   reduceMotion: boolean
-  onDismiss: (id: number) => void
+  onDismiss: (id: string) => void
 }
 
 function ToastCard({ item, reduceMotion, onDismiss }: ToastCardProps) {
@@ -187,20 +188,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion()
   const [items, setItems] = useState<ToastItem[]>([])
   const [mounted, setMounted] = useState(false)
-  const idRef = useRef(0)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const remove = useCallback((id: number) => {
+  const remove = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id))
   }, [])
 
   const toast = useCallback((options: ToastOptions) => {
-    idRef.current += 1
     const item: ToastItem = {
-      id: idRef.current,
+      id: createId("toast"),
       variant: options.variant ?? ToastVariant.Info,
       title: options.title,
       description: options.description,

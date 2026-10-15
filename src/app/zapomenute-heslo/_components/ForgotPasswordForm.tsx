@@ -10,6 +10,7 @@ import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { authClient } from "@/lib/auth/authClient"
 import { config } from "@/lib/config"
+import { formText } from "@/app/_lib/formText"
 
 const NEUTRAL_MESSAGE = "Pokud účet existuje, poslali jsme odkaz na obnovení hesla"
 
@@ -20,7 +21,7 @@ export function ForgotPasswordForm() {
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const email = String(formData.get("email") ?? "").trim()
+    const email = formText(formData, "email").trim()
 
     setPending(true)
     await authClient.requestPasswordReset({
@@ -46,7 +47,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
       <Field label="E-mail" htmlFor="email">
         <Input id="email" name="email" type="email" autoComplete="email" autoFocus required />
       </Field>

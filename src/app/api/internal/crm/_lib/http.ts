@@ -3,11 +3,12 @@ import { NextResponse } from "next/server"
 // Carries an HTTP status alongside a user-safe message so route handlers can
 // translate validation and lookup failures into the right response code.
 export class HttpError extends Error {
-  readonly status: number
-  constructor(status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string,
+  ) {
     super(message)
     this.name = "HttpError"
-    this.status = status
   }
 }
 

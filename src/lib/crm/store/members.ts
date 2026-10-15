@@ -191,7 +191,7 @@ export function ownerCount(members: Pick<SettingsMember, "role">[]): number {
 
 export function isLastOwnerRemoval(members: SettingsMember[], memberId: string): boolean {
   const target = members.find((member) => member.memberId === memberId)
-  if (target === undefined || target.role !== "owner") {
+  if (target?.role !== "owner") {
     return false
   }
 
@@ -204,7 +204,7 @@ export function isLastOwnerDemotion(
   nextRole: OrgRole,
 ): boolean {
   const target = members.find((member) => member.memberId === memberId)
-  if (target === undefined || target.role !== "owner" || nextRole === "owner") {
+  if (target?.role !== "owner" || nextRole === "owner") {
     return false
   }
 

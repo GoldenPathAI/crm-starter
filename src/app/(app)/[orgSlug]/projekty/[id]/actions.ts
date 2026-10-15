@@ -67,7 +67,7 @@ export async function reorderTicketAction(
   }
 }
 
-export interface ProjectWritePayload {
+interface ProjectWritePayload {
   projectId: string;
   clientId: string;
   name: string;

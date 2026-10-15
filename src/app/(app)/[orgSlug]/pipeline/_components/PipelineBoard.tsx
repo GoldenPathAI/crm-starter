@@ -48,6 +48,7 @@ import {
 } from "../actions"
 import { formatCzk, formatCzkCompact, formatDaysInStage, formatPercent, formatShortDate } from "../_lib/format"
 import { DealDetail, LostDialog, StageMoveList, WonDialog } from "./dealDetail"
+import { insertAt } from "@/lib/collections"
 
 const isClosedSemantic = (semantic: string | undefined): boolean =>
   semantic === "won" || semantic === "lost"
@@ -526,10 +527,13 @@ export function PipelineBoard({
     const originalIndex = dest.deals.findIndex((deal) => deal.id === dealId)
     // targetIndex counts the column as shown (the dragged card is still visible),
     // so a same-column down move needs to shift one slot up after removal.
-    const insertAt =
+    const insertIndex =
       originalIndex !== -1 && originalIndex < targetIndex ? targetIndex - 1 : targetIndex
-    const orderedIds = dest.deals.filter((deal) => deal.id !== dealId).map((deal) => deal.id)
-    orderedIds.splice(insertAt, 0, dealId)
+    const orderedIds = insertAt(
+      dest.deals.filter((deal) => deal.id !== dealId).map((deal) => deal.id),
+      insertIndex,
+      dealId,
+    )
 
     const previous = board
     const stageChanged = source.stage !== toStage

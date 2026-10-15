@@ -10,6 +10,7 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { authClient } from "@/lib/auth/authClient"
+import { formText } from "@/app/_lib/formText"
 
 const MIN_PASSWORD_LENGTH = 8
 
@@ -29,8 +30,8 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const password = String(formData.get("password") ?? "")
-    const confirm = String(formData.get("confirm") ?? "")
+    const password = formText(formData, "password")
+    const confirm = formText(formData, "confirm")
 
     if (password.length < MIN_PASSWORD_LENGTH) {
       setError("Heslo musí mít alespoň 8 znaků")
@@ -74,7 +75,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
       <Field label="Nové heslo" htmlFor="password">
         <Input
           id="password"

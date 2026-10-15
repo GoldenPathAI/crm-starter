@@ -139,7 +139,7 @@ export function DocumentsPanel({ clientId, documents, docKindView }: DocumentsPa
                           {doc.fileKey !== undefined ? (
                             <button
                               type="button"
-                              onClick={() => handleDownload(doc)}
+                              onClick={() => void handleDownload(doc)}
                               aria-label={`Stáhnout ${doc.title}`}
                               title="Stáhnout soubor"
                               className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-soft transition-colors hover:bg-surface-2 hover:text-foreground"

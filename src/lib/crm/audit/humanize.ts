@@ -121,19 +121,11 @@ export const changedFieldLabels = (entry: HumanizableEntry): string[] => {
 
   const before = entry.before
   const after = entry.after
-  const keys = new Set([...Object.keys(before), ...Object.keys(after)])
-  const changed: string[] = []
-  for (const key of keys) {
-    if (IGNORED_FIELDS.has(key)) {
-      continue
-    }
+  const keys = [...new Set([...Object.keys(before), ...Object.keys(after)])]
 
-    if (!valuesEqual(before[key], after[key])) {
-      changed.push(FIELD_LABELS[key] ?? key)
-    }
-  }
-
-  return changed
+  return keys
+    .filter((key) => !IGNORED_FIELDS.has(key) && !valuesEqual(before[key], after[key]))
+    .map((key) => FIELD_LABELS[key] ?? key)
 }
 
 // Compact one-line summary of changed fields, capped at MAX_CHANGED_FIELDS with a

@@ -71,10 +71,14 @@ async function tableCount(table: PgTable): Promise<number> {
 // its slots are scarce, so this page holds one connection at a time, never a burst.
 export async function getCrmDbStatus(): Promise<CrmDbStatus> {
   try {
-    const tables: TableCount[] = []
-    for (const { key, label, table } of CRM_TABLES) {
-      tables.push({ key, label, count: await tableCount(table) })
-    }
+    const tables = await CRM_TABLES.reduce<Promise<TableCount[]>>(
+      async (previous, { key, label, table }) => {
+        const done = await previous
+
+        return [...done, { key, label, count: await tableCount(table) }]
+      },
+      Promise.resolve([]),
+    )
 
     const totalRows = tables.reduce((sum, entry) => sum + entry.count, 0)
 

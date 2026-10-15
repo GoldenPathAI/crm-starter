@@ -22,11 +22,12 @@ export async function EnumsSection({ orgSlug }: { orgSlug: string }) {
 
   // Sequential on purpose: the DB pool is shared with the live app, so this section
   // holds at most one connection at a time instead of bursting ten parallel reads.
-  const groups: EnumGroup[] = []
-  for (const { kind, title } of KINDS) {
+  const groups = await KINDS.reduce<Promise<EnumGroup[]>>(async (previous, { kind, title }) => {
+    const done = await previous
     const options = await listAllOptions(ctx.scope.orgId, kind)
-    groups.push({ kind, title, options })
-  }
+
+    return [...done, { kind, title, options }]
+  }, Promise.resolve([]))
 
   return <EnumsManager orgSlug={orgSlug} groups={groups} canEdit={canEdit} />
 }

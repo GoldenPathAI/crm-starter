@@ -125,12 +125,14 @@ export async function loadTaskOptionsAction(orgSlug: string): Promise<TaskDetail
     .map((client) => ({ value: client.id, label: client.name }))
     .sort((a, b) => a.label.localeCompare(b.label, "cs"))
 
-  const projectsByClient: Record<string, { value: string; label: string }[]> = {}
-  for (const project of projects) {
-    const list = projectsByClient[project.clientId] ?? []
-    list.push({ value: project.id, label: project.name })
-    projectsByClient[project.clientId] = list
-  }
+  const projectsByClient: Record<string, { value: string; label: string }[]> = Object.fromEntries(
+    [...new Set(projects.map((project) => project.clientId))].map((clientId) => [
+      clientId,
+      projects
+        .filter((project) => project.clientId === clientId)
+        .map((project) => ({ value: project.id, label: project.name })),
+    ]),
+  )
 
   return {
     clients,
@@ -171,7 +173,7 @@ export async function patchTaskAction(
   },
 ): Promise<ActionState> {
   const ctx = await requireOrgContext(orgSlug)
-  if (input.patch.title !== undefined && input.patch.title.trim().length === 0) {
+  if (input.patch.title?.trim().length === 0) {
     return { status: "error", message: "Název úkolu nesmí být prázdný." }
   }
 

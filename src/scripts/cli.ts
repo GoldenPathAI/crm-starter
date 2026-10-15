@@ -268,37 +268,39 @@ const loadToken = (): string | undefined => {
   }
 }
 
+interface TokenScan {
+  positionals: string[]
+  pairs: ReadonlyArray<readonly [string, string]>
+}
+
+// `--key value` takes the next token as its value unless that token is another flag,
+// in which case the flag is a bare switch and reads as "true".
+const scanTokens = (tokens: readonly string[]): TokenScan => {
+  const [token, ...rest] = tokens
+  if (token === undefined) {
+    return { positionals: [], pairs: [] }
+  }
+
+  if (!token.startsWith("--")) {
+    const scanned = scanTokens(rest)
+
+    return { ...scanned, positionals: [token, ...scanned.positionals] }
+  }
+
+  const [next, ...afterValue] = rest
+  const value = next !== undefined && !next.startsWith("--") ? next : undefined
+  const scanned = scanTokens(value !== undefined ? afterValue : rest)
+
+  return { ...scanned, pairs: [[token.slice(2), value ?? "true"], ...scanned.pairs] }
+}
+
 const parseArgs = (tokens: string[]): ParsedArgs => {
-  const positionals: string[] = []
-  const rawFlags: Flags = {}
-  let index = 0
-  while (index < tokens.length) {
-    const token = tokens[index]
-    if (token === undefined) {
-      break
-    }
-
-    if (token.startsWith("--")) {
-      const key = token.slice(2)
-      const next = tokens[index + 1]
-      if (next !== undefined && !next.startsWith("--")) {
-        rawFlags[key] = [...(rawFlags[key] ?? []), next]
-        index += 2
-      } else {
-        rawFlags[key] = [...(rawFlags[key] ?? []), "true"]
-        index += 1
-      }
-    } else {
-      positionals.push(token)
-      index += 1
-    }
-  }
-
-  const flags: Flags = {}
-  for (const [key, values] of Object.entries(rawFlags)) {
-    const canonical = FLAG_ALIASES[key] ?? key
-    flags[canonical] = [...(flags[canonical] ?? []), ...values]
-  }
+  const { positionals, pairs } = scanTokens(tokens)
+  const canonical = pairs.map(([key, value]) => [FLAG_ALIASES[key] ?? key, value] as const)
+  const keys = [...new Set(canonical.map(([key]) => key))]
+  const flags: Flags = Object.fromEntries(
+    keys.map((key) => [key, canonical.filter(([candidate]) => candidate === key).map(([, value]) => value)]),
+  )
 
   return { positionals, flags }
 }
@@ -326,34 +328,38 @@ const buildQuery = (flags: Flags): string => {
   return query.length > 0 ? `?${query}` : ""
 }
 
-const buildBody = (flags: Flags): Record<string, BodyValue> => {
-  const body: Record<string, BodyValue> = {}
-  for (const [key, values] of Object.entries(flags)) {
-    if (CONTROL_FLAGS.has(key)) {
-      continue
-    }
-
-    const raw = values[values.length - 1] ?? ""
-    if (ARRAY_FIELDS.has(key)) {
-      body[key] = values
-        .flatMap((value) => value.split(","))
-        .map((value) => value.trim())
-        .filter((value) => value.length > 0)
-    } else if (raw === "null") {
-      // Literal `null` clears a nullable column on update (PATCH), matching the
-      // JSON null a raw API caller would send.
-      body[key] = null
-    } else if (NUMBER_FIELDS.has(key)) {
-      body[key] = Number(raw)
-    } else if (BOOLEAN_FIELDS.has(key)) {
-      body[key] = raw === "true" || raw === "1"
-    } else {
-      body[key] = raw
-    }
+const bodyValue = (key: string, values: readonly string[]): BodyValue => {
+  const raw = values[values.length - 1] ?? ""
+  if (ARRAY_FIELDS.has(key)) {
+    return values
+      .flatMap((value) => value.split(","))
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0)
   }
 
-  return body
+  // Literal `null` clears a nullable column on update (PATCH), matching the JSON null
+  // a raw API caller would send.
+  if (raw === "null") {
+    return null
+  }
+
+  if (NUMBER_FIELDS.has(key)) {
+    return Number(raw)
+  }
+
+  if (BOOLEAN_FIELDS.has(key)) {
+    return raw === "true" || raw === "1"
+  }
+
+  return raw
 }
+
+const buildBody = (flags: Flags): Record<string, BodyValue> =>
+  Object.fromEntries(
+    Object.entries(flags)
+      .filter(([key]) => !CONTROL_FLAGS.has(key))
+      .map(([key, values]) => [key, bodyValue(key, values)]),
+  )
 
 // The API takes the primary contact as a nested object; the CLI exposes it as
 // flat --contactName/--contactRole/--contactEmail/--contactPhone flags and folds
@@ -366,21 +372,17 @@ const CONTACT_FLAGS: Record<string, string> = {
 }
 
 const buildClientBody = (flags: Flags): Record<string, BodyValue> => {
-  const body = buildBody(flags)
-  const contact: Record<string, string> = {}
-  for (const [flag, field] of Object.entries(CONTACT_FLAGS)) {
-    const value = body[flag]
-    delete body[flag]
-    if (typeof value === "string" && value.length > 0) {
-      contact[field] = value
-    }
-  }
+  const flat = buildBody(flags)
+  const contact: Record<string, string> = Object.fromEntries(
+    Object.entries(CONTACT_FLAGS).flatMap(([flag, field]) => {
+      const value = flat[flag]
 
-  if (contact.name !== undefined) {
-    body.primaryContact = contact
-  }
+      return typeof value === "string" && value.length > 0 ? [[field, value]] : []
+    }),
+  )
+  const body = Object.fromEntries(Object.entries(flat).filter(([key]) => !(key in CONTACT_FLAGS)))
 
-  return body
+  return contact.name !== undefined ? { ...body, primaryContact: contact } : body
 }
 
 const fail = (message: string): never => {

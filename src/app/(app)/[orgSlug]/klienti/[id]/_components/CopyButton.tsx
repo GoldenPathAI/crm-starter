@@ -32,7 +32,7 @@ export function CopyButton({ value, label, className }: CopyButtonProps) {
   return (
     <button
       type="button"
-      onClick={copy}
+      onClick={() => void copy()}
       aria-label={label}
       title={label}
       className={cn(

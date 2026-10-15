@@ -63,23 +63,20 @@ export async function listRapportPeople(
   scope: OrgScope,
   query: RapportPeopleQuery = {},
 ): Promise<PersonWithRapport[]> {
-  const conditions: SQL[] = [eq(people.organizationId, scope.orgId)]
-  if (query.kinds !== undefined && query.kinds.length > 0) {
-    conditions.push(inArray(people.kind, query.kinds))
-  }
-
-  if (query.q !== undefined && query.q.length > 0) {
-    const needle = `%${query.q}%`
-    const match = or(
-      ilike(people.name, needle),
-      ilike(people.role, needle),
-      ilike(people.note, needle),
-      ilike(clients.name, needle),
-    )
-    if (match !== undefined) {
-      conditions.push(match)
-    }
-  }
+  const needle = query.q !== undefined && query.q.length > 0 ? `%${query.q}%` : undefined
+  // and() drops the undefined entries, so an absent filter adds no condition.
+  const where = and(
+    eq(people.organizationId, scope.orgId),
+    query.kinds !== undefined && query.kinds.length > 0 ? inArray(people.kind, query.kinds) : undefined,
+    needle !== undefined
+      ? or(
+          ilike(people.name, needle),
+          ilike(people.role, needle),
+          ilike(people.note, needle),
+          ilike(clients.name, needle),
+        )
+      : undefined,
+  )
 
   const dbc = resolveDbc(scope)
   const rows = await dbc
@@ -92,7 +89,7 @@ export async function listRapportPeople(
     .from(people)
     .leftJoin(clients, eq(clients.id, people.clientId))
     .leftJoin(rapportEntries, eq(rapportEntries.personId, people.id))
-    .where(and(...conditions))
+    .where(where)
     .groupBy(people.id, clients.name)
     .orderBy(rapportSortColumn(query), asc(people.name))
 

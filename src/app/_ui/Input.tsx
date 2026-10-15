@@ -20,13 +20,14 @@ const variantClasses: Readonly<Record<InputVariant, string>> = {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type = "text", variant = InputVariant.Default, ...props }, ref) => (
-    <input
-      ref={ref}
-      type={type}
-      className={cn(baseClasses, variantClasses[variant], className)}
-      {...props}
-    />
-  ),
+  function Input({ className, type = "text", variant = InputVariant.Default, ...props }, ref) {
+    return (
+      <input
+        ref={ref}
+        type={type}
+        className={cn(baseClasses, variantClasses[variant], className)}
+        {...props}
+      />
+    )
+  },
 )
-Input.displayName = "Input"

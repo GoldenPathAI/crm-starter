@@ -52,19 +52,17 @@ export async function listRecentAudit(
   opts: { limit: number; tableName?: string; actorUserId?: string },
   dbc: CrmDbc = db,
 ): Promise<AuditEntryWithActor[]> {
-  const conditions = [eq(auditLog.organizationId, orgId)]
-  if (opts.tableName !== undefined) {
-    conditions.push(eq(auditLog.tableName, opts.tableName))
-  }
-
-  if (opts.actorUserId !== undefined) {
-    conditions.push(eq(auditLog.actorUserId, opts.actorUserId))
-  }
+  // and() drops the undefined entries, so an absent filter adds no condition.
+  const where = and(
+    eq(auditLog.organizationId, orgId),
+    opts.tableName !== undefined ? eq(auditLog.tableName, opts.tableName) : undefined,
+    opts.actorUserId !== undefined ? eq(auditLog.actorUserId, opts.actorUserId) : undefined,
+  )
 
   const rows = await dbc
     .select()
     .from(auditLog)
-    .where(and(...conditions))
+    .where(where)
     .orderBy(desc(auditLog.createdAt))
     .limit(opts.limit)
 

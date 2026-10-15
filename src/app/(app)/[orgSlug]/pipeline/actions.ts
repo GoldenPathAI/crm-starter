@@ -13,7 +13,7 @@ import { withUiAudit } from "@/app/_lib/auditedAction"
 import type { ActionState } from "@/app/_lib/actionState"
 import type { EnumOption } from "@/core/types/crm.types"
 import type { TaskSubtask } from "@/app/_components/task-detail/types"
-import type { DealFormValues } from "./_lib/types"
+import type { DealFormValues, DealQuickEditPatch } from "./_lib/types"
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
@@ -222,15 +222,6 @@ export async function updateDealAction(
       message: error instanceof Error ? error.message : "Deal se nepodařilo upravit.",
     }
   }
-}
-
-// Partial patch behind the deal-detail inline editors: each field commits alone, a
-// JSON null clears a nullable column, an absent key leaves it untouched.
-export interface DealQuickEditPatch {
-  valueCzk?: number
-  probability?: number | null
-  expectedClose?: string | null
-  offerUrl?: string | null
 }
 
 export async function quickEditDealAction(

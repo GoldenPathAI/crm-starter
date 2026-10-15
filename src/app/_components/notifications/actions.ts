@@ -9,7 +9,7 @@ import {
 } from "@/lib/crm/store/notifications"
 import type { Notification } from "@/core/types/crm.types"
 
-export interface NotificationsSnapshot {
+interface NotificationsSnapshot {
   items: Notification[]
   unread: number
 }

@@ -50,6 +50,7 @@ import {
   quickEditTicketAction,
   quickSetTicketStatusAction,
 } from "../actions"
+import { toggleMember } from "@/lib/collections"
 
 interface TicketsTableProps {
   rows: TicketListItem[]
@@ -436,16 +437,7 @@ function TicketsBulkActions({
   }
 
   const togglePickedUser = (userId: string) => {
-    setPickedUserIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(userId)) {
-        next.delete(userId)
-      } else {
-        next.add(userId)
-      }
-
-      return next
-    })
+    setPickedUserIds((prev) => toggleMember(prev, userId))
   }
 
   return (

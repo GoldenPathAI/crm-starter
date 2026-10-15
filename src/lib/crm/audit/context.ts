@@ -26,7 +26,22 @@ export interface AuditMeta {
 // collide with entity ids.
 export const newRequestId = (): string => createId("req")
 
-const afterCommitCallbacks = new AsyncLocalStorage<(() => void)[]>()
+// Side effects deferred by onAfterCommit inside one audited transaction.
+class AfterCommitQueue {
+  private readonly callbacks: (() => void)[] = []
+
+  public add(callback: () => void): void {
+    this.callbacks.push(callback)
+  }
+
+  public flush(): void {
+    for (const callback of this.callbacks) {
+      callback()
+    }
+  }
+}
+
+const afterCommitCallbacks = new AsyncLocalStorage<AfterCommitQueue>()
 
 // Defers a side effect until the enclosing audited transaction commits. Work that reads
 // rows the transaction has written (a queue drain, an external push) cannot run while it
@@ -40,14 +55,14 @@ export function onAfterCommit(callback: () => void): void {
     return
   }
 
-  pending.push(callback)
+  pending.add(callback)
 }
 
 // Open one transaction, stamp the attribution GUCs so the audit trigger can read
 // them, then run `fn` on the transaction. The GUCs are transaction-local
 // (set_config ..., true), so they vanish on commit or rollback.
 export async function runAudited<T>(meta: AuditMeta, fn: (tx: CrmDbc) => Promise<T>): Promise<T> {
-  const pending: (() => void)[] = []
+  const pending = new AfterCommitQueue()
   const result = await afterCommitCallbacks.run(pending, () =>
     db.transaction(async (tx) => {
       await tx.execute(sql`SELECT
@@ -61,9 +76,7 @@ export async function runAudited<T>(meta: AuditMeta, fn: (tx: CrmDbc) => Promise
       return fn(tx)
     }),
   )
-  for (const callback of pending) {
-    callback()
-  }
+  pending.flush()
 
   return result
 }

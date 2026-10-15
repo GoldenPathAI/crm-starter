@@ -10,6 +10,7 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { authClient } from "@/lib/auth/authClient"
+import { formText } from "@/app/_lib/formText"
 
 export function LoginForm() {
   const router = useRouter()
@@ -19,8 +20,8 @@ export function LoginForm() {
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const email = String(formData.get("email") ?? "")
-    const password = String(formData.get("password") ?? "")
+    const email = formText(formData, "email")
+    const password = formText(formData, "password")
 
     setPending(true)
     setError(undefined)
@@ -36,7 +37,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
       <Field label="E-mail" htmlFor="email">
         <Input id="email" name="email" type="email" autoComplete="email" autoFocus required />
       </Field>

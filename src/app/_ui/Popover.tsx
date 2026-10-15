@@ -11,7 +11,7 @@ export const PopoverTrigger = PopoverPrimitive.Trigger
 export const PopoverContent = forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "start", sideOffset = 6, children, ...props }, ref) => {
+>(function PopoverContent({ className, align = "start", sideOffset = 6, children, ...props }, ref) {
   const reduceMotion = useReducedMotion()
 
   return (
@@ -39,4 +39,3 @@ export const PopoverContent = forwardRef<
     </PopoverPrimitive.Portal>
   )
 })
-PopoverContent.displayName = "PopoverContent"

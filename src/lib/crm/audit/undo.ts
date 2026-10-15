@@ -39,6 +39,12 @@ const UNDO_TABLES: Record<string, UndoTable> = {
   organization_settings: { table: organizationSettings, pk: "organization_id" },
 }
 
+// The net effect of a batch per row. A row touched several times in the batch is
+// expected to match its last touch, so only the last entry per table and row counts.
+export const lastTouchPerRow = (entries: readonly AuditEntry[]): AuditEntry[] => [
+  ...new Map(entries.map((entry) => [`${entry.tableName}:${entry.rowId}`, entry])).values(),
+]
+
 const columnNames = (table: PgTable): string[] =>
   Object.values(getTableColumns(table)).map((column) => column.name)
 
@@ -57,7 +63,7 @@ async function currentMatchesAfter(
   `)
   const row = rows[0]
 
-  return row !== undefined && row.ok === true
+  return row?.ok === true
 }
 
 async function rowAbsent(tx: CrmDbc, def: UndoTable, rowId: string): Promise<boolean> {
@@ -141,32 +147,24 @@ export async function undoBatch(
       undoOf: requestId,
     },
     async (tx) => {
-      // Verify pass. A row touched several times in the batch is expected to match
-      // its last touch, so keep only the last entry per table+row.
-      const lastPerRow = new Map<string, AuditEntry>()
-      for (const entry of entries) {
-        lastPerRow.set(`${entry.tableName}:${entry.rowId}`, entry)
-      }
-
-      const conflicts: string[] = []
-      for (const entry of lastPerRow.values()) {
-        const def = UNDO_TABLES[entry.tableName]
-        if (def === undefined) {
-          continue
-        }
-
-        if (entry.operation === "DELETE") {
-          if (!(await rowAbsent(tx, def, entry.rowId))) {
-            conflicts.push(`${entry.tableName}#${entry.rowId}`)
+      // Verify pass, one row at a time on the transaction connection.
+      const conflicts = await lastTouchPerRow(entries).reduce<Promise<string[]>>(
+        async (previous, entry) => {
+          const found = await previous
+          const def = UNDO_TABLES[entry.tableName]
+          if (def === undefined) {
+            return found
           }
 
-          continue
-        }
+          const unchanged =
+            entry.operation === "DELETE"
+              ? await rowAbsent(tx, def, entry.rowId)
+              : entry.after !== null && (await currentMatchesAfter(tx, def, entry.rowId, entry.after))
 
-        if (entry.after === null || !(await currentMatchesAfter(tx, def, entry.rowId, entry.after))) {
-          conflicts.push(`${entry.tableName}#${entry.rowId}`)
-        }
-      }
+          return unchanged ? found : [...found, `${entry.tableName}#${entry.rowId}`]
+        },
+        Promise.resolve([]),
+      )
 
       if (conflicts.length > 0) {
         throw new Error(

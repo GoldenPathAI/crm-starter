@@ -1,5 +1,5 @@
 import { addDays, format } from "date-fns"
-import { and, asc, desc, eq, isNotNull, isNull, lte, ne } from "drizzle-orm"
+import { and, asc, count, desc, eq, isNotNull, isNull, lte, ne } from "drizzle-orm"
 import { db } from "@/lib/db/client"
 import { activities, clients, documents, projects, tickets } from "@/lib/db/schema/crm"
 import { toActivity, toDoc, toTicket } from "@/lib/crm/store/mappers"
@@ -96,21 +96,17 @@ export async function listTicketsDue(
       .from(projects)
       .where(eq(projects.organizationId, orgId)),
     db
-      .select({ parentId: tickets.parentId })
+      .select({ parentId: tickets.parentId, subtasks: count() })
       .from(tickets)
-      .where(and(eq(tickets.organizationId, orgId), isNotNull(tickets.parentId))),
+      .where(and(eq(tickets.organizationId, orgId), isNotNull(tickets.parentId)))
+      .groupBy(tickets.parentId),
   ])
 
   const names = new Map(clientRows.map((row) => [row.id, row.name]))
   const projectNames = new Map(projectRows.map((row) => [row.id, row.name]))
-  const subtaskCounts = new Map<string, number>()
-  for (const child of childRows) {
-    if (child.parentId === null) {
-      continue
-    }
-
-    subtaskCounts.set(child.parentId, (subtaskCounts.get(child.parentId) ?? 0) + 1)
-  }
+  const subtaskCounts = new Map(
+    childRows.flatMap((row) => (row.parentId === null ? [] : [[row.parentId, row.subtasks] as const])),
+  )
 
   const enriched = ticketRows.map(toTicket).map((ticket) => ({
     ...ticket,

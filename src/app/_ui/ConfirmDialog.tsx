@@ -69,7 +69,7 @@ export function ConfirmDialog({
           </DialogClose>
           <Button
             variant={destructive === true ? "danger" : "primary"}
-            onClick={handleConfirm}
+            onClick={() => void handleConfirm()}
             disabled={pending}
           >
             {pending ? <Spinner className="size-4" /> : null}

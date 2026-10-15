@@ -10,6 +10,7 @@ import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { authClient } from "@/lib/auth/authClient"
 import { orgHref } from "@/lib/nav"
+import { formText } from "@/app/_lib/formText"
 
 export function InviteSignUp({
   invitationId,
@@ -29,8 +30,8 @@ export function InviteSignUp({
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const name = String(formData.get("name") ?? "").trim()
-    const password = String(formData.get("password") ?? "")
+    const name = formText(formData, "name").trim()
+    const password = formText(formData, "password")
 
     setPending(true)
     setError(undefined)
@@ -65,7 +66,7 @@ export function InviteSignUp({
           Dokonči registraci a připoj se.
         </p>
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+      <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
         <Field label="E-mail" htmlFor="invite-signup-email">
           <Input id="invite-signup-email" type="email" value={email} disabled readOnly />
         </Field>

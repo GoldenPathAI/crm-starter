@@ -298,66 +298,68 @@ export function CommandPalette() {
   }, [query, results])
 
   const { sections, flatRows } = useMemo(() => {
-    const built: PaletteSection[] = []
-    const flat: PaletteRow[] = []
     const visibleNavRows = NAV_ROWS.filter((row) => {
       const item = navItems.find((navItem) => navItem.href === row.href)
 
       return item?.permission === undefined || hasPermission(role, item.permission)
     })
-    const pushSection = (heading: string, rows: ReadonlyArray<PaletteRow>): void => {
-      if (rows.length === 0) {
-        return
-      }
+    const draftSections = ((): ReadonlyArray<{ heading: string; rows: ReadonlyArray<PaletteRow> }> => {
+      const trimmed = query.trim()
+      if (trimmed.length === 0) {
+        const clientGroup = RESULT_GROUP_BY_TYPE.get("client")
+        const pinnedIds = new Set(pins.map((pin) => pin.id))
 
-      const indexed = rows.map((row) => {
-        const flatIndex = flat.length
-        flat.push(row)
+        return [
+          ...(clientGroup !== undefined
+            ? [{ heading: "Připnuté", rows: pins.map((pin) => toPinnedRow(pin, clientGroup)) }]
+            : []),
+          {
+            heading: "Nedávné",
+            rows: recents
+              .filter((item) => !(item.type === "client" && pinnedIds.has(item.id)))
+              .flatMap((item) => {
+                const group = RESULT_GROUP_BY_TYPE.get(item.type)
 
-        return { ...row, flatIndex }
-      })
-      built.push({ heading, rows: indexed })
-    }
-
-    const trimmed = query.trim()
-    if (trimmed.length === 0) {
-      const clientGroup = RESULT_GROUP_BY_TYPE.get("client")
-      if (clientGroup !== undefined) {
-        pushSection(
-          "Připnuté",
-          pins.map((pin) => toPinnedRow(pin, clientGroup)),
-        )
-      }
-
-      const pinnedIds = new Set(pins.map((pin) => pin.id))
-      pushSection(
-        "Nedávné",
-        recents
-          .filter((item) => !(item.type === "client" && pinnedIds.has(item.id)))
-          .flatMap((item) => {
-            const group = RESULT_GROUP_BY_TYPE.get(item.type)
-
-            return group !== undefined ? [toRecentRow(item, group)] : []
-          }),
-      )
-      pushSection("Přejít na", visibleNavRows)
-      pushSection("Vytvořit", CREATE_ROWS)
-    } else {
-      for (const group of RESULT_GROUPS) {
-        const rows = results
-          .filter((result) => result.type === group.type)
-          .map((result) => toResultRow(result, group))
-        pushSection(group.heading, rows)
+                return group !== undefined ? [toRecentRow(item, group)] : []
+              }),
+          },
+          { heading: "Přejít na", rows: visibleNavRows },
+          { heading: "Vytvořit", rows: CREATE_ROWS },
+        ]
       }
 
       const needle = normalize(trimmed)
-      const commandRows = [...visibleNavRows, ...CREATE_ROWS].filter((row) =>
-        normalize(row.label).includes(needle),
-      )
-      pushSection("Příkazy", commandRows)
-    }
 
-    return { sections: built, flatRows: flat }
+      return [
+        ...RESULT_GROUPS.map((group) => ({
+          heading: group.heading,
+          rows: results
+            .filter((result) => result.type === group.type)
+            .map((result) => toResultRow(result, group)),
+        })),
+        {
+          heading: "Příkazy",
+          rows: [...visibleNavRows, ...CREATE_ROWS].filter((row) =>
+            normalize(row.label).includes(needle),
+          ),
+        },
+      ]
+    })().filter((section) => section.rows.length > 0)
+
+    // Each row keeps its position in the flattened list, which is what the keyboard
+    // selection indexes into.
+    const offsets = draftSections.map((_, index) =>
+      draftSections.slice(0, index).reduce((total, section) => total + section.rows.length, 0),
+    )
+    const built: PaletteSection[] = draftSections.map((section, index) => ({
+      heading: section.heading,
+      rows: section.rows.map((row, rowIndex) => ({
+        ...row,
+        flatIndex: (offsets[index] ?? 0) + rowIndex,
+      })),
+    }))
+
+    return { sections: built, flatRows: draftSections.flatMap((section) => section.rows) }
   }, [query, results, pins, recents, role])
 
   const activeIndex = flatRows.length === 0 ? -1 : Math.min(selectedIndex, flatRows.length - 1)
@@ -400,7 +402,7 @@ export function CommandPalette() {
   )
 
   const completeTicket = async (row: PaletteRow): Promise<void> => {
-    if (row.entity === null || row.entity.type !== "ticket" || busyRowKey !== null) {
+    if (row.entity?.type !== "ticket" || busyRowKey !== null) {
       return
     }
 
@@ -422,7 +424,7 @@ export function CommandPalette() {
   }
 
   const assignSelf = async (row: PaletteRow): Promise<void> => {
-    if (row.entity === null || row.entity.type !== "ticket" || busyRowKey !== null) {
+    if (row.entity?.type !== "ticket" || busyRowKey !== null) {
       return
     }
 
@@ -441,7 +443,7 @@ export function CommandPalette() {
   }
 
   const togglePin = (row: PaletteRow): void => {
-    if (row.entity === null || row.entity.type !== "client") {
+    if (row.entity?.type !== "client") {
       return
     }
 

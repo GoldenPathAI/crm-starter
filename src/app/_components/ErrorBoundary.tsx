@@ -17,13 +17,13 @@ interface ErrorBoundaryState {
 // Contains a render crash to its subtree: the rest of the app keeps working, the
 // error is reported server-side and the fallback offers a reset.
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  override state: ErrorBoundaryState = { failed: false }
+  public override state: ErrorBoundaryState = { failed: false }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
+  public static getDerivedStateFromError(): ErrorBoundaryState {
     return { failed: true }
   }
 
-  override componentDidCatch(error: Error): void {
+  public override componentDidCatch(error: Error): void {
     reportClientError({
       message: error.message,
       stack: error.stack ?? "",
@@ -31,11 +31,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     })
   }
 
-  reset = (): void => {
+  public reset = (): void => {
     this.setState({ failed: false })
   }
 
-  override render(): ReactNode {
+  public override render(): ReactNode {
     if (this.state.failed) {
       return this.props.fallback(this.reset)
     }

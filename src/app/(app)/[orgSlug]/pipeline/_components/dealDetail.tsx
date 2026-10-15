@@ -53,8 +53,8 @@ import {
   updateDealDescriptionAction,
   updateDealNextStepAction,
   updateDealTitleAction,
-  type DealQuickEditPatch,
 } from "../actions"
+import type { DealQuickEditPatch } from "../_lib/types"
 import { DatePicker } from "@/app/_ui/DatePicker"
 
 export const buildProjectUrl = (deal: DealCard): string => {
@@ -830,11 +830,11 @@ export function WonDialog({ deal, open, onOpenChange, onWin }: WonDialogProps) {
               Deal se přesune do Vyhráno.
             </div>
             <DialogFooter>
-              <Button variant="outline" size="sm" onClick={foundProject} disabled={pending}>
+              <Button variant="outline" size="sm" onClick={() => void foundProject()} disabled={pending}>
                 <FolderPlus className="size-4" />
                 Založit projekt z dealu
               </Button>
-              <Button size="sm" onClick={markWon} disabled={pending}>
+              <Button size="sm" onClick={() => void markWon()} disabled={pending}>
                 {pending ? <Spinner className="size-4" /> : null}
                 Označit jako vyhráno
               </Button>
@@ -903,7 +903,7 @@ export function LostDialog({ deal, open, onOpenChange, onLost }: LostDialogProps
                 {deal.clientName} · {formatCzk(deal.valueCzk)}
               </p>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={(event) => void handleSubmit(event)} className="flex flex-col gap-4">
               <Field label="Důvod prohry" htmlFor="lost-reason" required error={error}>
                 <textarea
                   id="lost-reason"

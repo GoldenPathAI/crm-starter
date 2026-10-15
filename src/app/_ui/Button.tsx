@@ -36,7 +36,7 @@ export interface ButtonProps
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, type, ...props }, ref) => {
+  function Button({ className, variant, size, asChild = false, type, ...props }, ref) {
     const Comp = asChild ? Slot : "button"
 
     return (
@@ -49,4 +49,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     )
   },
 )
-Button.displayName = "Button"

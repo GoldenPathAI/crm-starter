@@ -116,18 +116,13 @@ export function DealForm({
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
-    const nextErrors: FormErrors = {}
-    if (clientId.trim().length === 0) {
-      nextErrors.clientId = "Vyberte klienta."
-    }
-
-    if (title.trim().length === 0) {
-      nextErrors.title = "Vyplňte název dealu."
-    }
-
     const valueNumber = valueCzk.trim().length === 0 ? Number.NaN : Number(valueCzk)
-    if (!Number.isFinite(valueNumber) || valueNumber < 0) {
-      nextErrors.valueCzk = "Zadejte nezápornou hodnotu."
+    const nextErrors: FormErrors = {
+      ...(clientId.trim().length === 0 ? { clientId: "Vyberte klienta." } : {}),
+      ...(title.trim().length === 0 ? { title: "Vyplňte název dealu." } : {}),
+      ...(!Number.isFinite(valueNumber) || valueNumber < 0
+        ? { valueCzk: "Zadejte nezápornou hodnotu." }
+        : {}),
     }
 
     if (Object.keys(nextErrors).length > 0) {

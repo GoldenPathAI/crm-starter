@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNotNull, isNull, lt, ne } from "drizzle-orm"
+import { and, asc, count, eq, inArray, isNotNull, isNull, lt, ne } from "drizzle-orm"
 import { addDays, addMonths, format, parseISO } from "date-fns"
 import type { CrmDbc } from "@/lib/db/client"
 import { resolveDbc, withTx } from "@/lib/crm/store/db"
@@ -116,35 +116,22 @@ export async function listTickets(
   const enums = await loadOrgEnums(scope.orgId)
   const priorityRank = new Map(enums.ticket_priority.map((option) => [option.value, option.position]))
 
-  const conditions = [eq(tickets.organizationId, scope.orgId), isNull(tickets.parentId)]
-  if (filters.clientId !== undefined) {
-    conditions.push(eq(tickets.clientId, filters.clientId))
-  }
-
-  if (filters.projectId !== undefined) {
-    conditions.push(eq(tickets.projectId, filters.projectId))
-  }
-
-  if (filters.dealId !== undefined) {
-    conditions.push(eq(tickets.dealId, filters.dealId))
-  }
-
-  if (filters.statuses !== undefined) {
-    conditions.push(inArray(tickets.status, filters.statuses))
-  }
-
-  if (filters.priorities !== undefined) {
-    conditions.push(inArray(tickets.priority, filters.priorities))
-  }
-
-  if (filters.overdue === true) {
-    conditions.push(isNotNull(tickets.dueAt))
-    conditions.push(ne(tickets.status, doneValue))
-    conditions.push(lt(tickets.dueAt, today))
-  }
+  // and() drops the undefined entries, so an absent filter adds no condition.
+  const where = and(
+    eq(tickets.organizationId, scope.orgId),
+    isNull(tickets.parentId),
+    filters.clientId !== undefined ? eq(tickets.clientId, filters.clientId) : undefined,
+    filters.projectId !== undefined ? eq(tickets.projectId, filters.projectId) : undefined,
+    filters.dealId !== undefined ? eq(tickets.dealId, filters.dealId) : undefined,
+    filters.statuses !== undefined ? inArray(tickets.status, filters.statuses) : undefined,
+    filters.priorities !== undefined ? inArray(tickets.priority, filters.priorities) : undefined,
+    ...(filters.overdue === true
+      ? [isNotNull(tickets.dueAt), ne(tickets.status, doneValue), lt(tickets.dueAt, today)]
+      : []),
+  )
 
   const [ticketRows, clientRows, projectRows, childRows] = await Promise.all([
-    dbc.select().from(tickets).where(and(...conditions)).orderBy(asc(tickets.id)),
+    dbc.select().from(tickets).where(where).orderBy(asc(tickets.id)),
     dbc
       .select({ id: clients.id, name: clients.name })
       .from(clients)
@@ -154,20 +141,16 @@ export async function listTickets(
       .from(projects)
       .where(eq(projects.organizationId, scope.orgId)),
     dbc
-      .select({ parentId: tickets.parentId })
+      .select({ parentId: tickets.parentId, subtasks: count() })
       .from(tickets)
-      .where(and(eq(tickets.organizationId, scope.orgId), isNotNull(tickets.parentId))),
+      .where(and(eq(tickets.organizationId, scope.orgId), isNotNull(tickets.parentId)))
+      .groupBy(tickets.parentId),
   ])
   const names = new Map(clientRows.map((row) => [row.id, row.name]))
   const projectNames = new Map(projectRows.map((row) => [row.id, row.name]))
-  const subtaskCounts = new Map<string, number>()
-  for (const child of childRows) {
-    if (child.parentId === null) {
-      continue
-    }
-
-    subtaskCounts.set(child.parentId, (subtaskCounts.get(child.parentId) ?? 0) + 1)
-  }
+  const subtaskCounts = new Map(
+    childRows.flatMap((row) => (row.parentId === null ? [] : [[row.parentId, row.subtasks] as const])),
+  )
 
   const filtered = ticketRows
     .map(toTicket)
@@ -852,29 +835,12 @@ export async function patchTicket(
       status,
       doneAt,
       order,
-    }
-    if (patch.title !== undefined) {
-      set.title = patch.title
-    }
-
-    if (patch.description !== undefined) {
-      set.description = patch.description
-    }
-
-    if (patch.priority !== undefined) {
-      set.priority = patch.priority
-    }
-
-    if (patch.dueAt !== undefined) {
-      set.dueAt = patch.dueAt
-    }
-
-    if (patch.labels !== undefined) {
-      set.labels = patch.labels
-    }
-
-    if (patch.recurrence !== undefined) {
-      set.recurrence = patch.recurrence
+      ...(patch.title !== undefined ? { title: patch.title } : {}),
+      ...(patch.description !== undefined ? { description: patch.description } : {}),
+      ...(patch.priority !== undefined ? { priority: patch.priority } : {}),
+      ...(patch.dueAt !== undefined ? { dueAt: patch.dueAt } : {}),
+      ...(patch.labels !== undefined ? { labels: patch.labels } : {}),
+      ...(patch.recurrence !== undefined ? { recurrence: patch.recurrence } : {}),
     }
 
     const rows = await tx

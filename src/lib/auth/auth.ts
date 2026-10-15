@@ -16,18 +16,34 @@ const authLogger = createServerLogger({ layer: "auth", module: "email" })
 // Records whether the last invitation email for an address was actually delivered,
 // keyed by lowercased email. The better-auth createInvitation call runs the send hook
 // synchronously, so the invite server action reads the outcome right after and tells
-// the user the truth instead of assuming success. Single-process app, so a module Map
-// is enough.
-const invitationEmailOutcomes = new Map<string, boolean>()
+// the user the truth instead of assuming success. Single-process app, so one instance
+// in module scope is enough.
+class InvitationEmailOutcomes {
+  private readonly outcomes = new Map<string, boolean>()
 
-// Reads and clears the recorded send outcome for an invitation email. `undefined` when
-// no outcome was recorded (hook never ran), which callers treat as "assume sent".
+  public record(email: string, sent: boolean): void {
+    this.outcomes.set(InvitationEmailOutcomes.keyOf(email), sent)
+  }
+
+  // Reads and clears the recorded outcome. `undefined` when none was recorded (the hook
+  // never ran), which callers treat as "assume sent".
+  public take(email: string): boolean | undefined {
+    const key = InvitationEmailOutcomes.keyOf(email)
+    const outcome = this.outcomes.get(key)
+    this.outcomes.delete(key)
+
+    return outcome
+  }
+
+  private static keyOf(email: string): string {
+    return email.trim().toLowerCase()
+  }
+}
+
+const invitationEmailOutcomes = new InvitationEmailOutcomes()
+
 export function takeInvitationEmailOutcome(email: string): boolean | undefined {
-  const key = email.trim().toLowerCase()
-  const outcome = invitationEmailOutcomes.get(key)
-  invitationEmailOutcomes.delete(key)
-
-  return outcome
+  return invitationEmailOutcomes.take(email)
 }
 
 export const auth = betterAuth({
@@ -79,7 +95,7 @@ export const auth = betterAuth({
           html: email.html,
           text: email.text,
         })
-        invitationEmailOutcomes.set(data.email.trim().toLowerCase(), result.sent)
+        invitationEmailOutcomes.record(data.email, result.sent)
         if (!result.sent) {
           authLogger.warn({ to: data.email }, "invitation email not delivered")
         }

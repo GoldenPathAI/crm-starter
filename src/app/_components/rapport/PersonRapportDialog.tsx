@@ -524,7 +524,7 @@ const groupEntriesByDay = (rows: RapportEntry[]): EntryDayGroup[] => {
     const date = entryDateIso(entry)
     const last = groups[groups.length - 1]
 
-    return last !== undefined && last.date === date
+    return last?.date === date
       ? [...groups.slice(0, -1), { date, rows: [...last.rows, entry] }]
       : [...groups, { date, rows: [entry] }]
   }, [])

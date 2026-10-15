@@ -10,6 +10,7 @@ import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { ToastVariant, useToast } from "@/app/_ui/Toast"
 import { authClient } from "@/lib/auth/authClient"
+import { formText } from "@/app/_lib/formText"
 
 const MIN_PASSWORD_LENGTH = 8
 
@@ -22,9 +23,9 @@ export function PasswordCard() {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
-    const currentPassword = String(formData.get("currentPassword") ?? "")
-    const newPassword = String(formData.get("newPassword") ?? "")
-    const confirmPassword = String(formData.get("confirmPassword") ?? "")
+    const currentPassword = formText(formData, "currentPassword")
+    const newPassword = formText(formData, "newPassword")
+    const confirmPassword = formText(formData, "confirmPassword")
 
     setError(undefined)
 
@@ -77,7 +78,7 @@ export function PasswordCard() {
         </div>
       </CardHeader>
       <CardContent className="px-6 py-6">
-        <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
           <Field label="Současné heslo" htmlFor="currentPassword">
             <Input
               id="currentPassword"

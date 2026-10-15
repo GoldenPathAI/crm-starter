@@ -12,6 +12,7 @@ import { SortDirection } from "@/core/types/query.types"
 import { parseTicketQuery, TICKET_VIEWS, type TicketView } from "./_lib/parseTicketQuery"
 import { TicketsTable } from "./_components/TicketsTable"
 import { NewTicketButton } from "./_components/NewTicketButton"
+import { recordFromKeys } from "@/lib/collections"
 
 export const dynamic = "force-dynamic"
 
@@ -112,13 +113,9 @@ export default async function UkolyPage({
         : true,
     )
 
-  const viewCounts = TICKET_VIEWS.reduce(
-    (counts, view) => {
-      counts[view] = scoped.filter((ticket) => matchesView(ticket, view, today, weekEnd, doneValue)).length
-
-      return counts
-    },
-    {} as Record<TicketView, number>,
+  const viewCounts = recordFromKeys(
+    TICKET_VIEWS,
+    (view) => scoped.filter((ticket) => matchesView(ticket, view, today, weekEnd, doneValue)).length,
   )
 
   const factor = state.sortDir === SortDirection.Desc ? -1 : 1

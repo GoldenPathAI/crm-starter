@@ -50,7 +50,7 @@ export function AcceptInvite({
       <Button
         type="button"
         size="md"
-        onClick={onAccept}
+        onClick={() => void onAccept()}
         disabled={pending}
         className="w-full cursor-pointer"
       >

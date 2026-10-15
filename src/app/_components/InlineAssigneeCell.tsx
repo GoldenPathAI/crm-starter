@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { UserPlus } from "lucide-react"
 import type { OrgMember } from "@/core/types/crm.types"
@@ -37,14 +37,14 @@ export function InlineAssigneeCell({
   const [pending, startTransition] = useTransition()
 
   // Resync when the server row changes (e.g. after refresh or an edit elsewhere), unless a write
-  // is mid-flight and holding the optimistic value.
+  // is mid-flight and holding the optimistic value. Adjusted during render, so the new
+  // selection shows in the same pass instead of one effect later.
   const serverIds = idsOf(assignees).join(",")
-  useEffect(() => {
-    if (!pending) {
-      setSelected(idsOf(assignees))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serverIds])
+  const [syncedIds, setSyncedIds] = useState(serverIds)
+  if (serverIds !== syncedIds && !pending) {
+    setSyncedIds(serverIds)
+    setSelected(idsOf(assignees))
+  }
 
   const memberById = new Map(members.map((member) => [member.userId, member]))
   const current = selected

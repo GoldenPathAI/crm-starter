@@ -77,76 +77,71 @@ const RECURRENCE_OPTIONS: ReadonlyArray<{ value: TicketRecurrence | null; label:
   { value: "quarterly", label: "Čtvrtletně" },
 ]
 
-const projectClientMap = (options: TaskDetailOptions | null): Record<string, string> => {
-  const map: Record<string, string> = {}
-  if (options === null) {
-    return map
-  }
-
-  for (const [clientId, projects] of Object.entries(options.projectsByClient)) {
-    for (const project of projects) {
-      map[project.value] = clientId
-    }
-  }
-
-  return map
-}
+const projectClientMap = (options: TaskDetailOptions | null): Record<string, string> =>
+  options === null
+    ? {}
+    : Object.fromEntries(
+        Object.entries(options.projectsByClient).flatMap(([clientId, projects]) =>
+          projects.map((project) => [project.value, clientId]),
+        ),
+      )
 
 const applyPatch = (
   data: TaskDetailData,
   patch: TaskFieldPatch,
   options: TaskDetailOptions | null,
 ): TaskDetailData => {
-  const next: TaskDetailData = { ...data }
-  if (patch.title !== undefined) {
-    next.title = patch.title
+  const fields: TaskDetailData = {
+    ...data,
+    ...(patch.title !== undefined ? { title: patch.title } : {}),
+    ...(patch.description !== undefined ? { description: patch.description ?? "" } : {}),
+    ...(patch.status !== undefined ? { status: patch.status } : {}),
+    ...(patch.priority !== undefined ? { priority: patch.priority } : {}),
+    ...(patch.dueAt !== undefined ? { dueAt: patch.dueAt } : {}),
+    ...(patch.labels !== undefined ? { labels: patch.labels } : {}),
+    ...(patch.recurrence !== undefined ? { recurrence: patch.recurrence } : {}),
   }
-
-  if (patch.description !== undefined) {
-    next.description = patch.description ?? ""
-  }
-
-  if (patch.status !== undefined) {
-    next.status = patch.status
-  }
-
-  if (patch.priority !== undefined) {
-    next.priority = patch.priority
-  }
-
-  if (patch.dueAt !== undefined) {
-    next.dueAt = patch.dueAt
-  }
-
-  if (patch.labels !== undefined) {
-    next.labels = patch.labels
-  }
-
-  if (patch.recurrence !== undefined) {
-    next.recurrence = patch.recurrence
-  }
-
-  if (patch.projectId !== undefined) {
-    next.projectId = patch.projectId
-    if (patch.projectId === null) {
-      next.projectName = null
-    } else if (options !== null) {
-      const owner = projectClientMap(options)[patch.projectId]
-      const projectOptions = owner !== undefined ? options.projectsByClient[owner] ?? [] : []
-      next.projectName = projectOptions.find((p) => p.value === patch.projectId)?.label ?? next.projectName
-      if (owner !== undefined) {
-        next.clientId = owner
-        next.clientName = options.clients.find((c) => c.value === owner)?.label ?? next.clientName
-      }
+  const withProject = ((): TaskDetailData => {
+    if (patch.projectId === undefined) {
+      return fields
     }
+
+    if (patch.projectId === null) {
+      return { ...fields, projectId: null, projectName: null }
+    }
+
+    if (options === null) {
+      return { ...fields, projectId: patch.projectId }
+    }
+
+    const projectId = patch.projectId
+    const owner = projectClientMap(options)[projectId]
+    const projectOptions = owner !== undefined ? options.projectsByClient[owner] ?? [] : []
+    const projectName = projectOptions.find((p) => p.value === projectId)?.label ?? fields.projectName
+    if (owner === undefined) {
+      return { ...fields, projectId, projectName }
+    }
+
+    return {
+      ...fields,
+      projectId,
+      projectName,
+      clientId: owner,
+      clientName: options.clients.find((c) => c.value === owner)?.label ?? fields.clientName,
+    }
+  })()
+
+  if (patch.clientId === undefined || options === null) {
+    return withProject
   }
 
-  if (patch.clientId !== undefined && options !== null) {
-    next.clientId = patch.clientId
-    next.clientName = options.clients.find((c) => c.value === patch.clientId)?.label ?? patch.clientId
-  }
+  const clientId = patch.clientId
 
-  return next
+  return {
+    ...withProject,
+    clientId,
+    clientName: options.clients.find((c) => c.value === clientId)?.label ?? clientId,
+  }
 }
 
 export function TaskDetailModal({ state, options, today, onClose }: TaskDetailModalProps) {
@@ -550,47 +545,18 @@ function CreateView({
       setErrors((prev) => (prev.client === undefined ? prev : { ...prev, client: undefined }))
     }
 
-    setDraft((prev) => {
-      const next = { ...prev }
-      if (fields.title !== undefined) {
-        next.title = fields.title
-      }
-
-      if (fields.description !== undefined) {
-        next.description = fields.description ?? ""
-      }
-
-      if (fields.status !== undefined) {
-        next.status = fields.status
-      }
-
-      if (fields.priority !== undefined) {
-        next.priority = fields.priority
-      }
-
-      if (fields.dueAt !== undefined) {
-        next.dueAt = fields.dueAt
-      }
-
-      if (fields.labels !== undefined) {
-        next.labels = fields.labels
-      }
-
-      if (fields.recurrence !== undefined) {
-        next.recurrence = fields.recurrence
-      }
-
-      if (fields.clientId !== undefined) {
-        next.clientId = fields.clientId
-        next.projectId = null
-      }
-
-      if (fields.projectId !== undefined) {
-        next.projectId = fields.projectId
-      }
-
-      return next
-    })
+    setDraft((prev) => ({
+      ...prev,
+      ...(fields.title !== undefined ? { title: fields.title } : {}),
+      ...(fields.description !== undefined ? { description: fields.description ?? "" } : {}),
+      ...(fields.status !== undefined ? { status: fields.status } : {}),
+      ...(fields.priority !== undefined ? { priority: fields.priority } : {}),
+      ...(fields.dueAt !== undefined ? { dueAt: fields.dueAt } : {}),
+      ...(fields.labels !== undefined ? { labels: fields.labels } : {}),
+      ...(fields.recurrence !== undefined ? { recurrence: fields.recurrence } : {}),
+      ...(fields.clientId !== undefined ? { clientId: fields.clientId, projectId: null } : {}),
+      ...(fields.projectId !== undefined ? { projectId: fields.projectId } : {}),
+    }))
   }
 
   const clientName = options?.clients.find((c) => c.value === draft.clientId)?.label ?? ""
@@ -600,13 +566,11 @@ function CreateView({
       : null
 
   const submit = () => {
-    const nextErrors: { title?: string; client?: string } = {}
-    if (draft.title.trim().length === 0) {
-      nextErrors.title = "Vyplňte název úkolu."
-    }
-
-    if (draft.clientId.length === 0 && draft.projectId === null) {
-      nextErrors.client = "Vyberte klienta."
+    const nextErrors: { title?: string; client?: string } = {
+      ...(draft.title.trim().length === 0 ? { title: "Vyplňte název úkolu." } : {}),
+      ...(draft.clientId.length === 0 && draft.projectId === null
+        ? { client: "Vyberte klienta." }
+        : {}),
     }
 
     if (nextErrors.title !== undefined || nextErrors.client !== undefined) {

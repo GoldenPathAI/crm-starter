@@ -58,8 +58,10 @@ export async function recordRecentItem(
   userId: string,
   input: RecordRecentItemInput,
 ): Promise<void> {
-  if (!isRecentItemType(input.itemType)) {
-    throw new Error(`Neplatný typ položky: ${input.itemType}`)
+  // Callers outside TypeScript (the API) can still send anything.
+  const itemType: string = input.itemType
+  if (!isRecentItemType(itemType)) {
+    throw new Error(`Neplatný typ položky: ${itemType}`)
   }
 
   const dbc = resolveDbc(scope)

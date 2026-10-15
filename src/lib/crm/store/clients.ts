@@ -121,27 +121,19 @@ export async function listClients(
     throw new Error("Číselník ticket_status nemá hodnotu se semantikou done.")
   }
 
-  const conditions = [eq(clients.organizationId, scope.orgId)]
-  if (filters.statuses !== undefined) {
-    conditions.push(inArray(clients.status, filters.statuses))
-  }
-
-  if (filters.industries !== undefined) {
-    conditions.push(inArray(clients.industry, filters.industries))
-  }
-
-  if (filters.services !== undefined) {
-    conditions.push(arrayOverlaps(clients.services, filters.services))
-  }
-
-  if (filters.labels !== undefined) {
-    conditions.push(arrayOverlaps(clients.labels, filters.labels))
-  }
+  // and() drops the undefined entries, so an absent filter adds no condition.
+  const where = and(
+    eq(clients.organizationId, scope.orgId),
+    filters.statuses !== undefined ? inArray(clients.status, filters.statuses) : undefined,
+    filters.industries !== undefined ? inArray(clients.industry, filters.industries) : undefined,
+    filters.services !== undefined ? arrayOverlaps(clients.services, filters.services) : undefined,
+    filters.labels !== undefined ? arrayOverlaps(clients.labels, filters.labels) : undefined,
+  )
 
   const clientRows = await dbc
     .select()
     .from(clients)
-    .where(and(...conditions))
+    .where(where)
     .orderBy(asc(clients.id))
   const baseClients = clientRows.map(toClient)
   const ids = baseClients.map((client) => client.id)
@@ -292,7 +284,7 @@ export async function getClient(scope: OrgScope, id: string): Promise<ClientDeta
     projects: projectRows.map(toProject),
     tickets: await attachTicketAssignees(scope, ticketList),
     activities: hydratedActivities,
-    documents: docList.sort((a, b) => b.id.localeCompare(a.id)),
+    documents: [...docList].sort((a, b) => b.id.localeCompare(a.id)),
   }
 }
 

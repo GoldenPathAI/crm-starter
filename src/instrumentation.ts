@@ -2,7 +2,7 @@
 // last-resort process handlers so a crash that escapes every request path still gets
 // recorded. Guarded to the Node.js runtime; the edge runtime has no process handlers.
 // Wire your own alerting (Telegram, Slack, Sentry) into reportFatal.
-export async function register(): Promise<void> {
+export function register(): void {
   if (process.env.NEXT_RUNTIME !== "nodejs") {
     return
   }

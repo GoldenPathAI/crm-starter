@@ -247,7 +247,7 @@ function UserMenu({
         </Link>
         <button
           type="button"
-          onClick={onSignOut}
+          onClick={() => void onSignOut()}
           disabled={pending}
           className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] text-foreground transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
         >

@@ -18,7 +18,7 @@ export function LogoutButton() {
   }
 
   return (
-    <Button type="button" variant="outline" size="md" onClick={onClick} disabled={pending} className="w-full cursor-pointer">
+    <Button type="button" variant="outline" size="md" onClick={() => void onClick()} disabled={pending} className="w-full cursor-pointer">
       {pending ? <Spinner className="size-4" /> : <LogOut className="size-4" />}
       Odhlásit se
     </Button>

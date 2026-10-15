@@ -30,12 +30,14 @@ export function DeploymentGuard({ currentDeployId }: { currentDeployId: string }
           return
         }
 
-        const data: { deployId?: string } = await res.json()
+        const data: unknown = await res.json()
+        const deployId =
+          typeof data === "object" && data !== null && "deployId" in data ? data.deployId : undefined
         if (
           !cancelled &&
-          typeof data.deployId === "string" &&
-          data.deployId !== "dev" &&
-          data.deployId !== currentDeployId
+          typeof deployId === "string" &&
+          deployId !== "dev" &&
+          deployId !== currentDeployId
         ) {
           // Record which bundle we reloaded away from so a persistent mismatch cannot loop.
           sessionStorage.setItem(RELOADED_FLAG, currentDeployId)

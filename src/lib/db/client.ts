@@ -38,18 +38,18 @@ const createHandle = (): DbHandle => {
 }
 
 const getHandle = (): DbHandle => {
-  if (handle === null) {
-    handle = createHandle()
-  }
+  handle ??= createHandle()
 
   return handle
 }
 
 export const db: CrmDb = new Proxy({} as CrmDb, {
-  get(_target, prop) {
+  get(_target, prop): unknown {
     const active = getHandle().db
+    const value: unknown = Reflect.get(active, prop)
 
-    return active[prop as keyof CrmDb]
+    // Methods run against the real drizzle instance, not the proxy.
+    return typeof value === "function" ? value.bind(active) : value
   },
 })
 

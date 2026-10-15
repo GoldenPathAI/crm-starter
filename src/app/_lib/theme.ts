@@ -25,4 +25,4 @@ export const resolveTheme = (
 
 // Runs before first paint in the document head, so the stored preference is applied
 // without a flash of the light theme. Keep it dependency-free and self-contained.
-export const themeInitScript = `(function(){try{var p=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(p!=="light"&&p!=="dark"){p=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}var r=document.documentElement;r.setAttribute("data-theme",p);r.style.colorScheme=p}catch(e){document.documentElement.setAttribute("data-theme","light")}})()`
+export const themeInitScript = `(function(){try{var p=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(p!=="light"&&p!=="dark"){p=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",p)}catch(e){document.documentElement.setAttribute("data-theme","light")}})()`

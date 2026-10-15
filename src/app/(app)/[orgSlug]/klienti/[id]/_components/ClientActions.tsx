@@ -69,19 +69,20 @@ const COPY: Readonly<Record<ActivityKind, DialogCopy>> = {
 const CardIconButton = forwardRef<
   HTMLButtonElement,
   { label: string } & React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ label, ...props }, ref) => (
-  <button
-    ref={ref}
-    type="button"
-    aria-label={label}
-    title={label}
-    className="flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-soft transition-colors hover:bg-surface-3/60 hover:text-foreground"
-    {...props}
-  >
-    <Plus className="size-4" />
-  </button>
-))
-CardIconButton.displayName = "CardIconButton"
+>(function CardIconButton({ label, ...props }, ref) {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      aria-label={label}
+      title={label}
+      className="flex size-8 cursor-pointer items-center justify-center rounded-full text-muted-soft transition-colors hover:bg-surface-3/60 hover:text-foreground"
+      {...props}
+    >
+      <Plus className="size-4" />
+    </button>
+  )
+})
 
 export function AddNoteButton({ clientId }: { clientId: string }) {
   const [open, setOpen] = useState(false)

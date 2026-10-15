@@ -8,7 +8,7 @@ import { orgHref } from "@/lib/nav"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import type { ActionState } from "@/app/_lib/actionState"
 
-export interface CreateProjectPayload {
+interface CreateProjectPayload {
   clientId: string
   name: string
   description: string

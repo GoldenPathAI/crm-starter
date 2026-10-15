@@ -39,7 +39,7 @@ const ticketBulkMessage = (count: number, forms: readonly [string, string, strin
       ? `${count} úkoly ${forms[1]}`
       : `${count} úkolů ${forms[2]}`
 
-export interface QuickTicketEditPayload {
+interface QuickTicketEditPayload {
   ticketId: string
   title: string
   description: string

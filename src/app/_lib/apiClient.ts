@@ -6,11 +6,12 @@ import type { ActionState } from "./actionState"
 const CSRF_HEADER = "x-crm-web"
 
 export class ApiError extends Error {
-  readonly status: number
-  constructor(message: string, status: number) {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
     super(message)
     this.name = "ApiError"
-    this.status = status
   }
 }
 
@@ -62,14 +63,9 @@ export async function crmApi<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const mutation = method !== HttpMethod.GET
-  const headers: Record<string, string> = {}
-  if (options.body !== undefined) {
-    headers["content-type"] = "application/json"
-  }
-
-  if (mutation) {
-    headers[CSRF_HEADER] = "1"
+  const headers: Record<string, string> = {
+    ...(options.body !== undefined ? { "content-type": "application/json" } : {}),
+    ...(method !== HttpMethod.GET ? { [CSRF_HEADER]: "1" } : {}),
   }
 
   const response = await fetch(

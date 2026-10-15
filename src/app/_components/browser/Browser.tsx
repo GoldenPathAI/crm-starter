@@ -53,6 +53,7 @@ import type {
   BrowserSort,
   BrowserViewTabs,
 } from "./types"
+import { toggleMember } from "@/lib/collections"
 
 const SEARCH_DEBOUNCE_MS = 250
 const GROUP_ROW_CAP = 50
@@ -186,17 +187,8 @@ const normalizeGroupLevels = (
   }
 
   const list = Array.isArray(current) ? current : [current]
-  const levels: string[] = []
-  for (const level of list) {
-    if (level.length > 0 && !levels.includes(level)) {
-      levels.push(level)
-      if (levels.length >= maxLevels) {
-        break
-      }
-    }
-  }
 
-  return levels
+  return [...new Set(list.filter((level) => level.length > 0))].slice(0, maxLevels)
 }
 
 export function Browser<R>({
@@ -317,7 +309,7 @@ export function Browser<R>({
   }
 
   const setSort = (field: string) => {
-    const current = sort !== undefined && sort.field === field ? sort.direction : null
+    const current = sort?.field === field ? sort.direction : null
     const nextDir =
       current === null
         ? SortDirection.Asc
@@ -437,16 +429,10 @@ export function Browser<R>({
     }
   }
 
-  const presetResetKeys = useMemo(() => {
-    const keys = new Set<string>()
-    for (const preset of presets ?? []) {
-      for (const key of Object.keys(preset.params)) {
-        keys.add(key)
-      }
-    }
-
-    return [...keys]
-  }, [presets])
+  const presetResetKeys = useMemo(
+    () => [...new Set((presets ?? []).flatMap((preset) => Object.keys(preset.params)))],
+    [presets],
+  )
 
   const isPresetActive = (preset: BrowserPreset): boolean =>
     Object.entries(preset.params).every(([key, value]) => searchParams.get(key) === value)
@@ -501,13 +487,7 @@ export function Browser<R>({
   }, [group, groupLevels, rows])
 
   const toggleGroupCollapse = (key: string) => {
-    const next = new Set(collapsedGroups)
-    if (next.has(key)) {
-      next.delete(key)
-    } else {
-      next.add(key)
-    }
-
+    const next = toggleMember(collapsedGroups, key)
     setCollapsedGroups(next)
     if (storageKey !== null) {
       writeCollapsedGroups(storageKey, next)
@@ -537,14 +517,7 @@ export function Browser<R>({
       return
     }
 
-    const next = new Set(selection.selected)
-    if (next.has(key)) {
-      next.delete(key)
-    } else {
-      next.add(key)
-    }
-
-    selection.onChange(next)
+    selection.onChange(toggleMember(selection.selected, key))
   }
 
   const clickable = rowHref !== undefined || onRowClick !== undefined
@@ -609,7 +582,7 @@ export function Browser<R>({
             )}
           >
             <SelectionCheckbox
-              checked={selection !== undefined && selection.selected.has(key)}
+              checked={selection?.selected.has(key) === true}
               onCheckedChange={() => toggleRowSelected(key)}
               ariaLabel="Vybrat řádek"
             />
@@ -1043,37 +1016,49 @@ function buildChips(
   onSingle: (key: string, value: string | null) => void,
   onDateRange: (startKey: string, endKey: string, start: string | null, end: string | null) => void,
 ): Chip[] {
-  const chips: Chip[] = []
-  for (const filter of filters) {
+  return filters.flatMap((filter): Chip[] => {
     if (filter.kind === "checkbox") {
-      for (const value of filter.selected) {
+      return filter.selected.map((value) => {
         const option = filter.options.find((candidate) => candidate.value === value)
-        chips.push({
+
+        return {
           key: `${filter.paramKey}-${value}`,
           label: `${filter.label}: ${option?.label ?? value}`,
           onRemove: () => onToggle(filter.paramKey, value, filter.selected),
-        })
+        }
+      })
+    }
+
+    if (filter.kind === "single") {
+      if (filter.value === undefined) {
+        return []
       }
-    } else if (filter.kind === "single") {
-      if (filter.value !== undefined) {
-        const option = filter.options.find((candidate) => candidate.value === filter.value)
-        chips.push({
+
+      const option = filter.options.find((candidate) => candidate.value === filter.value)
+
+      return [
+        {
           key: filter.paramKey,
           label: `${filter.label}: ${option?.label ?? filter.value}`,
           onRemove: () => onSingle(filter.paramKey, null),
-        })
-      }
-    } else if (filter.start !== undefined || filter.end !== undefined) {
-      const format = filter.formatValue ?? ((iso: string) => formatCzechDate(iso))
-      chips.push({
+        },
+      ]
+    }
+
+    if (filter.start === undefined && filter.end === undefined) {
+      return []
+    }
+
+    const format = filter.formatValue ?? ((iso: string) => formatCzechDate(iso))
+
+    return [
+      {
         key: filter.startKey,
         label: `${filter.label}: ${filter.start !== undefined ? format(filter.start) : "…"} - ${filter.end !== undefined ? format(filter.end) : "…"}`,
         onRemove: () => onDateRange(filter.startKey, filter.endKey, null, null),
-      })
-    }
-  }
-
-  return chips
+      },
+    ]
+  })
 }
 
 interface HeaderCellProps<R> {
@@ -1112,7 +1097,7 @@ interface SortButtonProps {
 }
 
 function SortButton({ field, label, sort, onSort }: SortButtonProps) {
-  const active = sort !== undefined && sort.field === field
+  const active = sort?.field === field
   const direction = active ? sort.direction : null
   const Icon =
     direction === SortDirection.Asc

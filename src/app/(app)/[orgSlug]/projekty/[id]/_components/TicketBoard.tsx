@@ -25,6 +25,7 @@ import { cn } from "@/lib/cn"
 import type { EnumOption, TicketWithAssignees } from "@/core/types/crm.types"
 import { changeTicketStatusAction, reorderTicketAction } from "../actions"
 import { DueTag, PriorityTag, SubtaskBadge } from "./ticketBits"
+import { insertAt } from "@/lib/collections"
 
 const isLoudPriority = (option: EnumOption | undefined): boolean =>
   option?.semantic === "critical" || option?.semantic === "high"
@@ -179,9 +180,12 @@ export function TicketBoard({
     const originalIndex = dest.findIndex((ticket) => ticket.id === ticketId)
     // dropIndex counts against the column as shown (dragged card still visible),
     // so if the card starts above the drop point in the same column, shift down one.
-    const insertAt = originalIndex !== -1 && originalIndex < dropIndex ? dropIndex - 1 : dropIndex
-    const orderedIds = dest.filter((ticket) => ticket.id !== ticketId).map((ticket) => ticket.id)
-    orderedIds.splice(insertAt, 0, ticketId)
+    const insertIndex = originalIndex !== -1 && originalIndex < dropIndex ? dropIndex - 1 : dropIndex
+    const orderedIds = insertAt(
+      dest.filter((ticket) => ticket.id !== ticketId).map((ticket) => ticket.id),
+      insertIndex,
+      ticketId,
+    )
 
     const previous = localTickets
     const nextOrder = new Map(orderedIds.map((id, index) => [id, index]))

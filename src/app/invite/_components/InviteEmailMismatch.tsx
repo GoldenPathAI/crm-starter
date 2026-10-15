@@ -41,7 +41,7 @@ export function InviteEmailMismatch({
         type="button"
         variant="outline"
         size="md"
-        onClick={onSwitch}
+        onClick={() => void onSwitch()}
         disabled={pending}
         className="w-full cursor-pointer"
       >

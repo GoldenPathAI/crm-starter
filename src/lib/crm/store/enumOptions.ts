@@ -157,7 +157,7 @@ export async function archiveEnumOption(scope: OrgScope, id: string): Promise<vo
   }
 
   const required = REQUIRED_SEMANTICS[row.kind]
-  if (row.semantic !== null && required !== undefined && required.includes(row.semantic)) {
+  if (row.semantic !== null && required?.includes(row.semantic) === true) {
     throw new Error("Tuto hodnotu nelze archivovat, je vyžadována aplikací.")
   }
 

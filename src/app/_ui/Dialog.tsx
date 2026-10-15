@@ -13,7 +13,7 @@ export const DialogClose = DialogPrimitive.Close
 export const DialogContent = forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => {
+>(function DialogContent({ className, children, ...props }, ref) {
   const reduceMotion = useReducedMotion()
 
   return (
@@ -50,7 +50,6 @@ export const DialogContent = forwardRef<
     </DialogPrimitive.Portal>
   )
 })
-DialogContent.displayName = "DialogContent"
 
 export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col gap-1.5 pr-8", className)} {...props} />
@@ -59,17 +58,18 @@ export const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLD
 export const DialogTitle = forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn(
-      "text-[17px] font-semibold leading-tight tracking-tight text-foreground",
-      className,
-    )}
-    {...props}
-  />
-))
-DialogTitle.displayName = "DialogTitle"
+>(function DialogTitle({ className, ...props }, ref) {
+  return (
+    <DialogPrimitive.Title
+      ref={ref}
+      className={cn(
+        "text-[17px] font-semibold leading-tight tracking-tight text-foreground",
+        className,
+      )}
+      {...props}
+    />
+  )
+})
 
 export const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div

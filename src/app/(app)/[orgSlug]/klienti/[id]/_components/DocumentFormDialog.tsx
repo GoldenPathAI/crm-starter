@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 import { Check, Paperclip, Upload, X } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
 import {
@@ -65,18 +65,19 @@ export function DocumentFormDialog({
     () => initialValues ?? emptyDocumentValues(),
   )
 
-  useEffect(() => {
+  // Reset only when the dialog is (re)opened, adjusted during render. A new key remounts
+  // the file input, which clears the file the browser still holds from last time.
+  const [wasOpen, setWasOpen] = useState(open)
+  const [fileInputKey, setFileInputKey] = useState(0)
+  if (open !== wasOpen) {
+    setWasOpen(open)
     if (open) {
       setValues(initialValues ?? emptyDocumentValues())
       setError(null)
       setFile(null)
-      if (fileInputRef.current !== null) {
-        fileInputRef.current.value = ""
-      }
+      setFileInputKey((key) => key + 1)
     }
-    // Reset only when the dialog is (re)opened.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open])
+  }
 
   const patch = (next: Partial<DocumentFormValues>) => setValues((prev) => ({ ...prev, ...next }))
 
@@ -207,6 +208,7 @@ export function DocumentFormDialog({
 
           <Field label="Soubor" htmlFor="doc-file" hint="Nahrajte přílohu do 25 MB">
             <input
+              key={fileInputKey}
               ref={fileInputRef}
               id="doc-file"
               type="file"

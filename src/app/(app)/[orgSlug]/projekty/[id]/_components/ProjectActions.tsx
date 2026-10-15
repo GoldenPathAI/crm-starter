@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/app/_ui/Button"
@@ -62,14 +62,15 @@ export function ProjectActions({ project, clientOptions, statusOptions, ticketCo
   const [error, setError] = useState<string | null>(null)
   const [values, setValues] = useState<ProjectFormValues>(() => valuesFromProject(project))
 
-  useEffect(() => {
-    if (open) {
+  // The form starts from the source project every time the dialog opens.
+  const changeOpen = (next: boolean) => {
+    if (next) {
       setValues(valuesFromProject(project))
       setError(null)
     }
-    // Reset the form from the source project only when the dialog opens.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open])
+
+    setOpen(next)
+  }
 
   const save = () => {
     if (values.clientId.length === 0) {
@@ -125,7 +126,7 @@ export function ProjectActions({ project, clientOptions, statusOptions, ticketCo
       : "Projekt nemá žádné úkoly. Smazání je nevratné."
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={changeOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Pencil className="size-4" />

@@ -60,36 +60,35 @@ export function buildHistoryBatches(
   rows: readonly AuditEntryWithActor[],
   undoneRequestIds: ReadonlySet<string>,
 ): HistoryBatchView[] {
-  const batches: HistoryBatchView[] = []
-  const byKey = new Map<string, HistoryBatchView>()
+  const batchKey = (row: AuditEntryWithActor): string => row.requestId ?? `row:${row.id}`
+  const keys = [...new Set(rows.map(batchKey))]
 
-  for (const row of rows) {
-    const key = row.requestId ?? `row:${row.id}`
-    const entryView: HistoryEntryView = { id: row.id, operation: row.operation, ...humanizeEntry(row) }
-    const existing = byKey.get(key)
-    if (existing !== undefined) {
-      existing.entries.unshift(entryView)
-      continue
+  return keys.flatMap((key) => {
+    const batchRows = rows.filter((row) => batchKey(row) === key)
+    const [newest] = batchRows
+    if (newest === undefined) {
+      return []
     }
 
-    const undone = row.requestId !== null && undoneRequestIds.has(row.requestId)
-    const batch: HistoryBatchView = {
-      key,
-      requestId: row.requestId,
-      sourceLabel: sourceLabel(row.source),
-      actorLabel: actorLabel(row),
-      createdLabel: formatDistanceToNow(parseISO(row.createdAt.toISOString()), {
-        locale: cs,
-        addSuffix: true,
-      }),
-      createdAt: row.createdAt.toISOString(),
-      entries: [entryView],
-      undoable: !undone && row.requestId !== null && isUndoableSource(row.source),
-      undone,
-    }
-    byKey.set(key, batch)
-    batches.push(batch)
-  }
+    const undone = newest.requestId !== null && undoneRequestIds.has(newest.requestId)
 
-  return batches
+    return [
+      {
+        key,
+        requestId: newest.requestId,
+        sourceLabel: sourceLabel(newest.source),
+        actorLabel: actorLabel(newest),
+        createdLabel: formatDistanceToNow(parseISO(newest.createdAt.toISOString()), {
+          locale: cs,
+          addSuffix: true,
+        }),
+        createdAt: newest.createdAt.toISOString(),
+        entries: [...batchRows]
+          .reverse()
+          .map((row) => ({ id: row.id, operation: row.operation, ...humanizeEntry(row) })),
+        undoable: !undone && newest.requestId !== null && isUndoableSource(newest.source),
+        undone,
+      },
+    ]
+  })
 }

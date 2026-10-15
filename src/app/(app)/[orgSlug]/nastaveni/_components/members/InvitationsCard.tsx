@@ -143,7 +143,7 @@ export function InvitationsCard({
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => onCopy(invitation.id)}
+                  onClick={() => void onCopy(invitation.id)}
                   className="cursor-pointer"
                 >
                   <Copy className="size-3.5" />

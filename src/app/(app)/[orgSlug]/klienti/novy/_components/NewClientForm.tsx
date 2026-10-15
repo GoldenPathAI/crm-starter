@@ -44,13 +44,13 @@ export function NewClientForm({ statusView, serviceView }: NewClientFormProps) {
     const formData = new FormData(event.currentTarget)
     const name = formData.get("name")
     const industry = formData.get("industry")
-    const nextErrors: ClientFieldErrors = {}
-    if (typeof name !== "string" || name.trim().length === 0) {
-      nextErrors.name = "Vyplňte název klienta."
-    }
-
-    if (typeof industry !== "string" || industry.trim().length === 0) {
-      nextErrors.industry = "Vyplňte obor."
+    const nextErrors: ClientFieldErrors = {
+      ...(typeof name !== "string" || name.trim().length === 0
+        ? { name: "Vyplňte název klienta." }
+        : {}),
+      ...(typeof industry !== "string" || industry.trim().length === 0
+        ? { industry: "Vyplňte obor." }
+        : {}),
     }
 
     if (nextErrors.name !== undefined || nextErrors.industry !== undefined) {

@@ -116,7 +116,7 @@ export function SavedViewsMenu({ orgSlug, pageKey, currentQuery, onApply }: Save
         ) : (
           <div className="flex max-h-72 flex-col gap-0.5 overflow-y-auto p-1.5">
             {views.map((view) => {
-              const active = activeView !== undefined && activeView.id === view.id
+              const active = activeView?.id === view.id
               const deletePending = pendingDeleteId === view.id
 
               return (

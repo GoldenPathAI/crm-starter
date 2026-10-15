@@ -42,7 +42,7 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
   const expired =
     invitation?.expiresAt !== undefined &&
     new Date(invitation.expiresAt).getTime() < Date.now()
-  const invalid = invitation === null || invitation.status !== "pending" || expired
+  const invalid = invitation?.status !== "pending" || expired
 
   if (invalid || invitation === null) {
     return (

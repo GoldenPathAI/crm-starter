@@ -42,14 +42,14 @@ export default async function PrehledPage({
   const greeting = greetingFor(now.getHours())
   const dateLabel = capitalize(format(now, "EEEE d. MMMM yyyy", { locale: cs }))
 
-  const hotParts: string[] = []
-  if (data.overdueTickets.length > 0) {
-    hotParts.push(`${data.overdueTickets.length} ${ticketWord(data.overdueTickets.length)} po termínu`)
-  }
-
-  if (data.stuckDeals.length > 0) {
-    hotParts.push(`${data.stuckDeals.length} ${formatDeals(data.stuckDeals.length)} bez pohybu`)
-  }
+  const hotParts = [
+    ...(data.overdueTickets.length > 0
+      ? [`${data.overdueTickets.length} ${ticketWord(data.overdueTickets.length)} po termínu`]
+      : []),
+    ...(data.stuckDeals.length > 0
+      ? [`${data.stuckDeals.length} ${formatDeals(data.stuckDeals.length)} bez pohybu`]
+      : []),
+  ]
 
   const statusLine = hotParts.length === 0 ? "Nic nehoří" : hotParts.join(" · ")
 

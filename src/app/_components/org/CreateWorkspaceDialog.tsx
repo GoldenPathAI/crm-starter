@@ -91,7 +91,7 @@ export function CreateWorkspaceDialog({
           </span>
           <DialogTitle>Nová workspace</DialogTitle>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="flex flex-col gap-5">
+        <form onSubmit={(event) => void onSubmit(event)} className="flex flex-col gap-5">
           <Field label="Název" htmlFor="workspace-name" required>
             <Input
               id="workspace-name"

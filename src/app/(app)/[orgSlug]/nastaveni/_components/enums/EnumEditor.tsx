@@ -36,6 +36,7 @@ import {
   unarchiveEnumOptionAction,
   updateEnumOptionAction,
 } from "./actions"
+import { insertAt } from "@/lib/collections"
 
 const VALUE_PATTERN = /^[a-z][a-z0-9_]*$/
 
@@ -72,7 +73,7 @@ function dealGroupBadge(semantic: string | undefined): DealGroupBadge {
 function isRequired(kind: EnumKind, semantic: string | undefined): boolean {
   const required = REQUIRED_SEMANTICS[kind]
 
-  return semantic !== undefined && required !== undefined && required.includes(semantic)
+  return semantic !== undefined && required?.includes(semantic) === true
 }
 
 const rowKey = Symbol("enumOptionRow")
@@ -95,12 +96,11 @@ function reorderIds(ids: string[], sourceId: string, targetId: string, edge: Edg
     return ids
   }
 
-  const insertAt = targetIndex + (edge === "bottom" ? 1 : 0)
+  const insertIndex = targetIndex + (edge === "bottom" ? 1 : 0)
   const without = ids.filter((id) => id !== sourceId)
-  const adjusted = fromIndex < insertAt ? insertAt - 1 : insertAt
-  without.splice(adjusted, 0, sourceId)
+  const adjusted = fromIndex < insertIndex ? insertIndex - 1 : insertIndex
 
-  return without
+  return insertAt(without, adjusted, sourceId)
 }
 
 export function EnumEditor({
@@ -296,20 +296,13 @@ function normalizeLocal(patch: {
   color?: ColorToken
   defaultProbability?: number | null
 }): Partial<EnumOption> {
-  const next: Partial<EnumOption> = {}
-  if (patch.label !== undefined) {
-    next.label = patch.label
+  return {
+    ...(patch.label !== undefined ? { label: patch.label } : {}),
+    ...(patch.color !== undefined ? { color: patch.color } : {}),
+    ...(patch.defaultProbability !== undefined
+      ? { defaultProbability: patch.defaultProbability ?? undefined }
+      : {}),
   }
-
-  if (patch.color !== undefined) {
-    next.color = patch.color
-  }
-
-  if (patch.defaultProbability !== undefined) {
-    next.defaultProbability = patch.defaultProbability ?? undefined
-  }
-
-  return next
 }
 
 interface OptionRowProps {
