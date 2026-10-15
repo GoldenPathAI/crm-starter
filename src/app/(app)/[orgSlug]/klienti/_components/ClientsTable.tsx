@@ -24,7 +24,8 @@ import type { ClientListFilters, ClientListItem } from "@/lib/crm/store/clients"
 import type { ClientGroupField, ClientSortField } from "@/core/listFields"
 import { SoftBadge } from "./SoftBadge"
 import { badgeFor, type EnumView } from "../_lib/enums"
-import { formatCzk, formatCzkOrDash, relativeDate } from "../_lib/format"
+import { relativeDate } from "../_lib/format"
+import { formatCzk, formatCzkOrDash } from "@/lib/money"
 import { bulkDeleteClientsAction, bulkSetClientStatusAction } from "../actions"
 
 export type FilterOption = BrowserFilterOption

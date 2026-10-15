@@ -27,7 +27,8 @@ import {
   moveDealStageAction,
   setDealAssigneesAction,
 } from "../actions"
-import { formatCzk, formatPercent } from "../_lib/format"
+import { formatPercent } from "../_lib/format"
+import { formatCzk } from "@/lib/money"
 import type { DealListGroup, DealListSortField } from "../_lib/listQuery"
 import { DealDetail, LostDialog, WonDialog } from "./dealDetail"
 

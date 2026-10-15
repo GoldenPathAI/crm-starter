@@ -46,7 +46,8 @@ import {
   setDealAssigneesAction,
   updateDealNextStepAction,
 } from "../actions"
-import { formatCzk, formatCzkCompact, formatDaysInStage, formatPercent, formatShortDate } from "../_lib/format"
+import { formatCzkCompact, formatDaysInStage, formatPercent, formatShortDate } from "../_lib/format"
+import { formatCzk } from "@/lib/money"
 import { DealDetail, LostDialog, StageMoveList, WonDialog } from "./dealDetail"
 import { insertAt } from "@/lib/collections"
 

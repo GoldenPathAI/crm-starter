@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import {
-  formatCzk,
   formatCzkCompact,
   formatDaysInStage,
   formatPercent,
@@ -8,20 +7,7 @@ import {
 
 // The UI separates thousands and units with a non-breaking space, so an amount never
 // wraps between the number and "Kč".
-const NBSP = " "
-
-describe("formatCzk", () => {
-  it("groups thousands and appends Kč", () => {
-    expect(formatCzk(80_000)).toBe(`80${NBSP}000${NBSP}Kč`)
-    expect(formatCzk(1_234_567)).toBe(`1${NBSP}234${NBSP}567${NBSP}Kč`)
-    expect(formatCzk(0)).toBe(`0${NBSP}Kč`)
-  })
-
-  it("rounds to whole crowns and keeps the sign", () => {
-    expect(formatCzk(999.6)).toBe(`1${NBSP}000${NBSP}Kč`)
-    expect(formatCzk(-25_000)).toBe(`-25${NBSP}000${NBSP}Kč`)
-  })
-})
+const NBSP = "\u00a0"
 
 describe("formatCzkCompact", () => {
   it("shortens to thousands and millions", () => {

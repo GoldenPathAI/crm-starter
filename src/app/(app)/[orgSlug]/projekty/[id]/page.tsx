@@ -16,7 +16,7 @@ import { TicketBoard } from "./_components/TicketBoard"
 import { ProjectActions } from "./_components/ProjectActions"
 import { ProjectStatusMenu } from "./_components/ProjectStatusMenu"
 import { CompleteProjectButton } from "./_components/CompleteProjectButton"
-import { formatCzk } from "../_lib/format"
+import { formatCzk } from "@/lib/money"
 
 export const dynamic = "force-dynamic"
 

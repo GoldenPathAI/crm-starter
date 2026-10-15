@@ -13,7 +13,7 @@ import { useOrg } from "@/app/_components/org/OrgProvider"
 import type { Doc } from "@/core/types/crm.types"
 import { SoftBadge } from "@/app/(app)/[orgSlug]/klienti/_components/SoftBadge"
 import { badgeFor, type EnumView } from "@/app/(app)/[orgSlug]/klienti/_lib/enums"
-import { formatCzkOrDash } from "@/app/(app)/[orgSlug]/klienti/_lib/format"
+import { formatCzkOrDash } from "@/lib/money"
 import { emptyDocumentValues, type DocumentFormValues } from "../_lib/documentForm"
 import {
   createDocumentAction,

@@ -2,16 +2,6 @@ import { differenceInCalendarDays, format, parseISO } from "date-fns"
 import { cs } from "date-fns/locale"
 import { todayIso } from "@/lib/dates"
 
-const czk = new Intl.NumberFormat("cs-CZ", {
-  style: "currency",
-  currency: "CZK",
-  maximumFractionDigits: 0,
-})
-
-export const formatCzk = (amount: number): string => czk.format(amount)
-
-export const formatCzkOrDash = (amount: number | undefined): string =>
-  amount === undefined ? "-" : czk.format(amount)
 
 export const formatDate = (iso: string | undefined): string =>
   iso === undefined || iso.length === 0 ? "-" : format(parseISO(iso), "d. M. yyyy", { locale: cs })

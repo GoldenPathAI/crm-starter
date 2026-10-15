@@ -16,7 +16,7 @@ import type { EnumOption } from "@/core/types/crm.types"
 import type { ProjectListItem } from "@/lib/crm/store/projects"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
-import { formatCzk } from "../_lib/format"
+import { formatCzk } from "@/lib/money"
 import type { ProjectGroupValue, ProjectSortField } from "../_lib/listQuery"
 
 interface ProjectsTableProps {

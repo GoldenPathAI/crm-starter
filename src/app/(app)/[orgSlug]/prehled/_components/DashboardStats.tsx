@@ -7,7 +7,7 @@ import { Repeat, TrendingUp, Users, type LucideIcon } from "lucide-react"
 import { StatCard, StatHue } from "@/app/_ui/Stat"
 import { useOrg } from "@/app/_components/org/OrgProvider"
 import { orgHref } from "@/lib/nav"
-import { formatCzk } from "./format"
+import { formatCzk } from "@/lib/money"
 
 interface DashboardStatsProps {
   activeClientsCount: number

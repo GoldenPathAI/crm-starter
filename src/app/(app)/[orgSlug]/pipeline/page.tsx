@@ -33,7 +33,7 @@ import {
 } from "./_lib/listQuery"
 import { ViewToggle } from "./_components/ViewToggle"
 import { NewDealButton } from "./_components/NewDealButton"
-import { formatCzk } from "./_lib/format"
+import { formatCzk } from "@/lib/money"
 
 export const dynamic = "force-dynamic"
 

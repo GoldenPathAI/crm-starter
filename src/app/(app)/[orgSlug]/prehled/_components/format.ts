@@ -1,7 +1,3 @@
-const czkFormatter = new Intl.NumberFormat("cs-CZ", { maximumFractionDigits: 0 })
-
-export const formatCzk = (value: number): string => `${czkFormatter.format(Math.round(value))} Kč`
-
 export const formatDueRelative = (daysUntil: number): string => {
   if (daysUntil < 0) {
     return "po termínu"

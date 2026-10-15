@@ -43,7 +43,8 @@ import { cn } from "@/lib/cn"
 import { formatCzechDate } from "@/lib/dates"
 import type { DealStage, EnumOption, OrgMember } from "@/core/types/crm.types"
 import type { DealCard } from "@/lib/crm/store/deals"
-import { formatCzk, formatDaysInStage, formatPercent } from "../_lib/format"
+import { formatDaysInStage, formatPercent } from "../_lib/format"
+import { formatCzk } from "@/lib/money"
 import { HistorySection } from "@/app/_components/HistorySection"
 import {
   addDealTicketAction,

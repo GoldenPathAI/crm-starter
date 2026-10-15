@@ -15,7 +15,8 @@ import { Badge } from "@/app/_ui/Badge"
 import { EmptyState } from "@/app/_ui/EmptyState"
 import { cn } from "@/lib/cn"
 import { orgHref } from "@/lib/nav"
-import { dayWord, formatCzk } from "./format"
+import { dayWord } from "./format"
+import { formatCzk } from "@/lib/money"
 
 interface HotListProps {
   orgSlug: string
