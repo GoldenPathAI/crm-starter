@@ -232,7 +232,9 @@ through `unknown`, no re-exports and no barrel files, no dynamic `import()` outs
 `src/instrumentation.ts` and tests, explicit member accessibility, `no-floating-promises`,
 `require-await`, `functional/immutable-data`, camelCase or PascalCase file names, the enum
 rules below and the Next rules. A rule is never switched off for a file or a line; the code
-changes instead.
+changes instead. The one scoped exception: in `.tsx` files `functional/immutable-data` lets
+`ref.current`, `document.title` and `element.style.*` be assigned, because React refs are
+mutable by design and DOM properties only change by assignment.
 
 Unit tests sit next to the code as `*.test.ts` (`vitest.config.ts`, `pnpm test`).
 Integration tests are `src/**/*.integration.test.ts` (`vitest.integration.config.ts`) and
@@ -273,7 +275,7 @@ to make a suite pass.
   module exports only async functions; a type a client component needs lives in a plain
   module next to it (`pipeline/_lib/types.ts`).
 - No em dashes anywhere, no emojis, no trailing period on headings or labels. Money is
-  formatted `80 000 Kč`.
+  formatted `80 000 Kč` through `formatCzk` in `src/lib/money.ts`, the only formatter.
 - Comment only non-trivial "why", never "what".
 - Code artifacts are English, including file names and identifiers. Only user-facing copy
   is Czech, with diacritics. Enum value strings that are domain data may stay Czech, the
