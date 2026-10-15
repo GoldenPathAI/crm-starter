@@ -9,6 +9,7 @@ function MoreLink({ href, hidden }: { href: string; hidden: number }) {
   if (hidden <= 0) {
     return null
   }
+
   return (
     <Link
       href={href}

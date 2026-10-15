@@ -11,10 +11,12 @@ export async function userNamesByIds(ids: readonly string[]): Promise<Map<string
   if (unique.length === 0) {
     return new Map()
   }
+
   const rows = await db
     .select({ id: users.id, name: users.name })
     .from(users)
     .where(inArray(users.id, unique))
+
   return new Map(rows.map((row) => [row.id, row.name]))
 }
 
@@ -37,6 +39,7 @@ export async function listUserMemberships(userId: string): Promise<UserMembershi
     .innerJoin(organizations, eq(organizationMembers.organizationId, organizations.id))
     .where(eq(organizationMembers.userId, userId))
     .orderBy(asc(organizations.name))
+
   return rows
 }
 
@@ -53,6 +56,7 @@ export async function listOrgMembers(orgId: string): Promise<OrgMember[]> {
     .innerJoin(users, eq(organizationMembers.userId, users.id))
     .where(eq(organizationMembers.organizationId, orgId))
     .orderBy(asc(users.name))
+
   return rows.map((row) => ({
     userId: row.userId,
     name: row.name,
@@ -85,6 +89,7 @@ export async function listSettingsMembers(orgId: string): Promise<SettingsMember
     .innerJoin(users, eq(organizationMembers.userId, users.id))
     .where(eq(organizationMembers.organizationId, orgId))
     .orderBy(asc(users.name))
+
   return rows.map((row) => ({
     memberId: row.memberId,
     userId: row.userId,
@@ -123,6 +128,7 @@ export async function listPendingInvitations(orgId: string): Promise<PendingInvi
       ),
     )
     .orderBy(desc(organizationInvitations.createdAt))
+
   return rows.map((row) => ({
     id: row.id,
     email: row.email,
@@ -166,6 +172,7 @@ export async function getInvitationForAcceptance(
   if (row === undefined) {
     return null
   }
+
   return {
     id: row.id,
     email: row.email,
@@ -187,6 +194,7 @@ export function isLastOwnerRemoval(members: SettingsMember[], memberId: string):
   if (target === undefined || target.role !== "owner") {
     return false
   }
+
   return ownerCount(members) === 1
 }
 
@@ -199,5 +207,6 @@ export function isLastOwnerDemotion(
   if (target === undefined || target.role !== "owner" || nextRole === "owner") {
     return false
   }
+
   return ownerCount(members) === 1
 }

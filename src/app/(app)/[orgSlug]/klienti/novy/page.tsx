@@ -15,6 +15,7 @@ export default async function NovyKlientPage({ params }: NovyKlientPageProps) {
   const { orgSlug } = await params
   const ctx = await requireOrgContext(orgSlug)
   const enums = await loadOrgEnums(ctx.scope.orgId)
+
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
       <PageHeader

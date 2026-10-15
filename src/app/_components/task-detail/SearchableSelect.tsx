@@ -36,6 +36,7 @@ export function SearchableSelect({
     if (needle.length === 0) {
       return options
     }
+
     return options.filter((option) => option.label.toLowerCase().includes(needle))
   }, [options, query])
 

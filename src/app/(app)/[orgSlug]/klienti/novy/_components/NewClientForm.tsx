@@ -48,17 +48,21 @@ export function NewClientForm({ statusView, serviceView }: NewClientFormProps) {
     if (typeof name !== "string" || name.trim().length === 0) {
       nextErrors.name = "Vyplňte název klienta."
     }
+
     if (typeof industry !== "string" || industry.trim().length === 0) {
       nextErrors.industry = "Vyplňte obor."
     }
+
     if (nextErrors.name !== undefined || nextErrors.industry !== undefined) {
       event.preventDefault()
       setErrors(nextErrors)
       const firstInvalid =
         nextErrors.name !== undefined ? "new-client-name" : "new-client-industry"
       document.getElementById(firstInvalid)?.focus()
+
       return
     }
+
     setErrors({})
   }
 

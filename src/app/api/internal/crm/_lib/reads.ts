@@ -23,6 +23,7 @@ export async function getTicketById(orgId: string, id: string): Promise<Ticket |
     .where(and(eq(tickets.id, id), eq(tickets.organizationId, orgId)))
     .limit(1)
   const row = rows[0]
+
   return row === undefined ? null : toTicket(row)
 }
 
@@ -33,6 +34,7 @@ export async function getDocumentById(orgId: string, id: string): Promise<Doc | 
     .where(and(eq(documents.id, id), eq(documents.organizationId, orgId)))
     .limit(1)
   const row = rows[0]
+
   return row === undefined ? null : toDoc(row)
 }
 
@@ -45,11 +47,13 @@ export async function listActivitiesByClient(orgId: string, clientId: string): P
   if (clientRows[0] === undefined) {
     throw new HttpError(404, "Klient nebyl nalezen.")
   }
+
   const rows = await db
     .select()
     .from(activities)
     .where(and(eq(activities.clientId, clientId), eq(activities.organizationId, orgId)))
     .orderBy(desc(activities.occurredAt), asc(activities.id))
+
   return rows.map(toActivity)
 }
 
@@ -101,6 +105,7 @@ export async function listTicketsDue(
     if (child.parentId === null) {
       continue
     }
+
     subtaskCounts.set(child.parentId, (subtaskCounts.get(child.parentId) ?? 0) + 1)
   }
 

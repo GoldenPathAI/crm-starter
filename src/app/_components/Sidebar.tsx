@@ -23,6 +23,7 @@ function initials(name: string): string {
   if (parts.length === 0) {
     return "?"
   }
+
   return parts.slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("")
 }
 
@@ -83,6 +84,7 @@ export function Sidebar({
           {visibleNavItems.map((item) => {
             const Icon = item.icon
             const active = item.href === activeHref
+
             return (
               <Link
                 key={item.href}
@@ -156,6 +158,7 @@ function OrgSwitcher({
         <PopoverContent align="start" className="w-[220px]">
           {memberships.map((membership) => {
             const active = membership.slug === orgSlug
+
             return (
               <Link
                 key={membership.orgId}

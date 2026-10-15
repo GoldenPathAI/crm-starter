@@ -61,6 +61,7 @@ function HistoryBatchCard({ orgSlug, batch }: { orgSlug: string; batch: HistoryB
     if (batch.requestId === null) {
       return
     }
+
     const requestId = batch.requestId
     startTransition(async () => {
       const result = await undoUiAction(orgSlug, requestId)

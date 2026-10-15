@@ -59,13 +59,16 @@ export function ClientFieldEditor({
   const commit = () => {
     if (cancelledRef.current) {
       cancelledRef.current = false
+
       return
     }
+
     setEditing(false)
     const next = draft.trim()
     if (next === (current ?? "")) {
       return
     }
+
     const previous = current
     setCurrent(next.length > 0 ? next : undefined)
     startSave(async () => {

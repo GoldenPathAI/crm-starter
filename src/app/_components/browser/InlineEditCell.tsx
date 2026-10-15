@@ -63,16 +63,20 @@ export function InlineEditCell({
     const next = draft.trim()
     if (next === (value ?? "")) {
       setEditing(false)
+
       return
     }
+
     startTransition(async () => {
       const result = await onSave(next)
       if (result.status === "error") {
         // Discard the rejected draft: the cell falls back to the stored value.
         toast({ variant: "error", title: result.message })
         setEditing(false)
+
         return
       }
+
       setEditing(false)
       router.refresh()
     })

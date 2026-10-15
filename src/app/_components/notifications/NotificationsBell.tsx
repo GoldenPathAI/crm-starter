@@ -27,6 +27,7 @@ const entityPath = (
   if (entityType === undefined) {
     return null
   }
+
   switch (entityType) {
     case "ticket":
       return entityId !== undefined ? `/ukoly?ukol=${entityId}` : "/ukoly"
@@ -46,12 +47,15 @@ const bellAriaLabel = (unread: number): string => {
   if (unread === 0) {
     return "Notifikace"
   }
+
   if (unread === 1) {
     return "Notifikace, 1 nepřečtená"
   }
+
   if (unread <= 4) {
     return `Notifikace, ${unread} nepřečtené`
   }
+
   return `Notifikace, ${unread} nepřečtených`
 }
 
@@ -85,6 +89,7 @@ export function NotificationsBell() {
         void refreshCount()
       }
     }, POLL_INTERVAL_MS)
+
     return () => clearInterval(timer)
   }, [refreshCount])
 
@@ -106,6 +111,7 @@ export function NotificationsBell() {
       const count = await markNotificationReadAction(orgSlug, item.id)
       setUnread(count)
     }
+
     const path = entityPath(item.entityType, item.entityId)
     if (path !== null) {
       router.push(orgHref(orgSlug, path))
@@ -157,6 +163,7 @@ export function NotificationsBell() {
           ) : (
             items.map((item) => {
               const clickable = entityPath(item.entityType, item.entityId) !== null
+
               return (
                 <button
                   key={item.id}

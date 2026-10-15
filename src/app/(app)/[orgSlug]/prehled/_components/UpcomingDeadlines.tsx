@@ -28,6 +28,7 @@ const toneClasses = (daysUntil: number): string => {
   if (daysUntil <= 1) {
     return "text-warning"
   }
+
   return "text-muted"
 }
 
@@ -58,6 +59,7 @@ export function UpcomingDeadlines({ orgSlug, deadlines }: UpcomingDeadlinesProps
           <ul className="flex-1 divide-y divide-hairline">
             {shown.map((deadline) => {
               const Icon = kindIcon[deadline.kind]
+
               return (
                 <li
                   key={`${deadline.kind}-${deadline.id}`}

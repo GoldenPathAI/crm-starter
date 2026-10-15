@@ -12,6 +12,7 @@ async function main(): Promise<void> {
   if (connectionString === undefined || connectionString.length === 0) {
     throw new Error(`${useTest ? "TEST_DATABASE_URL" : "DATABASE_URL"} environment variable is not set`)
   }
+
   if (useTest && !connectionString.includes("crm_test")) {
     throw new Error("TEST_DATABASE_URL neukazuje na crm_test, migrace přerušena.")
   }
@@ -41,6 +42,7 @@ async function main(): Promise<void> {
         console.log(`skip  ${file}`)
         continue
       }
+
       const contents = await readFile(join(MIGRATIONS_DIR, file), "utf8")
       await sql.begin(async (tx) => {
         await tx.unsafe(contents)

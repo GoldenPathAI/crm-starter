@@ -36,6 +36,7 @@ const parseStatuses = (
     .flatMap((entry) => entry.split(","))
     .map((entry) => entry.trim())
     .filter((entry) => allowed.includes(entry))
+
   return [...new Set(matched)]
 }
 
@@ -50,9 +51,11 @@ const compareProjects = (
   if (field === "name") {
     return factor * a.name.localeCompare(b.name, "cs")
   }
+
   if (field === "status") {
     return factor * (statusValues.indexOf(a.status) - statusValues.indexOf(b.status))
   }
+
   return factor * (a.dueAt ?? "9999").localeCompare(b.dueAt ?? "9999")
 }
 

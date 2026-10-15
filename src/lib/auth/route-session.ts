@@ -5,5 +5,6 @@ import { auth } from "@/lib/auth/auth"
 // valid session, without redirecting (routes choose their own response).
 export async function hasValidSession(): Promise<boolean> {
   const session = await auth.api.getSession({ headers: await headers() })
+
   return session !== null
 }

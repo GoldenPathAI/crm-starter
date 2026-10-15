@@ -19,11 +19,14 @@ export async function readLimitedText(request: Request, maxBytes: number): Promi
     if (chunk.done) {
       break;
     }
+
     totalBytes += chunk.value.byteLength;
     if (totalBytes > maxBytes) {
       await reader.cancel();
+
       return null;
     }
+
     chunks = [...chunks, chunk.value];
   }
 
@@ -33,5 +36,6 @@ export async function readLimitedText(request: Request, maxBytes: number): Promi
     bytes.set(chunk, offset);
     offset += chunk.byteLength;
   }
+
   return new TextDecoder().decode(bytes);
 }

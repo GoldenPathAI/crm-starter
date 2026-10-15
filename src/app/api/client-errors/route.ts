@@ -24,6 +24,7 @@ const reportSchema = z.object({
 const parseReport = (raw: string): z.infer<typeof reportSchema> | null => {
   try {
     const parsed = reportSchema.safeParse(JSON.parse(raw));
+
     return parsed.success ? parsed.data : null;
   } catch {
     return null;
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { error: error instanceof Error ? error.message : String(error) },
       "client error rate limit unavailable",
     );
+
     return NextResponse.json({ ok: false }, { status: 503 });
   }
 
@@ -53,10 +55,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   if (raw === null) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+
   const parsed = parseReport(raw);
   if (parsed === null) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+
   const report = {
     ...parsed,
     userAgent: request.headers.get("user-agent")?.slice(0, 200) ?? "",
@@ -83,5 +87,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { source: report.source, userAgent: report.userAgent },
     );
   }
+
   return NextResponse.json({ ok: true });
 }

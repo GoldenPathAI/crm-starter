@@ -37,6 +37,7 @@ export function TaskSubtasks({
     if (value.length === 0) {
       return
     }
+
     onAdd(value)
     setDraft("")
   }
@@ -63,6 +64,7 @@ export function TaskSubtasks({
         <div className="flex flex-col">
           {subtasks.map((subtask) => {
             const overdue = subtask.dueAt !== null && !subtask.done && subtask.dueAt < today
+
             return (
               <div
                 key={subtask.id}

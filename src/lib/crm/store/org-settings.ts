@@ -21,6 +21,7 @@ export async function getOrgSettings(orgId: string): Promise<OrgSettings> {
   if (row === undefined) {
     throw new Error(`Nastavení organizace ${orgId} nebylo nalezeno.`)
   }
+
   return toOrgSettings(row)
 }
 
@@ -45,5 +46,6 @@ export async function updateOrgSettings(
   if (row === undefined) {
     throw new Error(`Nastavení organizace ${scope.orgId} nebylo nalezeno.`)
   }
+
   return toOrgSettings(row)
 }

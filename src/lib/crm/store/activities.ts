@@ -14,6 +14,7 @@ const LOGGABLE_SEMANTICS: ReadonlySet<string> = new Set(["note", "call", "meetin
 
 async function loggableTypeValues(orgId: string): Promise<ReadonlySet<string>> {
   const enums = await loadOrgEnums(orgId)
+
   return new Set(
     enums.activity_type
       .filter((option) => option.semantic !== undefined && LOGGABLE_SEMANTICS.has(option.semantic))
@@ -45,6 +46,7 @@ export async function addActivity(scope: OrgScope, input: AddActivityInput): Pro
   if (!loggable.has(input.type)) {
     throw new Error("Tento typ aktivity nelze zaznamenat.")
   }
+
   const dbc = resolveDbc(scope)
   const clientRows = await dbc
     .select({ id: clients.id })
@@ -76,6 +78,7 @@ export async function addActivity(scope: OrgScope, input: AddActivityInput): Pro
   if (row === undefined) {
     throw new Error("Aktivitu se nepodařilo uložit.")
   }
+
   return toActivity(row)
 }
 
@@ -128,6 +131,7 @@ export async function recordEmailActivity(
   if (row === undefined) {
     throw new Error("Aktivitu se nepodařilo uložit.")
   }
+
   return toActivity(row)
 }
 
@@ -172,6 +176,7 @@ export async function insertSyncedEmailActivity(
       where: sql`${activities.externalId} IS NOT NULL`,
     })
     .returning({ id: activities.id })
+
   return rows.length > 0
 }
 
@@ -183,6 +188,7 @@ export async function getActivityById(scope: OrgScope, id: string): Promise<Acti
     .where(and(eq(activities.id, id), eq(activities.organizationId, scope.orgId)))
     .limit(1)
   const row = rows[0]
+
   return row === undefined ? undefined : toActivity(row)
 }
 
@@ -198,6 +204,7 @@ export async function updateActivity(
 ): Promise<Activity> {
   const loggable = await loggableTypeValues(scope.orgId)
   const dbc = resolveDbc(scope)
+
   return withTx(dbc, async (tx) => {
     const existing = await tx
       .select()
@@ -208,9 +215,11 @@ export async function updateActivity(
     if (current === undefined) {
       throw new Error("Aktivita nebyla nalezena.")
     }
+
     if (current.actorType !== "user" || !loggable.has(current.type)) {
       throw new Error("Tuto aktivitu nelze upravit.")
     }
+
     const rows = await tx
       .update(activities)
       .set({ title: input.title, body: input.body ?? null })
@@ -220,6 +229,7 @@ export async function updateActivity(
     if (row === undefined) {
       throw new Error("Aktivita nebyla nalezena.")
     }
+
     return toActivity(row)
   })
 }
@@ -235,6 +245,7 @@ export async function reassignActivityClient(
   clientId: string,
 ): Promise<Activity> {
   const dbc = resolveDbc(scope)
+
   return withTx(dbc, async (tx) => {
     const existing = await tx
       .select()
@@ -245,9 +256,11 @@ export async function reassignActivityClient(
     if (current === undefined) {
       throw new Error("Aktivita nebyla nalezena.")
     }
+
     if (current.dealId !== null || current.projectId !== null) {
       throw new Error("Aktivitu navázanou na deal nebo projekt nelze přesunout.")
     }
+
     const target = await tx
       .select({ id: clients.id })
       .from(clients)
@@ -256,6 +269,7 @@ export async function reassignActivityClient(
     if (target[0] === undefined) {
       throw new Error("Cílový klient nebyl nalezen.")
     }
+
     const rows = await tx
       .update(activities)
       .set({ clientId })
@@ -265,6 +279,7 @@ export async function reassignActivityClient(
     if (row === undefined) {
       throw new Error("Aktivita nebyla nalezena.")
     }
+
     return toActivity(row)
   })
 }
@@ -282,9 +297,11 @@ export async function deleteActivity(scope: OrgScope, id: string): Promise<void>
     if (current === undefined) {
       throw new Error("Aktivita nebyla nalezena.")
     }
+
     if (current.actorType !== "user" || !loggable.has(current.type)) {
       throw new Error("Tuto aktivitu nelze smazat.")
     }
+
     await tx
       .delete(activities)
       .where(and(eq(activities.id, id), eq(activities.organizationId, scope.orgId)))

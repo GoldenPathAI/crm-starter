@@ -95,12 +95,14 @@ const resolveDropPosition = (
   for (const target of dropTargets) {
     if (isTicketCardData(target.data)) {
       const edge = extractClosestEdge(target.data)
+
       return {
         status: target.data.status,
         index: target.data.index + (edge === "bottom" ? 1 : 0),
         onSource: target.data.ticketId === sourceTicketId,
       }
     }
+
     if (isColumnDropData(target.data)) {
       return {
         status: target.data.status,
@@ -109,6 +111,7 @@ const resolveDropPosition = (
       }
     }
   }
+
   return null
 }
 
@@ -148,6 +151,7 @@ export function TicketBoard({
     if (current === undefined || current.status === status) {
       return
     }
+
     const previous = localTickets
     const nowIso = new Date().toISOString()
     setLocalTickets((prev) =>
@@ -191,7 +195,9 @@ export function TicketBoard({
           doneAt: status === doneValue ? ticket.doneAt ?? nowIso : undefined,
         }
       }
+
       const reordered = nextOrder.get(ticket.id)
+
       return reordered !== undefined ? { ...ticket, order: reordered } : ticket
     })
     setLocalTickets(next)
@@ -226,6 +232,7 @@ export function TicketBoard({
         if (!isTicketCardData(source.data)) {
           return
         }
+
         const resolved = resolveDropPosition(
           source.data.ticketId,
           location.current.dropTargets,
@@ -249,6 +256,7 @@ export function TicketBoard({
         if (!isTicketCardData(source.data)) {
           return
         }
+
         const resolved = resolveDropPosition(
           source.data.ticketId,
           location.current.dropTargets,
@@ -294,6 +302,7 @@ export function TicketBoard({
             const columnTickets = columnParents(status)
             const style = optionBadgeStyle(option)
             const showEndHint = dropHint?.status === status && dropHint.index >= columnTickets.length
+
             return (
               <section key={status} className="flex w-72 shrink-0 flex-col gap-3">
                 <header className="flex items-center gap-2 px-1">
@@ -312,6 +321,7 @@ export function TicketBoard({
                       const subtasks = subtasksOf(ticket.id)
                       const doneSubtasks = subtasks.filter((s) => s.status === doneValue).length
                       const showHintBefore = dropHint?.status === status && dropHint.index === index
+
                       return (
                         <div key={ticket.id} className="flex flex-col gap-2.5">
                           {showHintBefore ? <DropLine /> : null}
@@ -367,6 +377,7 @@ function ColumnDropZone({ status, children }: ColumnDropZoneProps) {
     if (element === null) {
       return
     }
+
     return dropTargetForElements({
       element,
       canDrop: ({ source }) => isTicketCardData(source.data),
@@ -423,6 +434,7 @@ function TicketCard({
     if (element === null) {
       return
     }
+
     return combine(
       draggable({
         element,
@@ -513,6 +525,7 @@ function StatusMenu({ current, statusOptions, open, onOpenChange, onSelect }: St
           {statusOptions.map((option) => {
             const style = optionBadgeStyle(option)
             const active = option.value === current
+
             return (
               <button
                 key={option.value}

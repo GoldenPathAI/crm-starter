@@ -20,6 +20,7 @@ const logger = createServerLogger({ layer: "lib", module: "files-s3" })
 const sanitizeFileName = (fileName: string): string => {
   const base = fileName.replace(/^.*[\\/]/, "").trim()
   const cleaned = base.replace(/[^A-Za-z0-9._-]+/g, "_").replace(/^_+|_+$/g, "")
+
   return cleaned.length > 0 ? cleaned : "soubor"
 }
 
@@ -28,6 +29,7 @@ const sanitizeFileName = (fileName: string): string => {
 const contentDisposition = (fileName: string): string => {
   const ascii = fileName.replace(/[^\x20-\x7E]/g, "_").replace(/["\\]/g, "_")
   const encoded = encodeURIComponent(fileName)
+
   return `attachment; filename="${ascii}"; filename*=UTF-8''${encoded}`
 }
 
@@ -52,6 +54,7 @@ export async function presignDocumentUpload(
   const url = await getSignedUrl(client, command, {
     expiresIn: config.files.presignExpirySeconds,
   })
+
   return { key, url }
 }
 
@@ -62,6 +65,7 @@ export async function presignDocumentDownload(key: string, fileName: string): Pr
     Key: key,
     ResponseContentDisposition: contentDisposition(fileName),
   })
+
   return getSignedUrl(client, command, { expiresIn: config.files.presignExpirySeconds })
 }
 
@@ -73,11 +77,13 @@ export async function presignDocumentInline(key: string, contentType: string): P
     ResponseContentDisposition: "inline",
     ResponseContentType: contentType,
   })
+
   return getSignedUrl(client, command, { expiresIn: config.files.presignExpirySeconds })
 }
 
 export async function presignObjectRead(key: string): Promise<string> {
   const command = new GetObjectCommand({ Bucket: config.files.bucket, Key: key })
+
   return getSignedUrl(client, command, { expiresIn: config.files.presignExpirySeconds })
 }
 
@@ -107,6 +113,7 @@ export async function getObjectBytes(key: string): Promise<Uint8Array> {
   if (body === undefined) {
     throw new Error("Soubor nebyl v úložišti nalezen.")
   }
+
   return body.transformToByteArray()
 }
 

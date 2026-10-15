@@ -24,6 +24,7 @@ const errorMessage = (error: unknown, fallback: string): string =>
 
 const trimmedOrUndefined = (value: string): string | undefined => {
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -40,6 +41,7 @@ const parseDocument = (values: DocumentFormValues): ParsedDocument | null => {
   if (title.length === 0) {
     return null
   }
+
   return {
     kind: values.kind,
     title,
@@ -67,14 +69,18 @@ export async function presignDocumentUploadAction(
   if (trimmedName.length === 0) {
     return { status: "error", message: "Soubor nemá název." }
   }
+
   if (fileSize <= 0) {
     return { status: "error", message: "Soubor je prázdný." }
   }
+
   if (fileSize > config.files.maxUploadBytes) {
     return { status: "error", message: "Soubor je větší než 25 MB." }
   }
+
   try {
     const upload = await presignDocumentUpload(ctx.scope.orgId, trimmedName, contentType)
+
     return { status: "success", key: upload.key, url: upload.url }
   } catch {
     return { status: "error", message: "Nahrání souboru se nepodařilo připravit." }
@@ -93,11 +99,13 @@ export async function presignDocumentDownloadAction(
 ): Promise<PresignDownloadResult> {
   const ctx = await requireOrgContext(orgSlug)
   const doc = await getDocumentById(ctx.scope, documentId)
-  if (doc === null || doc.fileKey === undefined) {
+  if (doc?.fileKey === undefined) {
     return { status: "error", message: "Soubor nebyl nalezen." }
   }
+
   try {
     const url = await presignDocumentDownload(doc.fileKey, doc.fileName ?? "soubor")
+
     return { status: "success", url }
   } catch {
     return { status: "error", message: "Stažení souboru se nepodařilo připravit." }
@@ -113,13 +121,16 @@ export async function createDocumentAction(
   if (clientId.length === 0) {
     return { status: "error", message: "Chybí identifikátor klienta." }
   }
+
   const parsed = parseDocument(values)
   if (parsed === null) {
     return { status: "error", message: "Vyplňte název dokumentu." }
   }
+
   try {
     await withUiAudit(ctx, (scope) => createDocument(scope, { clientId, ...parsed }))
     revalidatePath(orgHref(orgSlug, `/klienti/${clientId}`))
+
     return { status: "success", message: "Dokument byl přidán." }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Dokument se nepodařilo uložit.") }
@@ -136,13 +147,16 @@ export async function updateDocumentAction(
   if (documentId.length === 0 || clientId.length === 0) {
     return { status: "error", message: "Chybí identifikátor dokumentu." }
   }
+
   const parsed = parseDocument(values)
   if (parsed === null) {
     return { status: "error", message: "Vyplňte název dokumentu." }
   }
+
   try {
     await withUiAudit(ctx, (scope) => updateDocument(scope, documentId, parsed))
     revalidatePath(orgHref(orgSlug, `/klienti/${clientId}`))
+
     return { status: "success", message: "Dokument byl upraven." }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Dokument se nepodařilo upravit.") }
@@ -158,9 +172,11 @@ export async function deleteDocumentAction(
   if (documentId.length === 0 || clientId.length === 0) {
     return { status: "error", message: "Chybí identifikátor dokumentu." }
   }
+
   try {
     const result = await withUiAudit(ctx, async (scope, reqId) => {
       const deleted = await deleteDocument(scope, documentId)
+
       return { requestId: reqId, fileKey: deleted.fileKey }
     })
     // Drop the backing S3 object once the row is gone. Best effort: a failed object
@@ -168,7 +184,9 @@ export async function deleteDocumentAction(
     if (result.fileKey !== null) {
       await deleteDocumentFile(result.fileKey)
     }
+
     revalidatePath(orgHref(orgSlug, `/klienti/${clientId}`))
+
     return { status: "success", message: "Dokument byl smazán.", requestId: result.requestId }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Dokument se nepodařilo smazat.") }

@@ -22,12 +22,14 @@ export function ViewToggle({ view }: { view: PipelineView }) {
     if (next === view) {
       return
     }
+
     const params = new URLSearchParams(searchParams.toString())
     if (next === "kanban") {
       params.delete("view")
     } else {
       params.set("view", next)
     }
+
     const queryString = params.toString()
     startTransition(() => {
       router.push(queryString.length > 0 ? `${pathname}?${queryString}` : pathname)
@@ -39,6 +41,7 @@ export function ViewToggle({ view }: { view: PipelineView }) {
       {options.map((option) => {
         const active = option.value === view
         const Icon = option.icon
+
         return (
           <button
             key={option.value}

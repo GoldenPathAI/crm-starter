@@ -30,6 +30,7 @@ const byAttentionThenDue = (a: ProjectListItem, b: ProjectListItem): number => {
   if (aRank !== bRank) {
     return aRank - bRank
   }
+
   return (a.dueAt ?? DUE_LAST).localeCompare(b.dueAt ?? DUE_LAST)
 }
 
@@ -91,6 +92,7 @@ export async function listProjects(scope: OrgScope): Promise<ProjectListItem[]> 
     .map(toProject)
     .map((project) => {
       const projectTickets = ticketRows.filter((ticket) => ticket.projectId === project.id)
+
       return {
         ...project,
         clientName: names.get(project.clientId) ?? project.clientId,
@@ -115,6 +117,7 @@ export async function getProject(scope: OrgScope, id: string): Promise<ProjectDe
   if (projectRow === undefined) {
     return null
   }
+
   const clientRows = await dbc
     .select()
     .from(clients)
@@ -124,6 +127,7 @@ export async function getProject(scope: OrgScope, id: string): Promise<ProjectDe
   if (clientRow === undefined) {
     return null
   }
+
   const ticketRows = await dbc
     .select()
     .from(tickets)
@@ -131,6 +135,7 @@ export async function getProject(scope: OrgScope, id: string): Promise<ProjectDe
     .orderBy(asc(tickets.id))
 
   const ticketList = ticketRows.map(toTicket).sort((a, b) => a.order - b.order)
+
   return {
     project: toProject(projectRow),
     client: toClient(clientRow),
@@ -182,6 +187,7 @@ export async function createProject(scope: OrgScope, input: CreateProjectInput):
   if (row === undefined) {
     throw new Error("Projekt se nepodařilo vytvořit.")
   }
+
   return toProject(row)
 }
 
@@ -202,6 +208,7 @@ export async function updateProject(
     if (current === undefined) {
       throw new Error("Projekt nebyl nalezen.")
     }
+
     const clientRows = await tx
       .select({ id: clients.id })
       .from(clients)
@@ -210,6 +217,7 @@ export async function updateProject(
     if (clientRows[0] === undefined) {
       throw new Error("Klient nebyl nalezen.")
     }
+
     const rows = await tx
       .update(projects)
       .set({
@@ -227,6 +235,7 @@ export async function updateProject(
     if (row === undefined) {
       throw new Error("Projekt nebyl nalezen.")
     }
+
     // Tickets denormalize clientId, so a project reassignment must carry its
     // tickets with it or the client folder view would drift.
     if (input.clientId !== current.clientId) {
@@ -235,8 +244,10 @@ export async function updateProject(
         .set({ clientId: input.clientId })
         .where(and(eq(tickets.projectId, id), eq(tickets.organizationId, scope.orgId)))
     }
+
     return row
   })
+
   return toProject(updated)
 }
 
@@ -256,6 +267,7 @@ export async function updateProjectStatus(
   if (row === undefined) {
     throw new Error("Projekt nebyl nalezen.")
   }
+
   return toProject(row)
 }
 
@@ -270,6 +282,7 @@ export async function deleteProject(scope: OrgScope, id: string): Promise<void> 
     if (existing[0] === undefined) {
       throw new Error("Projekt nebyl nalezen.")
     }
+
     await tx
       .delete(tickets)
       .where(and(eq(tickets.projectId, id), eq(tickets.organizationId, scope.orgId)))

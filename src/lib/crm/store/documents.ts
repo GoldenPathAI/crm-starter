@@ -16,6 +16,7 @@ export async function getAllDocuments(scope: OrgScope): Promise<Doc[]> {
     .from(documents)
     .where(eq(documents.organizationId, scope.orgId))
     .orderBy(asc(documents.id))
+
   return rows.map(toDoc)
 }
 
@@ -27,6 +28,7 @@ export async function getDocumentById(scope: OrgScope, id: string): Promise<Doc 
     .where(and(eq(documents.id, id), eq(documents.organizationId, scope.orgId)))
     .limit(1)
   const row = rows[0]
+
   return row === undefined ? null : toDoc(row)
 }
 
@@ -37,6 +39,7 @@ export async function getDocumentsByClientId(scope: OrgScope, clientId: string):
     .from(documents)
     .where(and(eq(documents.clientId, clientId), eq(documents.organizationId, scope.orgId)))
     .orderBy(asc(documents.id))
+
   return rows.map(toDoc)
 }
 
@@ -93,6 +96,7 @@ export async function createDocument(scope: OrgScope, input: CreateDocumentInput
   if (row === undefined) {
     throw new Error("Dokument se nepodařilo uložit.")
   }
+
   return toDoc(row)
 }
 
@@ -124,6 +128,7 @@ export async function updateDocument(
   if (row === undefined) {
     throw new Error("Dokument nebyl nalezen.")
   }
+
   return toDoc(row)
 }
 
@@ -142,5 +147,6 @@ export async function deleteDocument(
   if (row === undefined) {
     throw new Error("Dokument nebyl nalezen.")
   }
+
   return { fileKey: row.fileKey }
 }

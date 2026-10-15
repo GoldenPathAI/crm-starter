@@ -41,8 +41,10 @@ function toErrorMessage(error: unknown): string {
     if (cause instanceof Error && cause.message.trim().length > 0) {
       return cause.message
     }
+
     return error.message
   }
+
   return "Neznámá chyba"
 }
 
@@ -59,6 +61,7 @@ const CRM_TABLES: ReadonlyArray<{ key: string; label: string; table: PgTable }> 
 
 async function tableCount(table: PgTable): Promise<number> {
   const rows = await db.select({ value: count() }).from(table)
+
   return rows[0]?.value ?? 0
 }
 
@@ -72,7 +75,9 @@ export async function getCrmDbStatus(): Promise<CrmDbStatus> {
     for (const { key, label, table } of CRM_TABLES) {
       tables.push({ key, label, count: await tableCount(table) })
     }
+
     const totalRows = tables.reduce((sum, entry) => sum + entry.count, 0)
+
     return { ok: true, tables, totalRows, errorMessage: null }
   } catch (error) {
     const failure = error instanceof Error ? error : new Error("crm db status check failed")
@@ -87,11 +92,13 @@ export async function getCrmDbStatus(): Promise<CrmDbStatus> {
       },
       "CRM DB status check failed",
     )
+
     return { ok: false, tables: [], totalRows: 0, errorMessage: toErrorMessage(error) }
   }
 }
 
 export function getInternalApiStatus(): InternalApiStatus {
   const token = process.env.INTERNAL_API_TOKEN
+
   return { configured: token !== undefined && token.trim().length > 0 }
 }

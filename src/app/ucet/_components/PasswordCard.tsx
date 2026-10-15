@@ -30,10 +30,13 @@ export function PasswordCard() {
 
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
       setError("Heslo musí mít alespoň 8 znaků")
+
       return
     }
+
     if (newPassword !== confirmPassword) {
       setError("Nová hesla se neshodují")
+
       return
     }
 
@@ -53,6 +56,7 @@ export function PasswordCard() {
       } else {
         setError("Heslo se nepodařilo změnit")
       }
+
       return
     }
 

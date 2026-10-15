@@ -65,8 +65,10 @@ function NameField({
     const trimmed = draft.trim()
     if (trimmed.length === 0 || trimmed === orgName) {
       cancel()
+
       return
     }
+
     startTransition(async () => {
       const result = await updateOrganizationNameAction(orgSlug, trimmed)
       if (result.status === "success") {
@@ -149,6 +151,7 @@ function SettingsFields({
     if (!daysValid) {
       return
     }
+
     startTransition(async () => {
       const result = await updateOrgSettingsAction(orgSlug, { staleDealDays: parsedDays })
       if (result.status === "success") {

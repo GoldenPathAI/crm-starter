@@ -36,7 +36,9 @@ export const parseBudget = (raw: string): number | null => {
   if (digits.length === 0) {
     return null
   }
+
   const value = Number.parseInt(digits, 10)
+
   return Number.isFinite(value) ? value : null
 }
 

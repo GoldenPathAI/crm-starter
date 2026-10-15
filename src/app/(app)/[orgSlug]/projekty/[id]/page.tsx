@@ -31,6 +31,7 @@ export default async function ProjectDetailPage({
   if (detail === null) {
     notFound()
   }
+
   const { project, client, tickets } = detail
   const enums = await loadOrgEnums(ctx.scope.orgId)
   const ticketStatusOptions = enums.ticket_status

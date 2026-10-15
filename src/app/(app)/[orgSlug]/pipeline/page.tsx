@@ -38,9 +38,11 @@ const pluralDeals = (count: number): string => {
   if (count === 1) {
     return "1 deal"
   }
+
   if (count >= 2 && count <= 4) {
     return `${count} dealy`
   }
+
   return `${count} dealů`
 }
 
@@ -49,9 +51,11 @@ const compareDeals = (a: DealCard, b: DealCard, field: DealListSortField, direct
   if (field === "hodnota") {
     return factor * (a.valueCzk - b.valueCzk)
   }
+
   if (field === "dni") {
     return factor * (a.daysInStage - b.daysInStage)
   }
+
   return factor * (a.expectedClose ?? "9999-99-99").localeCompare(b.expectedClose ?? "9999-99-99")
 }
 

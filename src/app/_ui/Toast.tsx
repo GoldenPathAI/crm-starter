@@ -60,6 +60,7 @@ const variantAccent: Readonly<Record<ToastVariant, string>> = {
 
 function dismissAfterMs(item: ToastItem): number {
   if (item.action || item.variant === "error") return DISMISS_LONG_MS
+
   return DISMISS_MS
 }
 
@@ -106,6 +107,7 @@ function ToastCard({ item, reduceMotion, onDismiss }: ToastCardProps) {
 
   useEffect(() => {
     startTimer()
+
     return clearTimer
   }, [startTimer, clearTimer])
 
@@ -135,6 +137,7 @@ function ToastCard({ item, reduceMotion, onDismiss }: ToastCardProps) {
         if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) {
           return
         }
+
         focusedRef.current = false
         resumeIfIdle()
       }}
@@ -231,5 +234,6 @@ export function useToast(): ToastContextValue {
   if (!context) {
     throw new Error("useToast musí být použit uvnitř ToastProvider")
   }
+
   return context
 }

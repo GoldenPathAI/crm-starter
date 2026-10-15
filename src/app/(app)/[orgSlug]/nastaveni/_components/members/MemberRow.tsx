@@ -49,6 +49,7 @@ export function MemberRow({
     if (nextRole === member.role) {
       return
     }
+
     startTransition(async () => {
       const result = await changeMemberRoleAction(orgSlug, {
         memberId: member.memberId,
@@ -58,6 +59,7 @@ export function MemberRow({
       if (notice !== null) {
         toast(notice)
       }
+
       router.refresh()
     })
   }
@@ -68,6 +70,7 @@ export function MemberRow({
     if (notice !== null) {
       toast(notice)
     }
+
     router.refresh()
   }
 

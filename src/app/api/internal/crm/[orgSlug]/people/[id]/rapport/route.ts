@@ -17,5 +17,6 @@ export const GET = route<Params>({}, async ({ params, auth }) =>
 export const POST = route<Params>({ mutation: true }, async ({ request, params, auth }) => {
   const enums = await loadOrgEnums(auth.scope.orgId)
   const input = parseCreateRapportEntry(params.id, await readJsonObject(request), enums)
+
   return created(await withApiAudit(auth, (scope) => createRapportEntry(scope, input)))
 })

@@ -88,6 +88,7 @@ CardIconButton.displayName = "CardIconButton"
 
 export function AddNoteButton({ clientId }: { clientId: string }) {
   const [open, setOpen] = useState(false)
+
   return (
     <>
       <CardIconButton label="Přidat poznámku" onClick={() => setOpen(true)} />
@@ -110,6 +111,7 @@ export function LogActivityMenu({ clientId }: { clientId: string }) {
           {MENU_KINDS.map((kind) => {
             const copy = COPY[kind]
             const Icon = copy.icon
+
             return (
               <button
                 key={kind}

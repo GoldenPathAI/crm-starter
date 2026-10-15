@@ -17,6 +17,7 @@ function parseRole(value: string): OrgRole | null {
   if (value === "owner" || value === "admin" || value === "member") {
     return value
   }
+
   return null
 }
 
@@ -34,23 +35,28 @@ export async function changeMemberRoleAction(
   if (nextRole === null) {
     return { status: "error", message: "Neplatná role." }
   }
+
   const members = await listSettingsMembers(ctx.scope.orgId)
   const target = members.find((member) => member.memberId === input.memberId)
   if (target === undefined) {
     return { status: "error", message: "Člen nebyl nalezen." }
   }
+
   if ((nextRole === "owner" || target.role === "owner") && ctx.role !== "owner") {
     return { status: "error", message: "Roli vlastníka může měnit jen vlastník." }
   }
+
   if (isLastOwnerDemotion(members, input.memberId, nextRole)) {
     return { status: "error", message: "Nelze odebrat posledního vlastníka workspace." }
   }
+
   try {
     await auth.api.updateMemberRole({
       body: { memberId: input.memberId, role: nextRole, organizationId: ctx.scope.orgId },
       headers: await headers(),
     })
     revalidatePath(orgHref(orgSlug, "/nastaveni"))
+
     return { status: "success", message: "Role byla změněna." }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Roli se nepodařilo změnit.") }
@@ -68,18 +74,22 @@ export async function removeMemberAction(
   if (target === undefined) {
     return { status: "error", message: "Člen nebyl nalezen." }
   }
+
   if (target.role === "owner" && ctx.role !== "owner") {
     return { status: "error", message: "Vlastníka může odebrat jen vlastník." }
   }
+
   if (isLastOwnerRemoval(members, input.memberId)) {
     return { status: "error", message: "Nelze odebrat posledního vlastníka workspace." }
   }
+
   try {
     await auth.api.removeMember({
       body: { memberIdOrEmail: input.memberId, organizationId: ctx.scope.orgId },
       headers: await headers(),
     })
     revalidatePath(orgHref(orgSlug, "/nastaveni"))
+
     return { status: "success", message: "Člen byl odebrán." }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Člena se nepodařilo odebrat.") }
@@ -96,6 +106,7 @@ export async function inviteMemberAction(
   if (email.length === 0 || !email.includes("@")) {
     return { status: "error", message: "Zadejte platný e-mail." }
   }
+
   const role: OrgRole = input.role === "admin" ? "admin" : "member"
   try {
     await auth.api.createInvitation({
@@ -104,6 +115,7 @@ export async function inviteMemberAction(
     })
     const emailSent = takeInvitationEmailOutcome(email)
     revalidatePath(orgHref(orgSlug, "/nastaveni"))
+
     return {
       status: "success",
       message:
@@ -128,6 +140,7 @@ export async function revokeInvitationAction(
       headers: await headers(),
     })
     revalidatePath(orgHref(orgSlug, "/nastaveni"))
+
     return { status: "success", message: "Pozvánka byla zrušena." }
   } catch (error) {
     return { status: "error", message: errorMessage(error, "Pozvánku se nepodařilo zrušit.") }

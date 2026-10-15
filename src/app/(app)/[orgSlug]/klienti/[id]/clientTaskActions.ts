@@ -21,6 +21,7 @@ export async function setClientTaskStatusAction(
     await withUiAudit(ctx, (scope) => updateTicketStatus(scope, input.ticketId, input.status))
     revalidatePath(orgHref(orgSlug, `/klienti/${input.clientId}`))
     revalidatePath(orgHref(orgSlug, "/ukoly"))
+
     return {
       status: "success",
       message:

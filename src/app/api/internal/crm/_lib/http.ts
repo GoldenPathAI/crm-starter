@@ -26,17 +26,21 @@ export function errorResponse(error: unknown): NextResponse {
   if (error instanceof HttpError) {
     return jsonError(error.message, error.status)
   }
+
   if (error instanceof Error) {
     // Store lookups throw plain Errors ending in "nebyl nalezen." etc.
     if (/nalezen/i.test(error.message)) {
       return jsonError(error.message, 404)
     }
+
     // Store business-rule refusals (client still has related rows, subtask of a subtask).
     if (/navázané|další podúkoly/i.test(error.message)) {
       return jsonError(error.message, 409)
     }
+
     return jsonError(error.message, 500)
   }
+
   return jsonError("Neočekávaná chyba.", 500)
 }
 
@@ -48,15 +52,18 @@ export async function readJsonObject(request: Request): Promise<Record<string, u
   if (raw.trim().length === 0) {
     return {}
   }
+
   let parsed: unknown
   try {
     parsed = JSON.parse(raw)
   } catch {
     throw new HttpError(400, "Neplatné JSON tělo požadavku.")
   }
+
   if (!isRecord(parsed)) {
     throw new HttpError(400, "Tělo požadavku musí být JSON objekt.")
   }
+
   return parsed
 }
 
@@ -68,7 +75,9 @@ export const asTrimmed = (value: unknown): string | undefined => {
   if (str === undefined) {
     return undefined
   }
+
   const trimmed = str.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -76,10 +85,13 @@ export const asNumber = (value: unknown): number | undefined => {
   if (typeof value === "number" && Number.isFinite(value)) {
     return value
   }
+
   if (typeof value === "string" && value.trim().length > 0) {
     const parsed = Number(value)
+
     return Number.isFinite(parsed) ? parsed : undefined
   }
+
   return undefined
 }
 
@@ -87,12 +99,15 @@ export const asBoolean = (value: unknown): boolean | undefined => {
   if (typeof value === "boolean") {
     return value
   }
+
   if (value === "true" || value === "1") {
     return true
   }
+
   if (value === "false" || value === "0") {
     return false
   }
+
   return undefined
 }
 
@@ -100,7 +115,9 @@ export const asStringArray = (value: unknown): string[] | undefined => {
   if (!Array.isArray(value)) {
     return undefined
   }
+
   const strings = value.filter((entry): entry is string => typeof entry === "string")
+
   return strings.length === value.length ? strings : undefined
 }
 
@@ -112,6 +129,7 @@ export const matchEnum = <T extends string>(
   if (str === undefined) {
     return undefined
   }
+
   return allowed.find((candidate) => candidate === str)
 }
 
@@ -123,9 +141,11 @@ export const matchEnumList = <T extends string>(
   if (list === undefined) {
     return undefined
   }
+
   const matched = list
     .map((entry) => entry.trim())
     .filter((entry): entry is T => allowed.some((candidate) => candidate === entry))
+
   return matched.length === list.filter((entry) => entry.trim().length > 0).length
     ? matched
     : undefined

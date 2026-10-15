@@ -23,6 +23,7 @@ const OPTIONS = [
 
 const readPreference = (): ThemePreference => {
   const stored = window.localStorage.getItem(THEME_STORAGE_KEY)
+
   return isThemePreference(stored) ? stored : "system"
 }
 
@@ -49,6 +50,7 @@ export function useThemePreference(): {
     const onSystemChange = (): void => {
       applyPreference(readPreference())
     }
+
     const onPreferenceChange = (): void => {
       const next = readPreference()
       setPreferenceState(next)
@@ -58,6 +60,7 @@ export function useThemePreference(): {
     media.addEventListener("change", onSystemChange)
     window.addEventListener("storage", onPreferenceChange)
     window.addEventListener(THEME_CHANGE_EVENT, onPreferenceChange)
+
     return () => {
       media.removeEventListener("change", onSystemChange)
       window.removeEventListener("storage", onPreferenceChange)
@@ -96,6 +99,7 @@ export function ThemeSwitch({
       {OPTIONS.map((option) => {
         const Icon = option.icon
         const active = mounted && preference === option.value
+
         return (
           <button
             key={option.value}

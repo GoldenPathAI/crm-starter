@@ -6,6 +6,7 @@ export function actionToast(
   if (result.status === "idle") {
     return null
   }
+
   return {
     variant: result.status === "success" ? "success" : "error",
     title: result.message,

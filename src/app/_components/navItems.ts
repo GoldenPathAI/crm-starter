@@ -33,11 +33,13 @@ export const navItems: ReadonlyArray<NavItem> = [
 // with the org segment stripped.
 export function orgRelativePath(pathname: string): string {
   const secondSlash = pathname.indexOf("/", 1)
+
   return secondSlash === -1 ? "/" : pathname.slice(secondSlash)
 }
 
 export function matchNavItem(pathname: string): NavItem | undefined {
   const path = orgRelativePath(pathname)
+
   return navItems
     .filter((item) => path === item.href || path.startsWith(`${item.href}/`))
     .sort((a, b) => b.href.length - a.href.length)

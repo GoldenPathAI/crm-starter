@@ -33,6 +33,7 @@ export function ClientStatusControl({ clientId, status, statusView }: ClientStat
     if (next === optimisticStatus) {
       return
     }
+
     startTransition(async () => {
       setOptimisticStatus(next)
       const result = await updateClientStatusAction(orgSlug, clientId, next)
@@ -64,6 +65,7 @@ export function ClientStatusControl({ clientId, status, statusView }: ClientStat
         {statusView.options.map((option) => {
           const style = badgeFor(statusView, option.value)
           const selected = option.value === optimisticStatus
+
           return (
             <button
               key={option.value}

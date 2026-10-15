@@ -11,8 +11,10 @@ const constantTimeEqual = (a: string, b: string): boolean => {
     // Compare same-length buffers so a length mismatch stays timing-constant.
     const fallback = Buffer.alloc(bufferA.length)
     timingSafeEqual(bufferA, fallback)
+
     return false
   }
+
   return timingSafeEqual(bufferA, bufferB)
 }
 

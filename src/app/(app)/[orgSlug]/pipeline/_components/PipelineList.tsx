@@ -18,7 +18,7 @@ import { useOrg } from "@/app/_components/org/OrgProvider"
 import { badgeStyleFor, optionBadgeStyle, styleMap, type BadgeStyle } from "@/lib/crm/config"
 import { formatCzechDate } from "@/lib/dates"
 import { cn } from "@/lib/cn"
-import { SortDirection } from "@/core/types/query.types"
+import type { SortDirection } from "@/core/types/query.types"
 import type { DealStage, EnumOption, OrgMember } from "@/core/types/crm.types"
 import type { DealCard } from "@/lib/crm/store/deals"
 import {
@@ -56,6 +56,7 @@ interface PipelineListProps {
 const toStageFilterOptions = (stageOptions: EnumOption[]): BrowserFilterOption[] =>
   stageOptions.map((option) => {
     const style = optionBadgeStyle(option)
+
     return { value: option.value, label: style.label, dotClassName: style.dot }
   })
 
@@ -69,6 +70,7 @@ function buildGroups(
     return stageOptions
       .map((option) => {
         const style = optionBadgeStyle(option)
+
         return {
           key: option.value,
           label: style.label,
@@ -78,8 +80,10 @@ function buildGroups(
       })
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   const labels = new Map(clientOptions.map((option) => [option.value, option.label]))
   const ids = [...new Set(rows.map((deal) => deal.clientId))]
+
   return ids
     .map((id) => ({
       key: id,
@@ -132,16 +136,21 @@ export function PipelineList({
     if (deal === undefined || deal.stage === toStage) {
       return
     }
+
     if (toStage === lostStage) {
       setOpenDealId(null)
       setLostTargetId(dealId)
+
       return
     }
+
     if (toStage === wonStage) {
       setOpenDealId(null)
       setWonTargetId(dealId)
+
       return
     }
+
     commitMove(dealId, toStage)
   }
 
@@ -149,6 +158,7 @@ export function PipelineList({
     if (wonStage === undefined) {
       return false
     }
+
     const result = await moveDealStageAction(orgSlug, dealId, wonStage)
     toast({
       variant: result.status === "success" ? "success" : "error",
@@ -156,8 +166,10 @@ export function PipelineList({
     })
     if (result.status === "success") {
       router.refresh()
+
       return true
     }
+
     return false
   }
 
@@ -169,8 +181,10 @@ export function PipelineList({
     })
     if (result.status === "success") {
       router.refresh()
+
       return true
     }
+
     return false
   }
 
@@ -191,8 +205,10 @@ export function PipelineList({
       const result = await setDealAssigneesAction(orgSlug, dealId, userIds)
       if (result.status === "error") {
         toast({ variant: "error", title: result.message })
+
         return
       }
+
       router.refresh()
     })()
   }
@@ -399,6 +415,7 @@ export function PipelineList({
 
 function StagePill({ stage, styles }: { stage: DealStage; styles: Record<string, BadgeStyle> }) {
   const style = badgeStyleFor(stage, styles)
+
   return (
     <span
       className={cn(

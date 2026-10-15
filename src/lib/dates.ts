@@ -33,6 +33,7 @@ export const formatCzechDate = (iso: string | null): string => {
   if (iso === null || iso.length === 0) {
     return "-"
   }
+
   return format(parseISO(iso), "d. M. yyyy", { locale: cs })
 }
 
@@ -40,6 +41,7 @@ export const formatCzechDateTime = (iso: string | null): string => {
   if (iso === null || iso.length === 0) {
     return "-"
   }
+
   return format(parseISO(iso), "d. M. yyyy HH:mm", { locale: cs })
 }
 
@@ -49,6 +51,7 @@ export const monthLabel = (key: string): string => {
   const [year, month] = key.split("-")
   const index = Number(month) - 1
   const name = CZECH_MONTHS[index] ?? key
+
   return `${name} ${year}`
 }
 
@@ -71,6 +74,7 @@ const CZECH_MONTHS_SHORT = [
 
 export const monthLabelShort = (key: string): string => {
   const [, month] = key.split("-")
+
   return CZECH_MONTHS_SHORT[Number(month) - 1] ?? key
 }
 
@@ -78,5 +82,6 @@ export const daysUntil = (iso: string | null): number | null => {
   if (iso === null || iso.length === 0) {
     return null
   }
+
   return differenceInCalendarDays(parseISO(iso), new Date())
 }

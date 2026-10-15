@@ -15,6 +15,7 @@ export async function POST(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest, context: Context) {
     if (clientId === undefined) {
       throw new HttpError(400, "Pole clientId je povinné.")
     }
+
     return ok(await reassignActivityClient(scope, id, clientId))
   } catch (error) {
     return errorResponse(error)

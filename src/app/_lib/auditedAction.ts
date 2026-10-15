@@ -17,6 +17,7 @@ export async function withUiAudit<T>(
   fn: (scope: OrgScope, requestId: string) => Promise<T>,
 ): Promise<T> {
   const requestId = newRequestId()
+
   return runAudited(
     {
       orgId: ctx.scope.orgId,

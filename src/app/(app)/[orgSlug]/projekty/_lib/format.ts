@@ -6,5 +6,6 @@ export const formatCzk = (value: number): string => {
   const digits = Math.abs(rounded)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, NBSP)
+
   return `${sign}${digits}${NBSP}Kč`
 }

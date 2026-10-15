@@ -64,6 +64,7 @@ export const buildProjectUrl = (deal: DealCard): string => {
     name: deal.title,
     budget: String(deal.valueCzk),
   })
+
   return `/projekty/novy?${params.toString()}`
 }
 
@@ -82,6 +83,7 @@ export function StageMoveList({ current, stageOptions, onSelect }: StageMoveList
       {stageOptions.map((option) => {
         const active = option.value === current
         const style = optionBadgeStyle(option)
+
         return (
           <button
             key={option.value}
@@ -180,6 +182,7 @@ export function DealDetail({
     if (tickets === null) {
       return
     }
+
     const previous = tickets
     setTickets(tickets.map((t) => (t.id === ticketId ? { ...t, done: !t.done } : t)))
     startSave(async () => {
@@ -195,6 +198,7 @@ export function DealDetail({
     if (tickets === null) {
       return
     }
+
     const tempId = `temp_${Date.now()}`
     setTickets([
       ...tickets,
@@ -207,8 +211,10 @@ export function DealDetail({
           current === null ? current : current.filter((t) => t.id !== tempId),
         )
         toast({ variant: "error", title: result.message })
+
         return
       }
+
       await reloadTickets()
     })
   }
@@ -217,6 +223,7 @@ export function DealDetail({
     if (tickets === null) {
       return
     }
+
     const previous = tickets
     setTickets(tickets.filter((t) => t.id !== ticketId))
     startSave(async () => {
@@ -468,8 +475,10 @@ function DealTitleInput({ value, onCommit }: { value: string; onCommit: (value: 
     const trimmed = local.trim()
     if (trimmed.length === 0) {
       setLocal(value)
+
       return
     }
+
     if (trimmed !== value) {
       onCommit(trimmed)
     }
@@ -588,6 +597,7 @@ function InlineTextControl({
       </button>
     )
   }
+
   return (
     <input
       autoFocus
@@ -600,6 +610,7 @@ function InlineTextControl({
           event.preventDefault()
           event.currentTarget.blur()
         }
+
         if (event.key === "Escape") {
           setLocal(value)
           setEditing(false)
@@ -637,12 +648,15 @@ function InlineNumberControl({
       if (allowEmpty && value !== null) {
         onCommit(null)
       }
+
       return
     }
+
     const parsed = Number(trimmed)
     if (!Number.isFinite(parsed) || parsed < 0 || (max !== undefined && parsed > max)) {
       return
     }
+
     if (parsed !== value) {
       onCommit(parsed)
     }
@@ -666,6 +680,7 @@ function InlineNumberControl({
       </button>
     )
   }
+
   return (
     <div className="flex items-center gap-1.5">
       <input
@@ -679,6 +694,7 @@ function InlineNumberControl({
             event.preventDefault()
             event.currentTarget.blur()
           }
+
           if (event.key === "Escape") {
             setLocal(value !== null ? String(value) : "")
             setEditing(false)
@@ -776,6 +792,7 @@ export function WonDialog({ deal, open, onOpenChange, onWin }: WonDialogProps) {
     if (deal === undefined) {
       return
     }
+
     setPending(true)
     const ok = await onWin(deal.id)
     setPending(false)
@@ -788,6 +805,7 @@ export function WonDialog({ deal, open, onOpenChange, onWin }: WonDialogProps) {
     if (deal === undefined) {
       return
     }
+
     setPending(true)
     const ok = await onWin(deal.id)
     setPending(false)
@@ -858,10 +876,13 @@ export function LostDialog({ deal, open, onOpenChange, onLost }: LostDialogProps
     if (deal === undefined) {
       return
     }
+
     if (reason.trim().length === 0) {
       setError("Uveďte důvod prohry.")
+
       return
     }
+
     setError(undefined)
     setPending(true)
     const ok = await onLost(deal.id, reason.trim())

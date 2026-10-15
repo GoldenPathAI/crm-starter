@@ -28,6 +28,7 @@ export function SettingsTabs({ initialTab, panels }: SettingsTabsProps) {
     } else {
       url.searchParams.set("tab", key)
     }
+
     window.history.replaceState(null, "", url.toString())
   }
 
@@ -39,6 +40,7 @@ export function SettingsTabs({ initialTab, panels }: SettingsTabsProps) {
       >
         {TABS.map((tab) => {
           const selected = active === tab.key
+
           return (
             <button
               key={tab.key}

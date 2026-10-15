@@ -15,6 +15,7 @@ export async function searchCommandAction(
   query: string,
 ): Promise<{ results: SearchResult[] }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { results: await searchEntities(ctx.scope, query) }
 }
 
@@ -27,10 +28,12 @@ export async function completeTicketCommandAction(
     const doneOption = await getBySemantic(ctx.scope.orgId, "ticket_status", "done")
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await updateTicketStatus(scope, ticketId, doneOption.value)
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return { status: "success", message: "Úkol označen jako hotový.", requestId }
   } catch (error) {
     return {
@@ -51,12 +54,15 @@ export async function assignSelfToTicketCommandAction(
     if (currentIds.includes(ctx.user.id)) {
       return { status: "success", message: "Přiřazeno" }
     }
+
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await setTicketAssignees(scope, ticketId, [...currentIds, ctx.user.id])
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return { status: "success", message: "Přiřazeno", requestId }
   } catch (error) {
     return {

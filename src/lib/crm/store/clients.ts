@@ -84,17 +84,22 @@ const compareClients = (
   if (sort === undefined) {
     return a.name.localeCompare(b.name, "cs")
   }
+
   if (sort.field === "name") {
     return byDirection(a.name.localeCompare(b.name, "cs"), sort.direction)
   }
+
   if (sort.field === "mrr") {
     return byDirection((a.mrrCzk ?? 0) - (b.mrrCzk ?? 0), sort.direction)
   }
+
   if (sort.field === "pipeline") {
     return byDirection(a.openPipelineCzk - b.openPipelineCzk, sort.direction)
   }
+
   const aContact = a.lastContactAt ?? ""
   const bContact = b.lastContactAt ?? ""
+
   return byDirection(aContact.localeCompare(bContact), sort.direction)
 }
 
@@ -122,12 +127,15 @@ export async function listClients(
   if (filters.statuses !== undefined) {
     conditions.push(inArray(clients.status, filters.statuses))
   }
+
   if (filters.industries !== undefined) {
     conditions.push(inArray(clients.industry, filters.industries))
   }
+
   if (filters.services !== undefined) {
     conditions.push(arrayOverlaps(clients.services, filters.services))
   }
+
   if (filters.labels !== undefined) {
     conditions.push(arrayOverlaps(clients.labels, filters.labels))
   }
@@ -167,6 +175,7 @@ export async function listClients(
 
   const primaryPersonOf = (clientId: string): Person | null => {
     const list = peopleAll.filter((person) => person.clientId === clientId)
+
     return list.find((person) => person.isPrimary) ?? list[0] ?? null
   }
 
@@ -189,6 +198,7 @@ export async function listClients(
     const peopleNames = peopleAll
       .filter((person) => person.clientId === client.id)
       .map((person) => person.name)
+
     return [
       client.name,
       client.industry,
@@ -206,6 +216,7 @@ export async function listClients(
       if (q !== undefined && q.length > 0 && !clientHaystack(client).includes(q)) {
         return false
       }
+
       return true
     })
     .map((client) => enrichClient(client))
@@ -215,9 +226,11 @@ export async function listClients(
   if (query.group !== undefined) {
     return { items: filtered, total, page: 1, pageSize: total }
   }
+
   const pageSize = query.pageSize ?? config.defaultPageSize
   const page = Math.max(1, query.page)
   const start = (page - 1) * pageSize
+
   return { items: filtered.slice(start, start + pageSize), total, page, pageSize }
 }
 
@@ -273,6 +286,7 @@ export async function getClient(scope: OrgScope, id: string): Promise<ClientDeta
     .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt))
 
   const ticketList = ticketRows.map(toTicket).sort((a, b) => a.order - b.order)
+
   return {
     client: toClient(clientRow),
     people: peopleList,
@@ -380,6 +394,7 @@ export async function createClient(scope: OrgScope, input: CreateClientInput): P
     if (clientRow === undefined) {
       throw new Error("Klienta se nepodařilo vytvořit.")
     }
+
     const contact = input.primaryContact
     let personId: string | null = null
     if (contact !== undefined && contact.name.trim().length > 0) {
@@ -397,8 +412,10 @@ export async function createClient(scope: OrgScope, input: CreateClientInput): P
         createdByUserId,
       })
     }
+
     return { clientRow, personId }
   })
+
   return toClient(created.clientRow)
 }
 
@@ -410,11 +427,13 @@ export async function updateClient(
   if (patch.status !== undefined) {
     await assertValidValue(scope.orgId, "client_status", patch.status)
   }
+
   if (patch.services !== undefined) {
     for (const service of patch.services) {
       await assertValidValue(scope.orgId, "service_kind", service)
     }
   }
+
   const setValues: Partial<typeof clients.$inferInsert> = {
     ...(patch.name !== undefined ? { name: patch.name } : {}),
     ...(patch.industry !== undefined ? { industry: patch.industry } : {}),
@@ -444,6 +463,7 @@ export async function updateClient(
   if (row === undefined) {
     throw new Error("Klient nebyl nalezen.")
   }
+
   return toClient(row)
 }
 
@@ -452,6 +472,7 @@ export async function updateClient(
 // rows must archive the client instead (status -> ukonceny).
 export async function deleteClient(scope: OrgScope, id: string): Promise<DeleteClientResult> {
   const dbc = resolveDbc(scope)
+
   return withTx(dbc, async (tx) => {
     const existing = await tx
       .select({ id: clients.id })
@@ -491,6 +512,7 @@ export async function deleteClient(scope: OrgScope, id: string): Promise<DeleteC
     }
 
     await tx.delete(clients).where(and(eq(clients.id, id), eq(clients.organizationId, scope.orgId)))
+
     return { deleted: true }
   })
 }

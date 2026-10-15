@@ -28,6 +28,7 @@ export function UrlTabs<K extends string>({
     } else {
       url.searchParams.set(paramKey, key);
     }
+
     window.history.replaceState(null, "", url.toString());
   };
 
@@ -39,6 +40,7 @@ export function UrlTabs<K extends string>({
       >
         {tabs.map((tab) => {
           const selected = active === tab.key;
+
           return (
             <button
               key={tab.key}

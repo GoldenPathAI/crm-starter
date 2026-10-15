@@ -13,6 +13,7 @@ export const GET = route<{ orgSlug: string; id: string }>({}, async ({ params, a
   if (detail === null) {
     return notFound("Klient nebyl nalezen.")
   }
+
   return ok(detail)
 })
 
@@ -21,6 +22,7 @@ export const PATCH = route<{ orgSlug: string; id: string }>(
   async ({ request, params, auth }) => {
     const enums = await loadOrgEnums(auth.scope.orgId)
     const patch = parseUpdateClient(await readJsonObject(request), enums)
+
     return ok(await withApiAudit(auth, (scope) => updateClient(scope, params.id, patch)))
   },
 )

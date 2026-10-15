@@ -44,6 +44,7 @@ export async function listRecentItems(
     )
     .orderBy(desc(userRecentItems.visitedAt))
     .limit(limit)
+
   return rows.flatMap((row) =>
     isRecentItemType(row.itemType)
       ? [{ type: row.itemType, id: row.entityId, title: row.title, href: row.href }]
@@ -59,6 +60,7 @@ export async function recordRecentItem(
   if (!isRecentItemType(input.itemType)) {
     throw new Error(`Neplatný typ položky: ${input.itemType}`)
   }
+
   const dbc = resolveDbc(scope)
   await dbc
     .insert(userRecentItems)
@@ -98,6 +100,7 @@ async function trimRecentItems(scope: OrgScope, userId: string): Promise<void> {
   if (keepIds.length < RECENT_LIMIT) {
     return
   }
+
   await dbc
     .delete(userRecentItems)
     .where(
@@ -128,6 +131,7 @@ export async function listPinnedClients(
     )
     .orderBy(desc(userPinnedClients.pinnedAt))
     .limit(limit)
+
   return rows.map((row) => ({ id: row.clientId, title: row.name, href: row.href }))
 }
 
@@ -148,6 +152,7 @@ export async function isClientPinned(
       ),
     )
     .limit(1)
+
   return rows.length > 0
 }
 
@@ -175,8 +180,10 @@ export async function togglePinnedClient(
           eq(userPinnedClients.clientId, input.clientId),
         ),
       )
+
     return false
   }
+
   await dbc.insert(userPinnedClients).values({
     id: createId("upc"),
     organizationId: scope.orgId,
@@ -185,6 +192,7 @@ export async function togglePinnedClient(
     href: input.href,
   })
   await trimPinnedClients(scope, userId)
+
   return true
 }
 
@@ -202,6 +210,7 @@ async function trimPinnedClients(scope: OrgScope, userId: string): Promise<void>
   if (keepIds.length < PIN_LIMIT) {
     return
   }
+
   await dbc
     .delete(userPinnedClients)
     .where(
@@ -239,6 +248,7 @@ export async function listSavedViews(
     )
     .orderBy(desc(userSavedViews.createdAt))
     .limit(limit)
+
   return rows.map(toSavedView)
 }
 
@@ -272,6 +282,7 @@ export async function saveSavedView(
       set: { query, createdAt: new Date() },
     })
   await trimSavedViews(scope, userId, pageKey)
+
   return listSavedViews(scope, userId, pageKey)
 }
 
@@ -293,6 +304,7 @@ async function trimSavedViews(scope: OrgScope, userId: string, pageKey: string):
   if (keepIds.length < VIEW_LIMIT) {
     return
   }
+
   await dbc
     .delete(userSavedViews)
     .where(
@@ -340,6 +352,7 @@ export async function setDefaultSavedView(
         ),
       )
   }
+
   return listSavedViews(scope, userId, pageKey)
 }
 
@@ -362,6 +375,7 @@ export async function getDefaultSavedView(
     )
     .limit(1)
   const row = rows[0]
+
   return row === undefined ? undefined : toSavedView(row)
 }
 
@@ -382,5 +396,6 @@ export async function deleteSavedView(
         eq(userSavedViews.pageKey, pageKey),
       ),
     )
+
   return listSavedViews(scope, userId, pageKey)
 }

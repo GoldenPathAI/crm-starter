@@ -35,6 +35,7 @@ export async function createEnumOptionAction(
     requireRole(ctx, "admin")
     await withUiAudit(ctx, (scope) => createEnumOption(scope, kind, input))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Hodnota přidána." }
   } catch (error) {
     return toActionError(error)
@@ -51,6 +52,7 @@ export async function updateEnumOptionAction(
     requireRole(ctx, "admin")
     await withUiAudit(ctx, (scope) => updateEnumOption(scope, id, patch))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Hodnota uložena." }
   } catch (error) {
     return toActionError(error)
@@ -67,6 +69,7 @@ export async function reorderEnumOptionsAction(
     requireRole(ctx, "admin")
     await withUiAudit(ctx, (scope) => reorderEnumOptions(scope, kind, orderedIds))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Pořadí uloženo." }
   } catch (error) {
     return toActionError(error)
@@ -79,6 +82,7 @@ export async function archiveEnumOptionAction(orgSlug: string, id: string): Prom
     requireRole(ctx, "admin")
     await withUiAudit(ctx, (scope) => archiveEnumOption(scope, id))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Hodnota archivována." }
   } catch (error) {
     return toActionError(error)
@@ -91,6 +95,7 @@ export async function unarchiveEnumOptionAction(orgSlug: string, id: string): Pr
     requireRole(ctx, "admin")
     await withUiAudit(ctx, (scope) => unarchiveEnumOption(scope, id))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Hodnota obnovena." }
   } catch (error) {
     return toActionError(error)

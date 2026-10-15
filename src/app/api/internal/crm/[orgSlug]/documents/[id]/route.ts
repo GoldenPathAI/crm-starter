@@ -18,6 +18,7 @@ export async function PATCH(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -27,6 +28,7 @@ export async function PATCH(request: NextRequest, context: Context) {
     if (existing === null) {
       return notFound("Dokument nebyl nalezen.")
     }
+
     return ok(await updateDocument(scope, id, parseUpdateDocument(existing, body, enums)))
   } catch (error) {
     return errorResponse(error)
@@ -38,10 +40,12 @@ export async function DELETE(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     await deleteDocument(scope, id)
+
     return ok({ ok: true })
   } catch (error) {
     return errorResponse(error)

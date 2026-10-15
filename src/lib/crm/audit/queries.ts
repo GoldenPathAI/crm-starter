@@ -41,6 +41,7 @@ export async function isBatchUndone(orgId: string, requestId: string, dbc: CrmDb
     .from(auditLog)
     .where(and(batchOrgFilter(orgId), eq(auditLog.undoOf, requestId)))
     .limit(1)
+
   return rows.length > 0
 }
 
@@ -55,9 +56,11 @@ export async function listRecentAudit(
   if (opts.tableName !== undefined) {
     conditions.push(eq(auditLog.tableName, opts.tableName))
   }
+
   if (opts.actorUserId !== undefined) {
     conditions.push(eq(auditLog.actorUserId, opts.actorUserId))
   }
+
   const rows = await dbc
     .select()
     .from(auditLog)
@@ -69,6 +72,7 @@ export async function listRecentAudit(
     [row.actorUserId, row.onBehalfUserId].filter((id): id is string => id !== null),
   )
   const names = await userNamesByIds(ids)
+
   return rows.map((row) => ({
     ...row,
     actorName: row.actorUserId !== null ? names.get(row.actorUserId) ?? null : null,
@@ -133,9 +137,11 @@ export async function listUndoneBatches(
   if (unique.length === 0) {
     return new Set()
   }
+
   const rows = await dbc
     .select({ undoOf: auditLog.undoOf })
     .from(auditLog)
     .where(and(batchOrgFilter(orgId), inArray(auditLog.undoOf, unique)))
+
   return new Set(rows.map((row) => row.undoOf).filter((id): id is string => id !== null))
 }

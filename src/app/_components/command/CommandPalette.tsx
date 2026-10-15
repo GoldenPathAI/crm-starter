@@ -221,9 +221,11 @@ export function CommandPalette() {
         setOpen((prev) => !prev)
       }
     }
+
     const onOpen = (): void => setOpen(true)
     window.addEventListener("keydown", onKey)
     window.addEventListener(OPEN_EVENT, onOpen)
+
     return () => {
       window.removeEventListener("keydown", onKey)
       window.removeEventListener(OPEN_EVENT, onOpen)
@@ -234,6 +236,7 @@ export function CommandPalette() {
     if (!open) {
       return
     }
+
     let active = true
     loadPalettePersonalizationAction(orgSlug)
       .then(({ pins: nextPins, recents: nextRecents }) => {
@@ -248,6 +251,7 @@ export function CommandPalette() {
           setRecents([])
         }
       })
+
     return () => {
       active = false
     }
@@ -258,8 +262,10 @@ export function CommandPalette() {
     if (trimmed.length < 2) {
       setResults([])
       setLoading(false)
+
       return
     }
+
     setLoading(true)
     let active = true
     const timer = setTimeout(() => {
@@ -280,6 +286,7 @@ export function CommandPalette() {
           }
         })
     }, 150)
+
     return () => {
       active = false
       clearTimeout(timer)
@@ -295,15 +302,18 @@ export function CommandPalette() {
     const flat: PaletteRow[] = []
     const visibleNavRows = NAV_ROWS.filter((row) => {
       const item = navItems.find((navItem) => navItem.href === row.href)
+
       return item?.permission === undefined || hasPermission(role, item.permission)
     })
     const pushSection = (heading: string, rows: ReadonlyArray<PaletteRow>): void => {
       if (rows.length === 0) {
         return
       }
+
       const indexed = rows.map((row) => {
         const flatIndex = flat.length
         flat.push(row)
+
         return { ...row, flatIndex }
       })
       built.push({ heading, rows: indexed })
@@ -318,6 +328,7 @@ export function CommandPalette() {
           pins.map((pin) => toPinnedRow(pin, clientGroup)),
         )
       }
+
       const pinnedIds = new Set(pins.map((pin) => pin.id))
       pushSection(
         "Nedávné",
@@ -325,6 +336,7 @@ export function CommandPalette() {
           .filter((item) => !(item.type === "client" && pinnedIds.has(item.id)))
           .flatMap((item) => {
             const group = RESULT_GROUP_BY_TYPE.get(item.type)
+
             return group !== undefined ? [toRecentRow(item, group)] : []
           }),
       )
@@ -337,6 +349,7 @@ export function CommandPalette() {
           .map((result) => toResultRow(result, group))
         pushSection(group.heading, rows)
       }
+
       const needle = normalize(trimmed)
       const commandRows = [...visibleNavRows, ...CREATE_ROWS].filter((row) =>
         normalize(row.label).includes(needle),
@@ -355,6 +368,7 @@ export function CommandPalette() {
     if (activeIndex < 0) {
       return
     }
+
     rowRefs.current[activeIndex]?.scrollIntoView({ block: "nearest" })
   }, [activeIndex])
 
@@ -378,6 +392,7 @@ export function CommandPalette() {
           href: row.href,
         })
       }
+
       handleOpenChange(false)
       router.push(orgHref(orgSlug, row.href))
     },
@@ -388,6 +403,7 @@ export function CommandPalette() {
     if (row.entity === null || row.entity.type !== "ticket" || busyRowKey !== null) {
       return
     }
+
     const ticketId = row.entity.id
     setBusyRowKey(row.key)
     try {
@@ -409,6 +425,7 @@ export function CommandPalette() {
     if (row.entity === null || row.entity.type !== "ticket" || busyRowKey !== null) {
       return
     }
+
     const ticketId = row.entity.id
     setBusyRowKey(row.key)
     try {
@@ -427,6 +444,7 @@ export function CommandPalette() {
     if (row.entity === null || row.entity.type !== "client") {
       return
     }
+
     const entityId = row.entity.id
     const pin: PinnedClient = { id: entityId, title: row.label, href: row.href }
     const wasPinned = pins.some((entry) => entry.id === entityId)
@@ -478,6 +496,7 @@ export function CommandPalette() {
       if (row === undefined) {
         return
       }
+
       if ((event.metaKey || event.ctrlKey) && row.entity?.type === "ticket") {
         void completeTicket(row)
       } else {
@@ -572,6 +591,7 @@ export function CommandPalette() {
                     {section.rows.map((row) => {
                       const selected = row.flatIndex === activeIndex
                       const Icon = row.icon
+
                       return (
                         <div
                           key={row.key}

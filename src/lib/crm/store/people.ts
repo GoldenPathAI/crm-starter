@@ -18,12 +18,14 @@ export async function getPeopleByClientIds(
   if (clientIds.length === 0) {
     return []
   }
+
   const dbc = resolveDbc(scope)
   const rows = await dbc
     .select()
     .from(people)
     .where(and(inArray(people.clientId, clientIds), eq(people.organizationId, scope.orgId)))
     .orderBy(asc(people.id))
+
   return rows.map(toPerson)
 }
 
@@ -66,6 +68,7 @@ export async function listRapportPeople(
   if (query.kinds !== undefined && query.kinds.length > 0) {
     conditions.push(inArray(people.kind, query.kinds))
   }
+
   if (query.q !== undefined && query.q.length > 0) {
     const needle = `%${query.q}%`
     const match = or(
@@ -113,6 +116,7 @@ export async function getPerson(scope: OrgScope, personId: string): Promise<Pers
   if (row === undefined) {
     throw new Error("Kontakt nebyl nalezen.")
   }
+
   return toPerson(row)
 }
 
@@ -123,6 +127,7 @@ export async function getPeopleByClientId(scope: OrgScope, clientId: string): Pr
     .from(people)
     .where(and(eq(people.clientId, clientId), eq(people.organizationId, scope.orgId)))
     .orderBy(asc(people.id))
+
   return rows.map(toPerson)
 }
 
@@ -141,6 +146,7 @@ const findClient = async (
   if (clientId === undefined) {
     return null
   }
+
   const rows = await dbc
     .select({ id: clients.id, name: clients.name })
     .from(clients)
@@ -150,6 +156,7 @@ const findClient = async (
   if (client === undefined) {
     throw new Error("Klient nebyl nalezen.")
   }
+
   return client
 }
 
@@ -162,6 +169,7 @@ const countClientPeople = async (
     .select({ id: people.id })
     .from(people)
     .where(and(eq(people.clientId, clientId), eq(people.organizationId, scope.orgId)))
+
   return rows.length
 }
 
@@ -226,6 +234,7 @@ export async function createPerson(scope: OrgScope, input: CreatePersonInput): P
     if (row === undefined) {
       throw new Error("Kontakt se nepodařilo uložit.")
     }
+
     return { person: toPerson(row), company: client?.name ?? null }
   })
 
@@ -243,6 +252,7 @@ export async function updatePerson(
   if (patch.clientId !== undefined && patch.clientId !== null) {
     await findClient(dbc, scope, patch.clientId)
   }
+
   const setValues: Partial<typeof people.$inferInsert> = {
     ...(patch.name !== undefined ? { name: patch.name } : {}),
     ...(patch.kind !== undefined ? { kind: patch.kind } : {}),
@@ -264,11 +274,13 @@ export async function updatePerson(
   if (row === undefined) {
     throw new Error("Kontakt nebyl nalezen.")
   }
+
   return toPerson(row)
 }
 
 export async function setPrimaryPerson(scope: OrgScope, personId: string): Promise<Person> {
   const dbc = resolveDbc(scope)
+
   return withTx(dbc, async (tx) => {
     const found = await tx
       .select()
@@ -279,9 +291,11 @@ export async function setPrimaryPerson(scope: OrgScope, personId: string): Promi
     if (target === undefined) {
       throw new Error("Kontakt nebyl nalezen.")
     }
+
     if (target.clientId === null) {
       throw new Error("Osoba bez klienta nemůže být primárním kontaktem.")
     }
+
     await tx
       .update(people)
       .set({ isPrimary: false })
@@ -295,6 +309,7 @@ export async function setPrimaryPerson(scope: OrgScope, personId: string): Promi
     if (row === undefined) {
       throw new Error("Kontakt nebyl nalezen.")
     }
+
     return toPerson(row)
   })
 }
@@ -313,6 +328,7 @@ export async function deletePerson(scope: OrgScope, personId: string): Promise<v
     if (target === undefined) {
       throw new Error("Kontakt nebyl nalezen.")
     }
+
     await tx
       .delete(people)
       .where(and(eq(people.id, personId), eq(people.organizationId, scope.orgId)))

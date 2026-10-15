@@ -201,6 +201,7 @@ function OptionChipSelect({ value, options, onSelect }: OptionChipSelectProps) {
           {options.map((option) => {
             const optionStyle = optionBadgeStyle(option)
             const isActive = option.value === value
+
             return (
               <button
                 key={option.value}
@@ -362,6 +363,7 @@ function LabelsField({ labels, onChange }: LabelsFieldProps) {
     if (value.length > 0 && !labels.includes(value)) {
       onChange([...labels, value])
     }
+
     setDraft("")
     setAdding(false)
   }

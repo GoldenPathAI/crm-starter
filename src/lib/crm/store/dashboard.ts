@@ -70,6 +70,7 @@ const semanticValue = (enums: OrgEnums, kind: EnumKind, semantic: string): strin
   if (found === undefined) {
     throw new Error(`Chybí povinná hodnota číselníku ${kind}/${semantic}.`)
   }
+
   return found.value
 }
 
@@ -106,6 +107,7 @@ export async function getDashboardData(scope: OrgScope): Promise<DashboardData> 
 
   const pipelineByStage: PipelineStageValue[] = activeStages.map((option) => {
     const stageDeals = dealsAll.filter((deal) => deal.stage === option.value)
+
     return {
       stage: option.value,
       label: option.label,

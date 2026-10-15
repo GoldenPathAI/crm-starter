@@ -33,8 +33,10 @@ export function onAfterCommit(callback: () => void): void {
   const pending = afterCommitCallbacks.getStore()
   if (pending === undefined) {
     callback()
+
     return
   }
+
   pending.push(callback)
 }
 
@@ -52,11 +54,13 @@ export async function runAudited<T>(meta: AuditMeta, fn: (tx: CrmDbc) => Promise
         set_config('crm.source', ${meta.source}, true),
         set_config('crm.request_id', ${meta.requestId}, true),
         set_config('crm.undo_of', ${meta.undoOf ?? ""}, true)`)
+
       return fn(tx)
     }),
   )
   for (const callback of pending) {
     callback()
   }
+
   return result
 }

@@ -28,6 +28,7 @@ export async function listRapportEntries(
       and(eq(rapportEntries.personId, personId), eq(rapportEntries.organizationId, scope.orgId)),
     )
     .orderBy(desc(rapportEntries.createdAt))
+
   return rows.map(toRapportEntry)
 }
 
@@ -39,6 +40,7 @@ export async function createRapportEntry(
   if (content.length === 0) {
     throw new Error("Záznam raportu nesmí být prázdný.")
   }
+
   const kind: string =
     input.kind ??
     (await getBySemantic(scope.orgId, "rapport_entry_kind", "fact").then((option) => option.value))
@@ -69,6 +71,7 @@ export async function createRapportEntry(
   if (row === undefined) {
     throw new Error("Záznam raportu se nepodařilo uložit.")
   }
+
   return toRapportEntry(row)
 }
 

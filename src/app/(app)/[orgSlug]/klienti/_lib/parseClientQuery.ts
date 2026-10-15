@@ -32,7 +32,9 @@ const cleanText = (value: string | undefined): string | undefined => {
   if (value === undefined) {
     return undefined
   }
+
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -50,7 +52,9 @@ const parsePage = (value: string | undefined): number => {
   if (value === undefined) {
     return 1
   }
+
   const parsed = Number.parseInt(value, 10)
+
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 

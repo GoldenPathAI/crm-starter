@@ -27,6 +27,7 @@ const pickTicketValue = (options: EnumOption[], semantic: string): string => {
   if (chosen === undefined) {
     throw new Error("Číselník úkolů neobsahuje žádnou hodnotu.")
   }
+
   return chosen.value
 }
 
@@ -43,6 +44,7 @@ interface NormalizedFields {
 const isHttpUrl = (value: string): boolean => {
   try {
     const protocol = new URL(value).protocol
+
     return protocol === "http:" || protocol === "https:"
   } catch {
     return false
@@ -55,13 +57,16 @@ const normalizeFields = (values: DealFormValues): NormalizedFields | string => {
   if (clientId.length === 0) {
     return "Vyberte klienta."
   }
+
   const title = values.title.trim()
   if (title.length === 0) {
     return "Vyplňte název dealu."
   }
+
   if (!Number.isFinite(values.valueCzk) || values.valueCzk < 0) {
     return "Zadejte hodnotu dealu."
   }
+
   const valueCzk = Math.round(values.valueCzk)
 
   let probability: number | null = null
@@ -69,6 +74,7 @@ const normalizeFields = (values: DealFormValues): NormalizedFields | string => {
     if (!Number.isFinite(values.probability) || values.probability < 0 || values.probability > 100) {
       return "Pravděpodobnost musí být mezi 0 a 100."
     }
+
     probability = Math.round(values.probability)
   }
 
@@ -79,6 +85,7 @@ const normalizeFields = (values: DealFormValues): NormalizedFields | string => {
       if (!ISO_DATE.test(trimmed)) {
         return "Neplatné datum očekávaného uzavření."
       }
+
       expectedClose = trimmed
     }
   }
@@ -93,6 +100,7 @@ const normalizeFields = (values: DealFormValues): NormalizedFields | string => {
       if (!isHttpUrl(trimmed)) {
         return "Odkaz na nabídku musí být platná URL."
       }
+
       offerUrl = trimmed
     }
   }
@@ -117,10 +125,12 @@ export async function createDealAction(
     if (stageOption === undefined) {
       return { status: "error", message: "Neznámá fáze pipeline." }
     }
+
     const fields = normalizeFields(values)
     if (typeof fields === "string") {
       return { status: "error", message: fields }
     }
+
     await withUiAudit(ctx, async (scope) => {
       const deal = await createDeal(scope, {
         clientId: fields.clientId,
@@ -136,6 +146,7 @@ export async function createDealAction(
       }
     })
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Deal byl vytvořen." }
   } catch (error) {
     logActionableError(
@@ -149,6 +160,7 @@ export async function createDealAction(
       },
       "Create deal action failed",
     )
+
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Deal se nepodařilo vytvořit.",
@@ -171,10 +183,12 @@ export async function updateDealAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const fields = normalizeFields(values)
     if (typeof fields === "string") {
       return { status: "error", message: fields }
     }
+
     await withUiAudit(ctx, (scope) =>
       updateDeal(scope, {
         id: dealId,
@@ -188,6 +202,7 @@ export async function updateDealAction(
       }),
     )
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Deal byl upraven." }
   } catch (error) {
     logActionableError(
@@ -201,6 +216,7 @@ export async function updateDealAction(
       },
       "Update deal action failed",
     )
+
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Deal se nepodařilo upravit.",
@@ -238,6 +254,7 @@ export async function quickEditDealAction(
       if (!Number.isFinite(patch.valueCzk) || patch.valueCzk < 0) {
         return { status: "error", message: "Zadejte hodnotu dealu." }
       }
+
       valueCzk = Math.round(patch.valueCzk)
     }
 
@@ -282,6 +299,7 @@ export async function quickEditDealAction(
       updateDeal(scope, { id: dealId, valueCzk, probability, expectedClose, offerUrl }),
     )
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Deal byl upraven." }
   } catch (error) {
     logActionableError(
@@ -295,6 +313,7 @@ export async function quickEditDealAction(
       },
       "Quick edit deal action failed",
     )
+
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Deal se nepodařilo upravit.",
@@ -319,11 +338,13 @@ export async function updateDealDescriptionAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const trimmed = description.trim()
     await withUiAudit(ctx, (scope) =>
       updateDeal(scope, { id: dealId, description: trimmed.length > 0 ? trimmed : null }),
     )
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return {
       status: "success",
       message: trimmed.length > 0 ? "Popis uložen." : "Popis smazán.",
@@ -340,6 +361,7 @@ export async function updateDealDescriptionAction(
       },
       "Update deal description action failed",
     )
+
     return { status: "error", message: "Popis se nepodařilo uložit." }
   }
 }
@@ -359,11 +381,13 @@ export async function updateDealNextStepAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const trimmed = nextStep.trim()
     await withUiAudit(ctx, (scope) =>
       updateDeal(scope, { id: dealId, nextStep: trimmed.length > 0 ? trimmed : null }),
     )
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return {
       status: "success",
       message: trimmed.length > 0 ? "Další krok uložen." : "Další krok smazán.",
@@ -380,6 +404,7 @@ export async function updateDealNextStepAction(
       },
       "Update deal next step action failed",
     )
+
     return { status: "error", message: "Další krok se nepodařilo uložit." }
   }
 }
@@ -399,15 +424,19 @@ export async function moveDealStageAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const stageOption = await findStageOption(ctx.scope.orgId, stage)
     if (stageOption === undefined) {
       return { status: "error", message: "Neznámá fáze pipeline." }
     }
+
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await moveDealStage(scope, dealId, stage)
+
       return reqId
     })
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: `Deal přesunut do fáze ${stageOption.label}`, requestId }
   } catch (error) {
     logActionableError(
@@ -421,6 +450,7 @@ export async function moveDealStageAction(
       },
       "Move deal stage action failed",
     )
+
     return { status: "error", message: "Deal se nepodařilo přesunout." }
   }
 }
@@ -441,12 +471,15 @@ export async function reorderDealAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const stageOption = await findStageOption(ctx.scope.orgId, stage)
     if (stageOption === undefined) {
       return { status: "error", message: "Neznámá fáze pipeline." }
     }
+
     await withUiAudit(ctx, (scope) => reorderDeal(scope, dealId, stage, orderedIds))
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Pořadí dealů bylo uloženo." }
   } catch (error) {
     logActionableError(
@@ -460,6 +493,7 @@ export async function reorderDealAction(
       },
       "Reorder deal action failed",
     )
+
     return { status: "error", message: "Deal se nepodařilo přesunout." }
   }
 }
@@ -479,17 +513,21 @@ export async function markDealLostAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const reason = lostReason.trim()
     if (reason.length === 0) {
       return { status: "error", message: "Uveďte důvod prohry." }
     }
+
     const lostStage = await getBySemantic(ctx.scope.orgId, "deal_stage", "lost")
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await updateDeal(scope, { id: dealId, lostReason: reason })
       await moveDealStage(scope, dealId, lostStage.value)
+
       return reqId
     })
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Deal označen jako prohraný.", requestId }
   } catch (error) {
     logActionableError(
@@ -503,6 +541,7 @@ export async function markDealLostAction(
       },
       "Mark deal lost action failed",
     )
+
     return { status: "error", message: "Deal se nepodařilo označit jako prohraný." }
   }
 }
@@ -522,8 +561,10 @@ export async function setDealAssigneesAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     await withUiAudit(ctx, (scope) => setDealAssignees(scope, dealId, userIds))
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Řešitelé byli uloženi." }
   } catch (error) {
     logActionableError(
@@ -537,6 +578,7 @@ export async function setDealAssigneesAction(
       },
       "Set deal assignees action failed",
     )
+
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Řešitele se nepodařilo uložit.",
@@ -555,11 +597,14 @@ export async function deleteDealAction(orgSlug: string, dealId: string): Promise
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await deleteDeal(scope, dealId)
+
       return reqId
     })
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Deal byl smazán.", requestId }
   } catch (error) {
     logActionableError(
@@ -573,6 +618,7 @@ export async function deleteDealAction(orgSlug: string, dealId: string): Promise
       },
       "Delete deal action failed",
     )
+
     return {
       status: "error",
       message: error instanceof Error ? error.message : "Deal se nepodařilo smazat.",
@@ -592,6 +638,7 @@ export async function listDealTicketsAction(
     listTicketsByDeal(ctx.scope, dealId),
     getBySemantic(ctx.scope.orgId, "ticket_status", "done"),
   ])
+
   return rows.map((ticket) => ({
     id: ticket.id,
     title: ticket.title,
@@ -613,6 +660,7 @@ export async function listDealHistoryAction(
     { tableName: "deals", rowId: dealId, fkColumn: "deal_id" },
     8,
   )
+
   return buildHistoryItems(entries)
 }
 
@@ -625,9 +673,11 @@ export async function addDealTicketAction(
   if (dealId.length === 0) {
     return { status: "error", message: "Chybí identifikátor dealu." }
   }
+
   if (title.trim().length === 0) {
     return { status: "error", message: "Vyplňte název úkolu." }
   }
+
   try {
     const enums = await loadOrgEnums(ctx.scope.orgId)
     await withUiAudit(ctx, (scope) =>
@@ -639,6 +689,7 @@ export async function addDealTicketAction(
       }),
     )
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Úkol byl přidán." }
   } catch (error) {
     return {
@@ -664,12 +715,15 @@ export async function updateDealTitleAction(
     if (dealId.length === 0) {
       return { status: "error", message: "Chybí identifikátor dealu." }
     }
+
     const trimmed = title.trim()
     if (trimmed.length === 0) {
       return { status: "error", message: "Název dealu nesmí být prázdný." }
     }
+
     await withUiAudit(ctx, (scope) => updateDeal(scope, { id: dealId, title: trimmed }))
     revalidatePath(`/${orgSlug}/pipeline`)
+
     return { status: "success", message: "Název dealu uložen." }
   } catch (error) {
     logActionableError(
@@ -683,6 +737,7 @@ export async function updateDealTitleAction(
       },
       "Update deal title action failed",
     )
+
     return { status: "error", message: "Název dealu se nepodařilo uložit." }
   }
 }

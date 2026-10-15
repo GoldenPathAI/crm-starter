@@ -99,9 +99,11 @@ const isFilterActive = (filter: BrowserColumnFilter): boolean => {
   if (filter.kind === "checkbox") {
     return filter.selected.length > 0
   }
+
   if (filter.kind === "single") {
     return filter.value !== undefined
   }
+
   return filter.start !== undefined || filter.end !== undefined
 }
 
@@ -109,9 +111,11 @@ const filterActiveCount = (filter: BrowserColumnFilter): number => {
   if (filter.kind === "checkbox") {
     return filter.selected.length
   }
+
   if (filter.kind === "single") {
     return filter.value !== undefined ? 1 : 0
   }
+
   return filter.start !== undefined || filter.end !== undefined ? 1 : 0
 }
 
@@ -129,6 +133,7 @@ const savedViewsScopeFromPathname = (
   if (orgSlug === undefined || segments.length < 2) {
     return null
   }
+
   return { orgSlug, pageKey: segments.slice(1).join("/") }
 }
 
@@ -138,7 +143,9 @@ const readCollapsedGroups = (key: string): ReadonlySet<string> => {
     if (raw === null) {
       return new Set()
     }
+
     const parsed: unknown = JSON.parse(raw)
+
     return new Set(
       Array.isArray(parsed)
         ? parsed.filter((entry): entry is string => typeof entry === "string")
@@ -177,6 +184,7 @@ const normalizeGroupLevels = (
   if (current === undefined) {
     return []
   }
+
   const list = Array.isArray(current) ? current : [current]
   const levels: string[] = []
   for (const level of list) {
@@ -187,6 +195,7 @@ const normalizeGroupLevels = (
       }
     }
   }
+
   return levels
 }
 
@@ -258,6 +267,7 @@ export function Browser<R>({
       if (pageSize !== null) {
         params.set("pageSize", pageSize)
       }
+
       const queryString = params.toString()
       startTransition(() => {
         router.push(queryString.length > 0 ? `${pathname}?${queryString}` : pathname)
@@ -274,6 +284,7 @@ export function Browser<R>({
         } else {
           params.set(key, value)
         }
+
         params.delete("page")
       })
     },
@@ -294,11 +305,13 @@ export function Browser<R>({
       } else {
         params.delete(startKey)
       }
+
       if (end !== null && end.length > 0) {
         params.set(endKey, end)
       } else {
         params.delete(endKey)
       }
+
       params.delete("page")
     })
   }
@@ -319,6 +332,7 @@ export function Browser<R>({
         params.set("sortField", field)
         params.set("sortDir", nextDir)
       }
+
       params.delete("page")
     })
   }
@@ -340,6 +354,7 @@ export function Browser<R>({
       } else {
         params.set("pageSize", String(next))
       }
+
       params.delete("page")
     })
   }
@@ -356,6 +371,7 @@ export function Browser<R>({
           params.delete(key)
         }
       }
+
       params.delete("q")
       params.delete("page")
     })
@@ -372,6 +388,7 @@ export function Browser<R>({
     if (normalized === searchValue) {
       return
     }
+
     const handle = setTimeout(() => {
       push((params) => {
         if (normalized.length > 0) {
@@ -379,9 +396,11 @@ export function Browser<R>({
         } else {
           params.delete("q")
         }
+
         params.delete("page")
       })
     }, SEARCH_DEBOUNCE_MS)
+
     return () => clearTimeout(handle)
   }, [localSearch, searchValue, push])
 
@@ -390,6 +409,7 @@ export function Browser<R>({
       if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) {
         return
       }
+
       const target = event.target as HTMLElement | null
       if (
         target !== null &&
@@ -397,10 +417,13 @@ export function Browser<R>({
       ) {
         return
       }
+
       event.preventDefault()
       searchRef.current?.focus()
     }
+
     window.addEventListener("keydown", onKeyDown)
+
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
@@ -421,6 +444,7 @@ export function Browser<R>({
         keys.add(key)
       }
     }
+
     return [...keys]
   }, [presets])
 
@@ -433,11 +457,13 @@ export function Browser<R>({
       for (const key of presetResetKeys) {
         params.delete(key)
       }
+
       if (!active) {
         for (const [key, value] of Object.entries(preset.params)) {
           params.set(key, value)
         }
       }
+
       params.delete("page")
     })
   }
@@ -446,6 +472,7 @@ export function Browser<R>({
     if (viewTabs === undefined) {
       return
     }
+
     setParam(viewTabs.paramKey, value === viewTabs.defaultValue ? null : value)
   }
 
@@ -464,10 +491,12 @@ export function Browser<R>({
     if (group === undefined || first === undefined) {
       return null
     }
+
     const top = group.build(rows, first)
     if (second === undefined) {
       return top.map((bucket) => ({ ...bucket, children: null }))
     }
+
     return top.map((bucket) => ({ ...bucket, children: group.build(bucket.rows, second) }))
   }, [group, groupLevels, rows])
 
@@ -478,6 +507,7 @@ export function Browser<R>({
     } else {
       next.add(key)
     }
+
     setCollapsedGroups(next)
     if (storageKey !== null) {
       writeCollapsedGroups(storageKey, next)
@@ -498,6 +528,7 @@ export function Browser<R>({
     if (selection === undefined) {
       return
     }
+
     selection.onChange(allVisibleSelected ? new Set() : new Set(visibleKeys))
   }
 
@@ -505,12 +536,14 @@ export function Browser<R>({
     if (selection === undefined) {
       return
     }
+
     const next = new Set(selection.selected)
     if (next.has(key)) {
       next.delete(key)
     } else {
       next.add(key)
     }
+
     selection.onChange(next)
   }
 
@@ -521,9 +554,11 @@ export function Browser<R>({
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
       return
     }
+
     if (event.target instanceof Element && event.target.closest("a, button") !== null) {
       return
     }
+
     if (rowHref !== undefined) {
       router.push(rowHref(row))
     } else {
@@ -535,9 +570,11 @@ export function Browser<R>({
     if (event.key !== "Enter" && event.key !== " ") {
       return
     }
+
     if (event.target !== event.currentTarget) {
       return
     }
+
     event.preventDefault()
     onRowClick?.(row)
   }
@@ -551,6 +588,7 @@ export function Browser<R>({
   const renderRow = (row: R, index: number, keyPrefix?: string) => {
     const href = rowHref?.(row)
     const key = rowKey(row)
+
     return (
       <TR
         key={keyPrefix !== undefined ? `${keyPrefix}:${key}` : key}
@@ -661,6 +699,7 @@ export function Browser<R>({
     const limit = groupRowLimits[collapseKey] ?? GROUP_ROW_CAP
     const visibleRows = bucket.rows.slice(0, limit)
     const hiddenCount = bucket.rows.length - visibleRows.length
+
     return [
       ...visibleRows.map((row, index) => renderRow(row, index, collapseKey)),
       ...(hiddenCount > 0
@@ -693,15 +732,18 @@ export function Browser<R>({
       if (collapsed) {
         return [header]
       }
+
       if (bucket.children === null) {
         return [header, ...renderLeafRows(bucket, bucket.key)]
       }
+
       return [
         header,
         ...bucket.children.flatMap((child) => {
           const childKey = `${bucket.key}/${child.key}`
           const childCollapsed = collapsedGroups.has(childKey)
           const childHeader = renderGroupHeader(child, childKey, 1, childCollapsed)
+
           return childCollapsed ? [childHeader] : [childHeader, ...renderLeafRows(child, childKey)]
         }),
       ]
@@ -765,6 +807,7 @@ export function Browser<R>({
           {presets.map((preset) => {
             const active = isPresetActive(preset)
             const Icon = preset.icon
+
             return (
               <button
                 key={preset.key}
@@ -874,6 +917,7 @@ export function Browser<R>({
                         column.sortField !== undefined && sort?.field === column.sortField
                           ? sort.direction
                           : null
+
                       return (
                         <TH
                           key={column.id}
@@ -1028,6 +1072,7 @@ function buildChips(
       })
     }
   }
+
   return chips
 }
 
@@ -1050,6 +1095,7 @@ function HeaderCell<R>({ column, sort, onSort, onFilter, onSingle, onDateRange }
   if (column.filter === undefined) {
     return label
   }
+
   return (
     <div className={cn("flex items-center gap-1", column.align === "right" && "justify-end")}>
       {label}
@@ -1082,6 +1128,7 @@ function SortButton({ field, label, sort, onSort }: SortButtonProps) {
       : direction === SortDirection.Asc
         ? `Seřadit podle ${label} sestupně`
         : `Zrušit řazení podle ${label}`
+
   return (
     <button
       type="button"
@@ -1109,6 +1156,7 @@ interface ColumnFilterControlProps {
 function ColumnFilterControl({ filter, onToggle, onSingle, onDateRange }: ColumnFilterControlProps) {
   const [open, setOpen] = useState(false)
   const active = isFilterActive(filter)
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -1292,8 +1340,10 @@ function GroupMenu({ options, levels, maxLevels, onChange }: GroupMenuProps) {
               if (value === null) {
                 onChange([])
                 setOpen(false)
+
                 return
               }
+
               onChange(secondary !== undefined && secondary !== value ? [value, secondary] : [value])
               if (!nested) {
                 setOpen(false)
@@ -1331,6 +1381,7 @@ interface DateRangeFilterProps {
 function DateRangeFilter({ start, end, onApply }: DateRangeFilterProps) {
   const [from, setFrom] = useState(start ?? "")
   const [to, setTo] = useState(end ?? "")
+
   return (
     <div className="flex w-64 flex-col gap-3 p-3">
       <div className="flex flex-col gap-1.5">
@@ -1375,6 +1426,7 @@ function ViewTabsBar({ viewTabs, onSelect }: ViewTabsBarProps) {
       {viewTabs.tabs.map((tab) => {
         const active = tab.value === viewTabs.current
         const alert = tab.alert === true && tab.count > 0
+
         return (
           <button
             key={tab.value}

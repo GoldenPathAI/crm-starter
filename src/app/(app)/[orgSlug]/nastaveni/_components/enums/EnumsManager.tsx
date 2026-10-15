@@ -45,6 +45,7 @@ export function EnumsManager({
         >
           {groups.map((group) => {
             const isSelected = group.kind === selected.kind
+
             return (
               <button
                 key={group.kind}

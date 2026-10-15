@@ -29,6 +29,7 @@ async function assertOrgMembers(orgId: string, userIds: string[]): Promise<void>
   if (userIds.length === 0) {
     return
   }
+
   const rows = await db
     .select({ userId: organizationMembers.userId })
     .from(organizationMembers)
@@ -46,6 +47,7 @@ export async function getTicketAssignees(
   if (ticketIds.length === 0) {
     return {}
   }
+
   const dbc = resolveDbc(scope)
   const rows = await dbc
     .select({
@@ -65,6 +67,7 @@ export async function getTicketAssignees(
     )
     .where(and(inArray(ticketAssignees.ticketId, ticketIds), eq(tickets.organizationId, scope.orgId)))
     .orderBy(asc(users.name))
+
   return groupByKey(
     rows.map((row) => ({
       key: row.key,
@@ -86,6 +89,7 @@ export async function attachTicketAssignees<T extends { id: string }>(
   rows: T[],
 ): Promise<(T & { assignees: OrgMember[] })[]> {
   const byTicket = await getTicketAssignees(scope, rows.map((row) => row.id))
+
   return rows.map((row) => ({ ...row, assignees: byTicket[row.id] ?? [] }))
 }
 
@@ -94,6 +98,7 @@ export async function attachDealAssignees<T extends { id: string }>(
   rows: T[],
 ): Promise<(T & { assignees: OrgMember[] })[]> {
   const byDeal = await getDealAssignees(scope, rows.map((row) => row.id))
+
   return rows.map((row) => ({ ...row, assignees: byDeal[row.id] ?? [] }))
 }
 
@@ -112,6 +117,7 @@ export async function setTicketAssignees(
   if (ticket === undefined) {
     throw new Error("Úkol nebyl nalezen.")
   }
+
   const targets = uniqueIds(userIds)
   await assertOrgMembers(scope.orgId, targets)
 
@@ -129,9 +135,11 @@ export async function setTicketAssignees(
         .delete(ticketAssignees)
         .where(and(eq(ticketAssignees.ticketId, ticketId), inArray(ticketAssignees.userId, toRemove)))
     }
+
     if (toAdd.length > 0) {
       await tx.insert(ticketAssignees).values(toAdd.map((userId) => ({ id: createId("ta"), ticketId, userId })))
     }
+
     return toAdd
   })
 
@@ -152,6 +160,7 @@ export async function getDealAssignees(
   if (dealIds.length === 0) {
     return {}
   }
+
   const dbc = resolveDbc(scope)
   const rows = await dbc
     .select({
@@ -171,6 +180,7 @@ export async function getDealAssignees(
     )
     .where(and(inArray(dealAssignees.dealId, dealIds), eq(deals.organizationId, scope.orgId)))
     .orderBy(asc(users.name))
+
   return groupByKey(
     rows.map((row) => ({
       key: row.key,
@@ -200,6 +210,7 @@ export async function setDealAssignees(
   if (deal === undefined) {
     throw new Error("Deal nebyl nalezen.")
   }
+
   const targets = uniqueIds(userIds)
   await assertOrgMembers(scope.orgId, targets)
 
@@ -217,9 +228,11 @@ export async function setDealAssignees(
         .delete(dealAssignees)
         .where(and(eq(dealAssignees.dealId, dealId), inArray(dealAssignees.userId, toRemove)))
     }
+
     if (toAdd.length > 0) {
       await tx.insert(dealAssignees).values(toAdd.map((userId) => ({ id: createId("da"), dealId, userId })))
     }
+
     return toAdd
   })
 

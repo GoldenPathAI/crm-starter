@@ -45,6 +45,7 @@ export function InvitationsCard({
       if (notice !== null) {
         toast(notice)
       }
+
       if (result.status === "success") {
         setEmail("")
         setRole("member")
@@ -70,6 +71,7 @@ export function InvitationsCard({
       if (notice !== null) {
         toast(notice)
       }
+
       router.refresh()
     })
   }

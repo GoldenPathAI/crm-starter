@@ -220,6 +220,7 @@ export function OverviewPanel({
             {activeProjects.length > 0 ? (
               activeProjects.map((project) => {
                 const counts = ticketCountsFor(tickets, project.id)
+
                 return (
                   <Link
                     key={project.id}

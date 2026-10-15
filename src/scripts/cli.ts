@@ -206,6 +206,7 @@ aliasy na clientId/projectId/dealId. Při update vymaže volitelné pole hodnota
 
 const topLevelHelp = (): string => {
   const rows = ENTITY_ORDER.map((name) => `  ${name.padEnd(11)}${ENTITIES[name]?.summary ?? ""}`)
+
   return [
     "pnpm crm [--org slug] <entity> <verb> [--flag value ...]",
     "",
@@ -222,6 +223,7 @@ const entityHelp = (name: string): string => {
   if (help === undefined) {
     return topLevelHelp()
   }
+
   return [`pnpm crm ${name}`, "", ...help.usage, "", "Příklady:", ...help.examples].join("\n")
 }
 
@@ -230,6 +232,7 @@ const loadToken = (): string | undefined => {
   if (fromEnv !== undefined && fromEnv.trim().length > 0) {
     return fromEnv.trim()
   }
+
   try {
     const envPath = fileURLToPath(new URL("../../.env", import.meta.url))
     const content = readFileSync(envPath, "utf8")
@@ -238,13 +241,16 @@ const loadToken = (): string | undefined => {
       if (trimmed.length === 0 || trimmed.startsWith("#")) {
         continue
       }
+
       const eq = trimmed.indexOf("=")
       if (eq === -1) {
         continue
       }
+
       if (trimmed.slice(0, eq).trim() !== "INTERNAL_API_TOKEN") {
         continue
       }
+
       let value = trimmed.slice(eq + 1).trim()
       if (
         (value.startsWith('"') && value.endsWith('"')) ||
@@ -252,8 +258,10 @@ const loadToken = (): string | undefined => {
       ) {
         value = value.slice(1, -1)
       }
+
       return value.length > 0 ? value : undefined
     }
+
     return undefined
   } catch {
     return undefined
@@ -269,6 +277,7 @@ const parseArgs = (tokens: string[]): ParsedArgs => {
     if (token === undefined) {
       break
     }
+
     if (token.startsWith("--")) {
       const key = token.slice(2)
       const next = tokens[index + 1]
@@ -290,11 +299,13 @@ const parseArgs = (tokens: string[]): ParsedArgs => {
     const canonical = FLAG_ALIASES[key] ?? key
     flags[canonical] = [...(flags[canonical] ?? []), ...values]
   }
+
   return { positionals, flags }
 }
 
 const lastValue = (flags: Flags, key: string): string | undefined => {
   const values = flags[key]
+
   return values !== undefined ? values[values.length - 1] : undefined
 }
 
@@ -304,11 +315,14 @@ const buildQuery = (flags: Flags): string => {
     if (CONTROL_FLAGS.has(key)) {
       continue
     }
+
     for (const value of values) {
       params.append(key, value)
     }
   }
+
   const query = params.toString()
+
   return query.length > 0 ? `?${query}` : ""
 }
 
@@ -318,6 +332,7 @@ const buildBody = (flags: Flags): Record<string, BodyValue> => {
     if (CONTROL_FLAGS.has(key)) {
       continue
     }
+
     const raw = values[values.length - 1] ?? ""
     if (ARRAY_FIELDS.has(key)) {
       body[key] = values
@@ -336,6 +351,7 @@ const buildBody = (flags: Flags): Record<string, BodyValue> => {
       body[key] = raw
     }
   }
+
   return body
 }
 
@@ -359,9 +375,11 @@ const buildClientBody = (flags: Flags): Record<string, BodyValue> => {
       contact[field] = value
     }
   }
+
   if (contact.name !== undefined) {
     body.primaryContact = contact
   }
+
   return body
 }
 
@@ -383,7 +401,9 @@ const resolveRequest = (args: ParsedArgs): RequestSpec => {
     if (query === undefined || query.trim().length === 0) {
       fail("search vyžaduje hledaný výraz: pnpm crm search <text>")
     }
+
     const params = new URLSearchParams({ q: query ?? "" })
+
     return { method: "GET", path: `/search?${params.toString()}` }
   }
 
@@ -451,6 +471,7 @@ const resolveRequest = (args: ParsedArgs): RequestSpec => {
       if (verb === "list") {
         return { method: "GET", path: `/people/${requirePerson("rapport list")}/rapport` }
       }
+
       if (verb === "add") {
         return {
           method: "POST",
@@ -458,22 +479,27 @@ const resolveRequest = (args: ParsedArgs): RequestSpec => {
           body: buildBody(flags),
         }
       }
+
       if (verb === "delete") return { method: "DELETE", path: `/rapport-entries/${requireId()}` }
       break
     case "activities":
       if (verb === "list") {
         requireClient("activities list")
+
         return { method: "GET", path: `/activities${buildQuery(flags)}` }
       }
+
       if (verb === "add") return { method: "POST", path: "/activities", body: buildBody(flags) }
       if (verb === "move") {
         requireClient("activities move")
+
         return {
           method: "POST",
           path: `/activities/${requireId()}/move`,
           body: buildBody(flags),
         }
       }
+
       break
     case "documents":
       if (verb === "list") return { method: "GET", path: `/documents${buildQuery(flags)}` }
@@ -533,9 +559,11 @@ const formatValue = (key: string, value: unknown): string => {
   if (MONEY_FIELDS.has(key) && typeof value === "number") {
     return `${value.toLocaleString("cs-CZ")} Kč`
   }
+
   if (Array.isArray(value)) {
     return value.join(",")
   }
+
   return String(value)
 }
 
@@ -559,8 +587,10 @@ const renderRows = (rows: Record<string, unknown>[], indent: string): string[] =
   if (columns.length === 0) {
     return rows.map((row) => `${indent}${JSON.stringify(row)}`)
   }
+
   const matrix = rows.map((row) => columns.map((field) => cellText(row, field)))
   const widths = columns.map((_, i) => Math.max(...matrix.map((cells) => cells[i]?.length ?? 0)))
+
   return matrix.map((cells) =>
     `${indent}${cells
       .map((cell, i) => (i === cells.length - 1 ? cell : cell.padEnd(widths[i] ?? 0)))
@@ -590,6 +620,7 @@ const printBrief = (data: unknown): void => {
         if (!isRecord(group)) {
           continue
         }
+
         process.stdout.write(`${briefLine(group)}\n`)
         const nested = Array.isArray(group.deals) ? group.deals.filter(isRecord) : []
         for (const line of renderRows(nested, "  ")) {
@@ -601,17 +632,21 @@ const printBrief = (data: unknown): void => {
       for (const line of renderRows(records, "")) {
         process.stdout.write(`${line}\n`)
       }
+
       for (const row of rows) {
         if (!isRecord(row)) {
           process.stdout.write(`${String(row)}\n`)
         }
       }
     }
+
     if (isRecord(data) && typeof data.total === "number") {
       process.stdout.write(`total ${data.total}\n`)
     }
+
     return
   }
+
   if (isRecord(data)) {
     // A detail/dashboard object nests entity records or arrays of records; a plain
     // created/updated entity is all scalars (plus string arrays like services) and
@@ -625,8 +660,10 @@ const printBrief = (data: unknown): void => {
       const line = briefLine(data)
       process.stdout.write(`${line.length > 0 ? line : JSON.stringify(data)}\n`)
     }
+
     return
   }
+
   process.stdout.write(`${String(data)}\n`)
 }
 
@@ -634,9 +671,11 @@ const applyLimit = (data: unknown, limit: number): unknown => {
   if (isRecord(data) && Array.isArray(data.items)) {
     return { ...data, items: data.items.slice(0, limit), total: data.total ?? data.items.length }
   }
+
   if (Array.isArray(data)) {
     return data.slice(0, limit)
   }
+
   return data
 }
 
@@ -645,11 +684,14 @@ const wantsHelp = (args: ParsedArgs): string | undefined => {
   if (positionals.length === 0) {
     return topLevelHelp()
   }
+
   const asked = flags.help !== undefined || positionals.includes("help")
   if (!asked) {
     return undefined
   }
+
   const entity = positionals.find((token) => token in ENTITIES)
+
   return entity !== undefined ? entityHelp(entity) : topLevelHelp()
 }
 
@@ -708,6 +750,7 @@ const main = async (): Promise<void> => {
   } else {
     process.stdout.write(`${JSON.stringify(shaped, null, 2)}\n`)
   }
+
   process.exit(0)
 }
 

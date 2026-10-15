@@ -20,6 +20,7 @@ export async function createClientAction(
   if (name === undefined) {
     return { status: "error", message: "Vyplňte název klienta." }
   }
+
   if (industry === undefined) {
     return { status: "error", message: "Vyplňte obor." }
   }

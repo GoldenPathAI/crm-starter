@@ -21,6 +21,7 @@ export interface CreateProjectPayload {
 
 const optionalText = (value: string): string | undefined => {
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -32,6 +33,7 @@ export async function createProjectAction(
   if (input.clientId.length === 0) {
     return { status: "error", message: "Vyberte klienta." }
   }
+
   if (input.name.trim().length === 0) {
     return { status: "error", message: "Vyplňte název projektu." }
   }

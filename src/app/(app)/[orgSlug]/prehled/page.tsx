@@ -17,9 +17,11 @@ const greetingFor = (hour: number): string => {
   if (hour < 12) {
     return "Dobré ráno"
   }
+
   if (hour < 18) {
     return "Dobré odpoledne"
   }
+
   return "Dobrý večer"
 }
 
@@ -44,9 +46,11 @@ export default async function PrehledPage({
   if (data.overdueTickets.length > 0) {
     hotParts.push(`${data.overdueTickets.length} ${ticketWord(data.overdueTickets.length)} po termínu`)
   }
+
   if (data.stuckDeals.length > 0) {
     hotParts.push(`${data.stuckDeals.length} ${formatDeals(data.stuckDeals.length)} bez pohybu`)
   }
+
   const statusLine = hotParts.length === 0 ? "Nic nehoří" : hotParts.join(" · ")
 
   return (

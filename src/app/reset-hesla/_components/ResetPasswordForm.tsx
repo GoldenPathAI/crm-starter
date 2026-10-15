@@ -22,6 +22,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   useEffect(() => {
     if (!done) return
     const timer = setTimeout(() => router.push("/login"), 2000)
+
     return () => clearTimeout(timer)
   }, [done, router])
 
@@ -33,10 +34,13 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
     if (password.length < MIN_PASSWORD_LENGTH) {
       setError("Heslo musí mít alespoň 8 znaků")
+
       return
     }
+
     if (password !== confirm) {
       setError("Hesla se neshodují")
+
       return
     }
 
@@ -46,8 +50,10 @@ export function ResetPasswordForm({ token }: { token: string }) {
     if (result.error !== null) {
       setError("Odkaz vypršel nebo není platný. Požádej o nový.")
       setPending(false)
+
       return
     }
+
     setDone(true)
   }
 

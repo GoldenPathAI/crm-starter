@@ -22,6 +22,7 @@ export async function listAllOptions(orgId: string, kind: EnumKind): Promise<Enu
     .from(enumOptions)
     .where(and(eq(enumOptions.organizationId, orgId), eq(enumOptions.kind, kind)))
     .orderBy(asc(enumOptions.position))
+
   return rows.map(toEnumOption)
 }
 
@@ -41,6 +42,7 @@ export async function createEnumOption(
       "Hodnota smí obsahovat jen malá písmena, číslice a podtržítko a musí začínat písmenem.",
     )
   }
+
   const dbc = resolveDbc(scope)
   const maxRow = await dbc
     .select({ m: max(enumOptions.position) })
@@ -65,11 +67,13 @@ export async function createEnumOption(
     if (row === undefined) {
       throw new Error("Hodnotu číselníku se nepodařilo vytvořit.")
     }
+
     return toEnumOption(row)
   } catch (error) {
     if (isUniqueViolation(error)) {
       throw new Error("Hodnota už v číselníku existuje.")
     }
+
     throw error
   }
 }
@@ -100,6 +104,7 @@ export async function updateEnumOption(
   if (row === undefined) {
     throw new Error("Hodnota číselníku nebyla nalezena.")
   }
+
   return toEnumOption(row)
 }
 
@@ -129,6 +134,7 @@ export async function reorderEnumOptions(
     if (!matches) {
       throw new Error("Seznam pořadí neodpovídá aktivním hodnotám číselníku.")
     }
+
     for (const [position, id] of orderedIds.entries()) {
       await tx
         .update(enumOptions)

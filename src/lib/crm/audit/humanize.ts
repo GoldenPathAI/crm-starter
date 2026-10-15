@@ -100,6 +100,7 @@ export const displayName = (entry: HumanizableEntry): string => {
       }
     }
   }
+
   return entry.rowId
 }
 
@@ -107,6 +108,7 @@ const valuesEqual = (a: unknown, b: unknown): boolean => {
   if (a === b) {
     return true
   }
+
   return JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 }
 
@@ -116,6 +118,7 @@ export const changedFieldLabels = (entry: HumanizableEntry): string[] => {
   if (entry.operation !== "UPDATE" || entry.before === null || entry.after === null) {
     return []
   }
+
   const before = entry.before
   const after = entry.after
   const keys = new Set([...Object.keys(before), ...Object.keys(after)])
@@ -124,10 +127,12 @@ export const changedFieldLabels = (entry: HumanizableEntry): string[] => {
     if (IGNORED_FIELDS.has(key)) {
       continue
     }
+
     if (!valuesEqual(before[key], after[key])) {
       changed.push(FIELD_LABELS[key] ?? key)
     }
   }
+
   return changed
 }
 
@@ -138,9 +143,11 @@ export const changedFieldsSummary = (entry: HumanizableEntry): string => {
   if (labels.length === 0) {
     return ""
   }
+
   const shown = labels.slice(0, MAX_CHANGED_FIELDS)
   const rest = labels.length - shown.length
   const joined = shown.join(", ")
+
   return rest > 0 ? `${joined} +${rest}` : joined
 }
 

@@ -15,6 +15,7 @@ export function reportClientError(input: {
   if (reportsSent >= MAX_REPORTS) {
     return
   }
+
   reportsSent += 1
   try {
     void fetch("/api/client-errors", {
@@ -45,6 +46,7 @@ export function ClientErrorReporter() {
         source: "window.onerror",
       })
     }
+
     const onRejection = (event: PromiseRejectionEvent): void => {
       const reason: unknown = event.reason
       reportClientError({
@@ -53,12 +55,15 @@ export function ClientErrorReporter() {
         source: "unhandledrejection",
       })
     }
+
     window.addEventListener("error", onError)
     window.addEventListener("unhandledrejection", onRejection)
+
     return () => {
       window.removeEventListener("error", onError)
       window.removeEventListener("unhandledrejection", onRejection)
     }
   }, [])
+
   return null
 }

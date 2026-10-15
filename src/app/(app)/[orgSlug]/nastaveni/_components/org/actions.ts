@@ -24,6 +24,7 @@ export async function updateOrganizationNameAction(
     requireRole(ctx, "owner")
     await updateOrganizationName(ctx.scope, name)
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Název uložen." }
   } catch (error) {
     return toActionError(error)
@@ -39,6 +40,7 @@ export async function updateOrgSettingsAction(
     requireRole(ctx, "owner")
     await withUiAudit(ctx, (scope) => updateOrgSettings(scope, patch))
     revalidateOrg(orgSlug)
+
     return { status: "success", message: "Nastavení uloženo." }
   } catch (error) {
     return toActionError(error)

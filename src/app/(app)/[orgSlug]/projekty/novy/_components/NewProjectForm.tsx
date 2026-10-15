@@ -45,12 +45,16 @@ export function NewProjectForm({ clientOptions, statusOptions, prefill, dealId }
   const submit = () => {
     if (values.clientId.length === 0) {
       setError("Vyberte klienta.")
+
       return
     }
+
     if (values.name.trim().length === 0) {
       setError("Vyplňte název projektu.")
+
       return
     }
+
     setError(null)
     startTransition(async () => {
       const result = await createProjectAction(orgSlug, {

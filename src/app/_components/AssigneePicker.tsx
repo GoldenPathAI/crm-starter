@@ -64,6 +64,7 @@ export function AssigneePicker({
           ) : (
             filtered.map((member) => {
               const active = selectedSet.has(member.userId)
+
               return (
                 <button
                   key={member.userId}

@@ -108,6 +108,7 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   if (urlValue === "priorita") {
     return priorityOptions
       .map((option) => ({
@@ -118,6 +119,7 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   if (urlValue === "resitel") {
     // A multi-assignee ticket shows under each of its assignees (the Browser
     // namespaces row keys per bucket); unassigned tickets trail in one bucket.
@@ -131,12 +133,15 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
     const unassigned = rows.filter((ticket) => ticket.assignees.length === 0)
+
     return unassigned.length > 0
       ? [...buckets, { key: "none", label: "Bez řešitele", rows: unassigned }]
       : buckets
   }
+
   const labels = new Map(clientOptions.map((option) => [option.value, option.label]))
   const ids = [...new Set(rows.map((ticket) => ticket.clientId))]
+
   return ids
     .map((id) => ({
       key: id,
@@ -198,6 +203,7 @@ export function TicketsTable({
       addHiddenId(ticketId)
     }
   }
+
   const visibleRows = hiddenIds.size > 0 ? rows.filter((ticket) => !hiddenIds.has(ticket.id)) : rows
   const visibleTotal = total - (rows.length - visibleRows.length)
 
@@ -437,6 +443,7 @@ function TicketsBulkActions({
       } else {
         next.add(userId)
       }
+
       return next
     })
   }
@@ -469,6 +476,7 @@ function TicketsBulkActions({
           <div className="flex min-w-40 flex-col gap-0.5">
             {priorityOptions.map((option) => {
               const optionStyle = optionBadgeStyle(option)
+
               return (
                 <button
                   key={option.value}
@@ -597,8 +605,10 @@ function TitleQuickEdit({ ticket, orgSlug }: { ticket: TicketListItem; orgSlug: 
     const next = value.trim()
     if (next.length === 0 || next === optimisticTitle) {
       setValue(optimisticTitle)
+
       return
     }
+
     startTransition(async () => {
       setOptimisticTitle(next)
       const result = await patchTaskAction(orgSlug, {
@@ -671,6 +681,7 @@ function StatusQuickEdit({
     if (status === optimisticStatus) {
       return
     }
+
     startTransition(async () => {
       setOptimisticStatus(status)
       onStatusChange(ticket.id, status)
@@ -701,6 +712,7 @@ function StatusQuickEdit({
           {statusOptions.map((option) => {
             const optionStyle = optionBadgeStyle(option)
             const active = option.value === optimisticStatus
+
             return (
               <button
                 key={option.value}
@@ -758,6 +770,7 @@ function DoneQuickToggle({
       }
     })
   }
+
   return (
     <span onClick={(event) => event.stopPropagation()}>
       <Checkbox checked={optimisticDone} onCheckedChange={toggle} />
@@ -789,6 +802,7 @@ function PriorityQuickEdit({
     if (priority === optimisticPriority) {
       return
     }
+
     startTransition(async () => {
       setOptimisticPriority(priority)
       const result = await quickEditTicketAction(orgSlug, {
@@ -823,6 +837,7 @@ function PriorityQuickEdit({
           {priorityOptions.map((option) => {
             const optionStyle = optionBadgeStyle(option)
             const active = option.value === optimisticPriority
+
             return (
               <button
                 key={option.value}
@@ -872,6 +887,7 @@ function DueQuickEdit({
     if (iso === (optimisticDue ?? "")) {
       return
     }
+
     startTransition(async () => {
       setOptimisticDue(iso.length > 0 ? iso : undefined)
       const result = await quickEditTicketAction(orgSlug, {

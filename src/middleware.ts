@@ -9,10 +9,13 @@ export function middleware(request: NextRequest): NextResponse {
   if (sessionCookie !== null) {
     const response = NextResponse.next();
     response.headers.set("X-Robots-Tag", NOINDEX);
+
     return response;
   }
+
   const redirect = NextResponse.redirect(new URL("/login", request.url));
   redirect.headers.set("X-Robots-Tag", NOINDEX);
+
   return redirect;
 }
 

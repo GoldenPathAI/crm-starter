@@ -28,8 +28,10 @@ export function AcceptInvite({
     if (result.status === "error") {
       setError(result.message)
       setPending(false)
+
       return
     }
+
     router.push(orgHref(orgSlug, "/prehled"))
   }
 

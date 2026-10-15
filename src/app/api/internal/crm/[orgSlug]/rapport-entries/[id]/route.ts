@@ -10,6 +10,7 @@ export const DELETE = route<{ orgSlug: string; id: string }>(
   { mutation: true },
   async ({ params, auth }) => {
     await withApiAudit(auth, (scope) => deleteRapportEntry(scope, params.id))
+
     return ok({ ok: true })
   },
 )

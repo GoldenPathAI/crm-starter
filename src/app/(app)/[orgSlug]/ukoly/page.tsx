@@ -90,6 +90,7 @@ export default async function UkolyPage({
 
   const priorityRank = (priority: string): number => {
     const index = priorityValues.indexOf(priority)
+
     return index === -1 ? priorityValues.length : index
   }
 
@@ -115,6 +116,7 @@ export default async function UkolyPage({
   const viewCounts = TICKET_VIEWS.reduce(
     (counts, view) => {
       counts[view] = scoped.filter((ticket) => matchesView(ticket, view, today, weekEnd, doneValue)).length
+
       return counts
     },
     {} as Record<TicketView, number>,
@@ -128,12 +130,15 @@ export default async function UkolyPage({
       if (state.sortField === undefined && state.view === "hotove") {
         return (b.doneAt ?? "").localeCompare(a.doneAt ?? "")
       }
+
       if (effectiveField === "title") {
         return factor * a.title.localeCompare(b.title, "cs")
       }
+
       if (effectiveField === "priority") {
         return factor * (priorityRank(a.priority) - priorityRank(b.priority))
       }
+
       return factor * (a.dueAt ?? "9999-99-99").localeCompare(b.dueAt ?? "9999-99-99")
     })
 

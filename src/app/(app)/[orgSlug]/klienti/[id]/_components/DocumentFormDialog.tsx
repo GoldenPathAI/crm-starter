@@ -27,10 +27,12 @@ const formatBytes = (bytes: number): string => {
   if (bytes < 1024) {
     return `${bytes} B`
   }
+
   const kb = bytes / 1024
   if (kb < 1024) {
     return `${Math.round(kb)} kB`
   }
+
   return `${(kb / 1024).toFixed(1)} MB`
 }
 
@@ -81,8 +83,10 @@ export function DocumentFormDialog({
   const pickFile = (next: File | null) => {
     if (next !== null && next.size > config.files.maxUploadBytes) {
       setError("Soubor je větší než 25 MB.")
+
       return
     }
+
     setError(null)
     setFile(next)
   }
@@ -93,12 +97,15 @@ export function DocumentFormDialog({
     if (file === null) {
       return values.file
     }
+
     const presigned = await presignDocumentUploadAction(orgSlug, file.name, file.type, file.size)
     if (presigned.status === "error") {
       setError(presigned.message)
       toast({ variant: "error", title: presigned.message })
+
       return null
     }
+
     const response = await fetch(presigned.url, {
       method: "PUT",
       headers: { "Content-Type": file.type },
@@ -108,8 +115,10 @@ export function DocumentFormDialog({
       const message = "Nahrání souboru selhalo."
       setError(message)
       toast({ variant: "error", title: message })
+
       return null
     }
+
     return { key: presigned.key, name: file.name, size: file.size }
   }
 
@@ -117,8 +126,10 @@ export function DocumentFormDialog({
     const trimmedTitle = values.title.trim()
     if (trimmedTitle.length === 0) {
       setError("Vyplňte název dokumentu.")
+
       return
     }
+
     setError(null)
     startTransition(async () => {
       const uploaded = await uploadPickedFile()
@@ -126,6 +137,7 @@ export function DocumentFormDialog({
       if (file !== null && uploaded === null) {
         return
       }
+
       const result = await onSubmit({ ...values, title: trimmedTitle, file: uploaded ?? undefined })
       if (result.status === "success") {
         toast({ variant: "success", title: result.message })

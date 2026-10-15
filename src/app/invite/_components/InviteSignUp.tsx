@@ -39,6 +39,7 @@ export function InviteSignUp({
     if (signUp.error !== null) {
       setError("Účet se nepodařilo vytvořit. Zkontroluj heslo (min. 8 znaků).")
       setPending(false)
+
       return
     }
 
@@ -46,6 +47,7 @@ export function InviteSignUp({
     if (accept.error !== null) {
       setError("Účet je vytvořen, ale pozvánku se nepodařilo přijmout. Otevři odkaz znovu.")
       setPending(false)
+
       return
     }
 

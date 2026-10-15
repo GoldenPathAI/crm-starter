@@ -29,6 +29,7 @@ function parseArgs(): Args {
     console.error("Vyžaduje v prostředí BETTER_AUTH_SECRET a DATABASE_URL (pro testy TEST_DATABASE_URL).")
     process.exit(1)
   }
+
   return { email, name, password, orgSlug, orgName }
 }
 
@@ -53,6 +54,7 @@ async function main(): Promise<void> {
     if (org === null) {
       throw new Error(`Workspace '${orgSlug}' se nepodařilo založit.`)
     }
+
     console.log(`Workspace založen: ${orgName} (${orgSlug})`)
   }
 

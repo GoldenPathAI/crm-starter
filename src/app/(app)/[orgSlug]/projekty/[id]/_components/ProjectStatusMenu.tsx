@@ -28,6 +28,7 @@ export function ProjectStatusMenu({
     if (status === project.status) {
       return
     }
+
     startTransition(async () => {
       const result = await changeProjectStatusAction(orgSlug, { projectId: project.id, status })
       toast({
@@ -63,6 +64,7 @@ export function ProjectStatusMenu({
           {statusOptions.map((option) => {
             const item = optionBadgeStyle(option)
             const active = option.value === project.status
+
             return (
               <button
                 key={option.value}

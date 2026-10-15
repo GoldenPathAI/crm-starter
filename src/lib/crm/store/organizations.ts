@@ -17,6 +17,7 @@ export async function getOrgBySlug(slug: string): Promise<OrgIdentity | null> {
     .from(organizations)
     .where(eq(organizations.slug, slug))
     .limit(1)
+
   return rows[0] ?? null
 }
 
@@ -25,6 +26,7 @@ export async function updateOrganizationName(scope: OrgScope, name: string): Pro
   if (trimmed.length === 0) {
     throw new Error("Název organizace nesmí být prázdný.")
   }
+
   await db
     .update(organizations)
     .set({ name: trimmed, updatedAt: new Date() })

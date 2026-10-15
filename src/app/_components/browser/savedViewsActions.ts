@@ -14,6 +14,7 @@ export async function listSavedViewsAction(
   pageKey: string,
 ): Promise<{ views: SavedView[] }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { views: await listSavedViews(ctx.scope, ctx.user.id, pageKey) }
 }
 
@@ -24,6 +25,7 @@ export async function saveSavedViewAction(
   query: string,
 ): Promise<{ views: SavedView[] }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { views: await saveSavedView(ctx.scope, ctx.user.id, pageKey, name, query) }
 }
 
@@ -34,6 +36,7 @@ export async function setDefaultSavedViewAction(
   isDefault: boolean,
 ): Promise<{ views: SavedView[] }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { views: await setDefaultSavedView(ctx.scope, ctx.user.id, pageKey, id, isDefault) }
 }
 
@@ -43,5 +46,6 @@ export async function deleteSavedViewAction(
   id: string,
 ): Promise<{ views: SavedView[] }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { views: await deleteSavedView(ctx.scope, ctx.user.id, pageKey, id) }
 }

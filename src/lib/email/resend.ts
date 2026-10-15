@@ -25,6 +25,7 @@ export async function sendTransactionalEmail(
       { to: params.to, subject: params.subject },
       "RESEND_API_KEY not configured, skipping transactional email",
     )
+
     return { sent: false }
   }
 
@@ -42,10 +43,13 @@ export async function sendTransactionalEmail(
         { to: params.to, subject: params.subject, error: result.error.message },
         "Resend rejected transactional email",
       )
+
       return { sent: false }
     }
+
     const id = result.data?.id
     logger.info({ to: params.to, subject: params.subject, id }, "transactional email sent")
+
     return { sent: true, id }
   } catch (error) {
     logger.error(
@@ -56,6 +60,7 @@ export async function sendTransactionalEmail(
       },
       "transactional email send threw",
     )
+
     return { sent: false }
   }
 }

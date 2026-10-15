@@ -49,6 +49,7 @@ interface ClientFormFieldsProps {
 
 const defaultStatusValue = (statusView: EnumView): string => {
   const inquiry = statusView.options.find((option) => option.semantic === "inquiry")
+
   return inquiry?.value ?? statusView.options[0]?.value ?? ""
 }
 

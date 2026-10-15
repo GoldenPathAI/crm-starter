@@ -32,9 +32,11 @@ const dealWord = (count: number): string => {
   if (count === 1) {
     return "deal"
   }
+
   if (count >= 2 && count <= 4) {
     return "dealy"
   }
+
   return "dealů"
 }
 
@@ -45,13 +47,16 @@ function CountUp({ value, format }: { value: number; format?: (value: number) =>
   useEffect(() => {
     if (reduceMotion === true) {
       setDisplay(value)
+
       return
     }
+
     const controls = animate(0, value, {
       duration: 0.9,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (latest) => setDisplay(latest),
     })
+
     return () => controls.stop()
   }, [value, reduceMotion])
 

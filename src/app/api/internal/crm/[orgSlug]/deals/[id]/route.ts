@@ -16,10 +16,12 @@ export async function PATCH(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     const body = await readJsonObject(request)
+
     return ok(await updateDeal(scope, parseUpdateDeal(id, body)))
   } catch (error) {
     return errorResponse(error)
@@ -31,10 +33,12 @@ export async function DELETE(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     await deleteDeal(scope, id)
+
     return ok({ ok: true })
   } catch (error) {
     return errorResponse(error)

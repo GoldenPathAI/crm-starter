@@ -26,6 +26,7 @@ const actorUserId = (scope: OrgScope): string | null =>
 // The done column is the org's ticket_status option carrying semantic "done".
 const doneStatusValue = async (scope: OrgScope): Promise<TicketStatus> => {
   const option = await getBySemantic(scope.orgId, "ticket_status", "done")
+
   return option.value
 }
 
@@ -92,13 +93,17 @@ const compareTickets = (
   const direction = sort?.direction ?? SortDirection.Asc
   if (field === "priority") {
     const rank = (ticket: Ticket): number => priorityRank.get(ticket.priority) ?? Number.MAX_SAFE_INTEGER
+
     return byDirection(rank(a) - rank(b), direction)
   }
+
   if (field === "createdAt") {
     return byDirection(a.createdAt.localeCompare(b.createdAt), direction)
   }
+
   const aDue = a.dueAt ?? "9999-99-99"
   const bDue = b.dueAt ?? "9999-99-99"
+
   return byDirection(aDue.localeCompare(bDue), direction)
 }
 
@@ -117,18 +122,23 @@ export async function listTickets(
   if (filters.clientId !== undefined) {
     conditions.push(eq(tickets.clientId, filters.clientId))
   }
+
   if (filters.projectId !== undefined) {
     conditions.push(eq(tickets.projectId, filters.projectId))
   }
+
   if (filters.dealId !== undefined) {
     conditions.push(eq(tickets.dealId, filters.dealId))
   }
+
   if (filters.statuses !== undefined) {
     conditions.push(inArray(tickets.status, filters.statuses))
   }
+
   if (filters.priorities !== undefined) {
     conditions.push(inArray(tickets.priority, filters.priorities))
   }
+
   if (filters.overdue === true) {
     conditions.push(isNotNull(tickets.dueAt))
     conditions.push(ne(tickets.status, doneValue))
@@ -157,6 +167,7 @@ export async function listTickets(
     if (child.parentId === null) {
       continue
     }
+
     subtaskCounts.set(child.parentId, (subtaskCounts.get(child.parentId) ?? 0) + 1)
   }
 
@@ -175,12 +186,15 @@ export async function listTickets(
   const total = filtered.length
   if (query.group !== undefined) {
     const items = await attachTicketAssignees(scope, filtered)
+
     return { items, total, page: 1, pageSize: total }
   }
+
   const pageSize = query.pageSize ?? config.defaultPageSize
   const page = Math.max(1, query.page)
   const start = (page - 1) * pageSize
   const items = await attachTicketAssignees(scope, filtered.slice(start, start + pageSize))
+
   return { items, total, page, pageSize }
 }
 
@@ -213,6 +227,7 @@ const appendOrderForColumn = async (
         ne(tickets.id, ticket.id),
       ),
     )
+
   return siblings.reduce((max, sibling) => Math.max(max, sibling.order), -1) + 1
 }
 
@@ -228,6 +243,7 @@ const nextDueDate = (dueAt: string, recurrence: TicketRecurrence): string => {
         : recurrence === "monthly"
           ? addMonths(due, 1)
           : addMonths(due, 3)
+
   return format(advanced, "yyyy-MM-dd")
 }
 
@@ -247,6 +263,7 @@ async function spawnNextOccurrence(
   if (source.recurrence === null || oldDueAt === null || source.parentId !== null) {
     return
   }
+
   const txScope: OrgScope = { ...scope, db: tx }
   const next = await createTicket(txScope, {
     clientId: source.clientId,
@@ -307,6 +324,7 @@ export async function updateTicketStatus(
     if (current === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     const doneAt = status === doneValue ? new Date() : null
     const order =
       status === current.status ? current.order : await appendOrderForColumn(tx, current, status)
@@ -319,11 +337,14 @@ export async function updateTicketStatus(
     if (row === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     if (current.status !== doneValue && status === doneValue) {
       await spawnNextOccurrence(scope, tx, row, current.dueAt)
     }
+
     return row
   })
+
   return toTicket(updated)
 }
 
@@ -350,6 +371,7 @@ export async function reorderTicket(
     if (current === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     const doneAt = status === doneValue ? current.doneAt ?? new Date() : null
     let moved = current
     for (let index = 0; index < orderedIds.length; index += 1) {
@@ -357,6 +379,7 @@ export async function reorderTicket(
       if (id === undefined) {
         continue
       }
+
       const patch = id === ticketId ? { order: index, status, doneAt } : { order: index }
       const rows = await tx
         .update(tickets)
@@ -368,11 +391,14 @@ export async function reorderTicket(
         moved = row
       }
     }
+
     if (current.status !== doneValue && status === doneValue) {
       await spawnNextOccurrence(scope, tx, moved, current.dueAt)
     }
+
     return moved
   })
+
   return toTicket(updated)
 }
 
@@ -381,6 +407,7 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
   if (input.status !== undefined) {
     await assertValidValue(scope.orgId, "ticket_status", input.status)
   }
+
   const doneValue = await doneStatusValue(scope)
   const dbc = resolveDbc(scope)
   const created = await withTx(dbc, async (tx) => {
@@ -398,6 +425,7 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
       if (deal === undefined) {
         throw new Error("Deal nebyl nalezen.")
       }
+
       dealId = deal.id
       dealClientId = deal.clientId
     }
@@ -416,6 +444,7 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
       if (project === undefined) {
         throw new Error("Projekt nebyl nalezen.")
       }
+
       projectId = project.id
       clientId = project.clientId
     } else if (input.clientId !== undefined && input.clientId.length > 0) {
@@ -427,6 +456,7 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
       if (clientRows[0] === undefined) {
         throw new Error("Klient nebyl nalezen.")
       }
+
       clientId = input.clientId
     } else if (dealClientId !== null) {
       clientId = dealClientId
@@ -457,9 +487,11 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
       if (parent === undefined || !sameScope) {
         throw new Error("Nadřazený úkol nebyl nalezen.")
       }
+
       if (parent.parentId !== null) {
         throw new Error("Podúkol nemůže mít další podúkoly.")
       }
+
       parentId = parent.id
     }
 
@@ -508,8 +540,10 @@ export async function createTicket(scope: OrgScope, input: CreateTicketInput): P
     if (row === undefined) {
       throw new Error("Úkol se nepodařilo vytvořit.")
     }
+
     return row
   })
+
   return toTicket(created)
 }
 
@@ -532,6 +566,7 @@ export async function updateTicket(
     if (current === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     const doneAt = input.status === doneValue ? current.doneAt ?? new Date() : null
     const order =
       input.status === current.status
@@ -556,11 +591,14 @@ export async function updateTicket(
     if (row === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     if (current.status !== doneValue && input.status === doneValue) {
       await spawnNextOccurrence(scope, tx, row, current.dueAt)
     }
+
     return row
   })
+
   return toTicket(updated)
 }
 
@@ -575,6 +613,7 @@ export async function deleteTicket(scope: OrgScope, ticketId: string): Promise<v
     if (existing[0] === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     // parent_id carries no FK, so subtasks must be removed explicitly.
     await tx
       .delete(tickets)
@@ -597,6 +636,7 @@ export async function toggleSubtask(scope: OrgScope, ticketId: string): Promise<
   if (current === undefined) {
     throw new Error("Podúkol nebyl nalezen.")
   }
+
   const nextStatus = current.status === doneValue ? "todo" : doneValue
   const doneAt = nextStatus === doneValue ? new Date() : null
   const rows = await dbc
@@ -608,6 +648,7 @@ export async function toggleSubtask(scope: OrgScope, ticketId: string): Promise<
   if (row === undefined) {
     throw new Error("Podúkol nebyl nalezen.")
   }
+
   return toTicket(row)
 }
 
@@ -633,6 +674,7 @@ export async function getTicketDetail(
   if (row === undefined) {
     return null
   }
+
   const ticket = toTicket(row)
 
   const [clientRows, projectRows, subtaskRows, parentRows] = await Promise.all([
@@ -700,13 +742,16 @@ export async function listTicketsByDeal(
       if (aDone !== bDone) {
         return aDone ? 1 : -1
       }
+
       const aDue = a.dueAt ?? "9999-99-99"
       const bDue = b.dueAt ?? "9999-99-99"
       if (aDue !== bDue) {
         return aDue.localeCompare(bDue)
       }
+
       return a.createdAt.localeCompare(b.createdAt)
     })
+
   return attachTicketAssignees(scope, sorted)
 }
 
@@ -735,9 +780,11 @@ export async function patchTicket(
   if (patch.status !== undefined) {
     await assertValidValue(scope.orgId, "ticket_status", patch.status)
   }
+
   if (patch.priority !== undefined) {
     await assertValidValue(scope.orgId, "ticket_priority", patch.priority)
   }
+
   const doneValue = await doneStatusValue(scope)
   const dbc = resolveDbc(scope)
   const updated = await withTx(dbc, async (tx) => {
@@ -774,6 +821,7 @@ export async function patchTicket(
         if (project === undefined) {
           throw new Error("Projekt nebyl nalezen.")
         }
+
         projectId = project.id
         clientId = project.clientId
       }
@@ -786,6 +834,7 @@ export async function patchTicket(
       if (clientRows[0] === undefined) {
         throw new Error("Klient nebyl nalezen.")
       }
+
       clientId = patch.clientId
     }
 
@@ -809,18 +858,23 @@ export async function patchTicket(
     if (patch.title !== undefined) {
       set.title = patch.title
     }
+
     if (patch.description !== undefined) {
       set.description = patch.description
     }
+
     if (patch.priority !== undefined) {
       set.priority = patch.priority
     }
+
     if (patch.dueAt !== undefined) {
       set.dueAt = patch.dueAt
     }
+
     if (patch.labels !== undefined) {
       set.labels = patch.labels
     }
+
     if (patch.recurrence !== undefined) {
       set.recurrence = patch.recurrence
     }
@@ -834,6 +888,7 @@ export async function patchTicket(
     if (row === undefined) {
       throw new Error("Úkol nebyl nalezen.")
     }
+
     if (current.status !== doneValue && status === doneValue) {
       await spawnNextOccurrence(scope, tx, row, current.dueAt)
     }
@@ -847,5 +902,6 @@ export async function patchTicket(
 
     return row
   })
+
   return toTicket(updated)
 }

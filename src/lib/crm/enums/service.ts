@@ -26,6 +26,7 @@ export async function loadOrgEnumsUncached(orgId: string): Promise<OrgEnums> {
     .from(enumOptions)
     .where(and(eq(enumOptions.organizationId, orgId), isNull(enumOptions.archivedAt)))
     .orderBy(asc(enumOptions.kind), asc(enumOptions.position))
+
   return rows.reduce<OrgEnums>((acc, row) => {
     const option = toEnumOption(row)
     // Rows of a kind the code no longer knows (e.g. dropped ciselniky awaiting their
@@ -33,6 +34,7 @@ export async function loadOrgEnumsUncached(orgId: string): Promise<OrgEnums> {
     if (acc[option.kind] === undefined) {
       return acc
     }
+
     return { ...acc, [option.kind]: [...acc[option.kind], option] }
   }, emptyOrgEnums())
 }
@@ -41,6 +43,7 @@ export const loadOrgEnums = cache(loadOrgEnumsUncached)
 
 export async function listOptions(orgId: string, kind: EnumKind): Promise<EnumOption[]> {
   const enums = await loadOrgEnums(orgId)
+
   return enums[kind]
 }
 
@@ -54,6 +57,7 @@ export async function getBySemantic(
   if (found === undefined) {
     throw new Error(`Chybí povinná hodnota číselníku ${kind}/${semantic} pro organizaci ${orgId}.`)
   }
+
   return found
 }
 

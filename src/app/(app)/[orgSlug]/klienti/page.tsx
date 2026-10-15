@@ -29,6 +29,7 @@ const defaultClientsParams = (statusView: EnumView): Record<string, string> => {
   const activeStatuses = statusView.options
     .filter((option) => option.semantic !== "ended")
     .map((option) => option.value)
+
   return { group: "status", status: activeStatuses.join(",") }
 }
 

@@ -17,9 +17,11 @@ export async function GET(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
+
     return ok(await listProjects(scope))
   } catch (error) {
     return errorResponse(error)
@@ -31,11 +33,13 @@ export async function POST(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     const enums = await loadOrgEnums(scope.orgId)
     const body = await readJsonObject(request)
+
     return created(await createProject(scope, parseCreateProject(body, enums)))
   } catch (error) {
     return errorResponse(error)

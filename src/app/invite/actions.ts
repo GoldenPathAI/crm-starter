@@ -10,6 +10,7 @@ export async function acceptInvitationAction(invitationId: string): Promise<Acti
       body: { invitationId },
       headers: await headers(),
     })
+
     return { status: "success", message: "Pozvánka přijata." }
   } catch (error) {
     return {

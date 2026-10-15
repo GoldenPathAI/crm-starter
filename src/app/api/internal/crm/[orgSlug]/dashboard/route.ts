@@ -15,9 +15,11 @@ export async function GET(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
+
     return ok(await getDashboardData(scope))
   } catch (error) {
     return errorResponse(error)

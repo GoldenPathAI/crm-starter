@@ -40,8 +40,7 @@ export default async function InvitePage({ params }: { params: Promise<{ id: str
   const invitation = await getInvitationForAcceptance(id)
 
   const expired =
-    invitation !== null &&
-    invitation.expiresAt !== undefined &&
+    invitation?.expiresAt !== undefined &&
     new Date(invitation.expiresAt).getTime() < Date.now()
   const invalid = invitation === null || invitation.status !== "pending" || expired
 

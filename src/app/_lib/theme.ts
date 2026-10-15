@@ -14,6 +14,7 @@ export const resolveTheme = (
   if (preference === "system") {
     return prefersDark ? "dark" : "light"
   }
+
   return preference
 }
 

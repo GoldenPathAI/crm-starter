@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic"
 export async function GET(): Promise<NextResponse> {
   try {
     await db.select().from(organizations).limit(1)
+
     return NextResponse.json({ status: "ok" }, { status: 200 })
   } catch {
     return NextResponse.json({ status: "error" }, { status: 503 })

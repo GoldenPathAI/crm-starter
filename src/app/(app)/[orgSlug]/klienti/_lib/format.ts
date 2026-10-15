@@ -20,18 +20,23 @@ export const relativeDate = (iso: string | undefined): string => {
   if (iso === undefined || iso.length === 0) {
     return "-"
   }
+
   const diff = differenceInCalendarDays(parseISO(todayIso()), parseISO(iso))
   if (diff < 0) {
     return formatDate(iso)
   }
+
   if (diff === 0) {
     return "dnes"
   }
+
   if (diff === 1) {
     return "včera"
   }
+
   if (diff <= 30) {
     return `před ${diff} dny`
   }
+
   return formatDate(iso)
 }

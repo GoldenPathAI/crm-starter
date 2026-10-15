@@ -29,6 +29,7 @@ const requireText = (body: Body, key: string): string => {
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} je povinné.`);
   }
+
   return value;
 };
 
@@ -36,10 +37,12 @@ const optionalText = (body: Body, key: string): string | undefined => {
   if (!present(body, key)) {
     return undefined;
   }
+
   const value = asTrimmed(body[key]);
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} musí být neprázdný text.`);
   }
+
   return value;
 };
 
@@ -48,6 +51,7 @@ const nullableText = (body: Body, key: string): string | null | undefined => {
   if (isExplicitNull(body, key)) {
     return null;
   }
+
   return optionalText(body, key);
 };
 
@@ -62,9 +66,11 @@ const enforceBounds = (value: number, key: string, bounds: NumberBounds | undefi
   if (bounds?.min !== undefined && value < bounds.min) {
     throw new HttpError(400, `Pole ${key} musí být větší nebo rovno ${bounds.min}.`);
   }
+
   if (bounds?.max !== undefined && value > bounds.max) {
     throw new HttpError(400, `Pole ${key} musí být menší nebo rovno ${bounds.max}.`);
   }
+
   return value;
 };
 
@@ -73,6 +79,7 @@ const requireNumber = (body: Body, key: string, bounds?: NumberBounds): number =
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} musí být číslo.`);
   }
+
   return enforceBounds(value, key, bounds);
 };
 
@@ -80,6 +87,7 @@ const optionalNumber = (body: Body, key: string, bounds?: NumberBounds): number 
   if (!present(body, key)) {
     return undefined;
   }
+
   return requireNumber(body, key, bounds);
 };
 
@@ -91,6 +99,7 @@ const nullableNumber = (
   if (isExplicitNull(body, key)) {
     return null;
   }
+
   return optionalNumber(body, key, bounds);
 };
 
@@ -98,6 +107,7 @@ const parseDate = (value: string, key: string): string => {
   if (!DATE_RE.test(value)) {
     throw new HttpError(400, `Pole ${key} musí být datum ve formátu YYYY-MM-DD.`);
   }
+
   // The pattern alone accepts impossible dates (2026-13-40). Round-trip through a
   // UTC Date so the store never receives a value Postgres will reject at write time.
   const year = Number(value.slice(0, 4));
@@ -111,11 +121,13 @@ const parseDate = (value: string, key: string): string => {
   ) {
     throw new HttpError(400, `Pole ${key} musí být platné datum ve formátu YYYY-MM-DD.`);
   }
+
   return value;
 };
 
 const optionalDate = (body: Body, key: string): string | undefined => {
   const value = optionalText(body, key);
+
   return value === undefined ? undefined : parseDate(value, key);
 };
 
@@ -123,6 +135,7 @@ const nullableDate = (body: Body, key: string): string | null | undefined => {
   if (isExplicitNull(body, key)) {
     return null;
   }
+
   return optionalDate(body, key);
 };
 
@@ -137,6 +150,7 @@ const requireOrgEnum = (body: Body, key: string, enums: OrgEnums, kind: EnumKind
   if (value === undefined || !inOrgEnum(enums, kind, value)) {
     throw new HttpError(400, `Pole ${key} má neplatnou hodnotu.`);
   }
+
   return value;
 };
 
@@ -149,6 +163,7 @@ const optionalOrgEnum = (
   if (!present(body, key)) {
     return undefined;
   }
+
   return requireOrgEnum(body, key, enums, kind);
 };
 
@@ -157,10 +172,12 @@ const requireOrgEnumList = (body: Body, key: string, enums: OrgEnums, kind: Enum
   if (raw === undefined) {
     throw new HttpError(400, `Pole ${key} musí být pole platných hodnot.`);
   }
+
   const values = raw.map((entry) => entry.trim()).filter((entry) => entry.length > 0);
   if (!values.every((value) => inOrgEnum(enums, kind, value))) {
     throw new HttpError(400, `Pole ${key} musí být pole platných hodnot.`);
   }
+
   return values;
 };
 
@@ -173,6 +190,7 @@ const optionalOrgEnumList = (
   if (!present(body, key)) {
     return undefined;
   }
+
   return requireOrgEnumList(body, key, enums, kind);
 };
 
@@ -181,6 +199,7 @@ const requireBoolean = (body: Body, key: string): boolean => {
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} musí být true nebo false.`);
   }
+
   return value;
 };
 
@@ -188,6 +207,7 @@ const optionalBoolean = (body: Body, key: string): boolean | undefined => {
   if (!present(body, key)) {
     return undefined;
   }
+
   return requireBoolean(body, key);
 };
 
@@ -195,10 +215,12 @@ const optionalStringList = (body: Body, key: string): string[] | undefined => {
   if (!present(body, key)) {
     return undefined;
   }
+
   const value = asStringArray(body[key]);
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} musí být pole textů.`);
   }
+
   return value.map((entry) => entry.trim()).filter((entry) => entry.length > 0);
 };
 
@@ -208,18 +230,22 @@ const mergeText = (body: Body, key: string, current: string | undefined): string
   if (!(key in body)) {
     return current;
   }
+
   if (body[key] === null) {
     return undefined;
   }
+
   const value = asTrimmed(body[key]);
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} musí být neprázdný text.`);
   }
+
   return value;
 };
 
 const mergeDate = (body: Body, key: string, current: string | undefined): string | undefined => {
   const merged = mergeText(body, key, current);
+
   return merged === undefined ? undefined : parseDate(merged, key);
 };
 
@@ -232,9 +258,11 @@ const mergeNumber = (
   if (!(key in body)) {
     return current;
   }
+
   if (body[key] === null) {
     return undefined;
   }
+
   return requireNumber(body, key, bounds);
 };
 
@@ -244,10 +272,12 @@ const optionalRecurrence = (body: Body, key: string): TicketRecurrence | undefin
   if (!present(body, key)) {
     return undefined;
   }
+
   const value = asTrimmed(body[key]);
   if (value === undefined || !isTicketRecurrence(value)) {
     throw new HttpError(400, `Pole ${key} má neplatnou hodnotu.`);
   }
+
   return value;
 };
 
@@ -259,9 +289,11 @@ const mergeRecurrence = (
   if (!(key in body)) {
     return current ?? null;
   }
+
   if (body[key] === null) {
     return null;
   }
+
   return optionalRecurrence(body, key) ?? null;
 };
 
@@ -269,9 +301,11 @@ const requireContact = (value: unknown): ClientContactInput | undefined => {
   if (value === null || value === undefined) {
     return undefined;
   }
+
   if (!isRecord(value)) {
     throw new HttpError(400, "Pole primaryContact musí být objekt.");
   }
+
   return {
     name: requireText(value, "name"),
     role: optionalText(value, "role"),
@@ -332,6 +366,7 @@ export const parseUpdateDeal = (id: string, body: Body): UpdateDealInput => {
   if ("stage" in body) {
     throw new HttpError(400, "Fázi dealu měň přes POST /deals/{id}/move.");
   }
+
   return {
     id,
     clientId: optionalText(body, "clientId"),
@@ -457,14 +492,15 @@ const requireLoggableActivityType = (body: Body, key: string, enums: OrgEnums): 
   if (value === undefined) {
     throw new HttpError(400, `Pole ${key} má neplatnou hodnotu.`);
   }
+
   const option = enums.activity_type.find((entry) => entry.value === value);
   if (
-    option === undefined ||
-    option.semantic === undefined ||
+    option?.semantic === undefined ||
     !LOGGABLE_ACTIVITY_SEMANTICS.has(option.semantic)
   ) {
     throw new HttpError(400, `Pole ${key} má neplatnou hodnotu.`);
   }
+
   return value;
 };
 

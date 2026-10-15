@@ -16,6 +16,7 @@ const revalidateTicketViews = (orgSlug: string, projectId: string): void => {
 
 const optionalText = (value: string): string | undefined => {
   const trimmed = value.trim();
+
   return trimmed.length > 0 ? trimmed : undefined;
 };
 
@@ -31,6 +32,7 @@ export async function changeTicketStatusAction(
   try {
     await withUiAudit(ctx, (scope) => updateTicketStatus(scope, input.ticketId, input.status));
     revalidateTicketViews(orgSlug, input.projectId);
+
     return { status: "success", message: "Stav úkolu byl změněn." };
   } catch (error) {
     return {
@@ -55,6 +57,7 @@ export async function reorderTicketAction(
       reorderTicket(scope, input.ticketId, input.status, input.orderedIds),
     );
     revalidateTicketViews(orgSlug, input.projectId);
+
     return { status: "success", message: "Pořadí úkolů bylo uloženo." };
   } catch (error) {
     return {
@@ -83,9 +86,11 @@ export async function updateProjectAction(
   if (input.name.trim().length === 0) {
     return { status: "error", message: "Vyplňte název projektu." };
   }
+
   if (input.clientId.length === 0) {
     return { status: "error", message: "Vyberte klienta." };
   }
+
   try {
     const project = await withUiAudit(ctx, (scope) =>
       updateProject(scope, input.projectId, {
@@ -102,6 +107,7 @@ export async function updateProjectAction(
     revalidatePath(orgHref(orgSlug, "/projekty"));
     revalidatePath(orgHref(orgSlug, "/ukoly"));
     revalidatePath(orgHref(orgSlug, `/klienti/${project.clientId}`));
+
     return { status: "success", message: "Projekt byl uložen." };
   } catch (error) {
     return {
@@ -126,6 +132,7 @@ export async function changeProjectStatusAction(
     revalidatePath(orgHref(orgSlug, `/projekty/${project.id}`));
     revalidatePath(orgHref(orgSlug, "/projekty"));
     revalidatePath(orgHref(orgSlug, `/klienti/${project.clientId}`));
+
     return { status: "success", message: "Stav projektu byl změněn." };
   } catch (error) {
     return {
@@ -145,10 +152,12 @@ export async function deleteProjectAction(
   try {
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await deleteProject(scope, input.projectId);
+
       return reqId;
     });
     revalidatePath(orgHref(orgSlug, "/projekty"));
     revalidatePath(orgHref(orgSlug, "/ukoly"));
+
     return { status: "success", message: "Projekt byl smazán.", requestId };
   } catch (error) {
     return {

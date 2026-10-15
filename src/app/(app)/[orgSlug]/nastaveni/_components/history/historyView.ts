@@ -41,9 +41,11 @@ const actorLabel = (entry: AuditEntryWithActor): string => {
   if (entry.actorType === "ai") {
     return "AI asistent"
   }
+
   if (entry.actorType === "system" || entry.actorType === null) {
     return "Systém"
   }
+
   return entry.actorName ?? "Uživatel"
 }
 
@@ -69,6 +71,7 @@ export function buildHistoryBatches(
       existing.entries.unshift(entryView)
       continue
     }
+
     const undone = row.requestId !== null && undoneRequestIds.has(row.requestId)
     const batch: HistoryBatchView = {
       key,

@@ -26,15 +26,18 @@ export async function undoUiAction(orgSlug: string, requestId: string): Promise<
   if (requestId.length === 0) {
     return { status: "error", message: "Chybí identifikátor akce." }
   }
+
   try {
     const entries = await listAuditBatch(ctx.scope.orgId, requestId)
     if (entries.length === 0) {
       return { status: "error", message: "Tuto akci už nelze vrátit zpět." }
     }
+
     await undoBatch(ctx.scope.orgId, requestId, { actorUserId: ctx.user.id })
     for (const surface of UNDO_SURFACES) {
       revalidatePath(orgHref(orgSlug, surface))
     }
+
     return { status: "success", message: "Akce byla vrácena zpět." }
   } catch (error) {
     return {

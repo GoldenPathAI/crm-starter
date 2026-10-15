@@ -28,11 +28,13 @@ function buildQuery(query: RequestOptions["query"]): string {
   if (query === undefined) {
     return ""
   }
+
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined) {
       continue
     }
+
     if (Array.isArray(value)) {
       for (const entry of value) {
         params.append(key, entry)
@@ -41,7 +43,9 @@ function buildQuery(query: RequestOptions["query"]): string {
       params.append(key, String(value))
     }
   }
+
   const qs = params.toString()
+
   return qs.length > 0 ? `?${qs}` : ""
 }
 
@@ -56,9 +60,11 @@ export async function crmApi<T>(
   if (options.body !== undefined) {
     headers["content-type"] = "application/json"
   }
+
   if (mutation) {
     headers[CSRF_HEADER] = "1"
   }
+
   const response = await fetch(
     `/api/internal/crm/${orgSlug}${path}${buildQuery(options.query)}`,
     {
@@ -74,6 +80,7 @@ export async function crmApi<T>(
     const message = isRecord(data) && typeof data.error === "string" ? data.error : `HTTP ${response.status}`
     throw new ApiError(message, response.status)
   }
+
   return data as T
 }
 
@@ -87,6 +94,7 @@ export async function apiAction(
   try {
     const data = await call()
     const requestId = isRecord(data) && typeof data.requestId === "string" ? data.requestId : undefined
+
     return { status: "success", message: successMessage, requestId }
   } catch (error) {
     return {

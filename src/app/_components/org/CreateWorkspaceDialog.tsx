@@ -53,12 +53,16 @@ export function CreateWorkspaceDialog({
     const trimmedName = name.trim()
     if (trimmedName.length === 0) {
       setError("Zadej název workspace.")
+
       return
     }
+
     if (!SLUG_PATTERN.test(effectiveSlug)) {
       setError("Identifikátor smí obsahovat jen malá písmena, číslice a pomlčky.")
+
       return
     }
+
     setPending(true)
     setError(undefined)
     const result = await authClient.organization.create({ name: trimmedName, slug: effectiveSlug })
@@ -70,8 +74,10 @@ export function CreateWorkspaceDialog({
           : "Workspace se nepodařilo vytvořit.",
       )
       setPending(false)
+
       return
     }
+
     onOpenChange(false)
     router.push(`/${effectiveSlug}/prehled`)
   }

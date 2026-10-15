@@ -28,8 +28,10 @@ export function LoginForm() {
     if (result.error !== null) {
       setError("Neplatný e-mail nebo heslo")
       setPending(false)
+
       return
     }
+
     router.push("/")
   }
 

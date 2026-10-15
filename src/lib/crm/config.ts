@@ -66,6 +66,7 @@ export const styleMap = <const T extends ReadonlyArray<{ value: string; label: s
   options: T,
 ): Record<T[number]["value"], BadgeStyle> => {
   const entries = options.map((option) => [option.value, { label: option.label, ...COLOR[option.color] }])
+
   return Object.fromEntries(entries) as Record<T[number]["value"], BadgeStyle>
 }
 

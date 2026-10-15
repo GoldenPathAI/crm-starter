@@ -19,9 +19,11 @@ export const actorLabel = (
   if (actorType === "ai") {
     return "AI asistent"
   }
+
   if (actorType === "system") {
     return "Systém"
   }
+
   return actorName ?? "Uživatel"
 }
 
@@ -33,6 +35,7 @@ interface ActivityIconProps {
 
 export function ActivityIcon({ type, view, className }: ActivityIconProps) {
   const Icon = ACTIVITY_ICON[type] ?? History
+
   return (
     <span
       className={cn(

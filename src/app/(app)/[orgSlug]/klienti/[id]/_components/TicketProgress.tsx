@@ -9,6 +9,7 @@ interface TicketProgressProps {
 export function TicketProgress({ done, total, className }: TicketProgressProps) {
   const ratio = total > 0 ? done / total : 0
   const complete = total > 0 && done === total
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <div className="flex items-center justify-between text-[11px] font-medium text-muted-soft">

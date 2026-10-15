@@ -11,6 +11,8 @@ export const parsePageSize = (value: string | string[] | undefined): number => {
   if (raw === undefined) {
     return DEFAULT_PAGE_SIZE
   }
+
   const parsed = Number.parseInt(raw, 10)
+
   return PAGE_SIZE_OPTIONS.find((option) => option === parsed) ?? DEFAULT_PAGE_SIZE
 }

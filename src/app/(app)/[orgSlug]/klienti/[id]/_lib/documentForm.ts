@@ -33,6 +33,8 @@ export const parseAmount = (raw: string): number | undefined => {
   if (trimmed.length === 0) {
     return undefined
   }
+
   const parsed = Number.parseInt(trimmed, 10)
+
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
 }

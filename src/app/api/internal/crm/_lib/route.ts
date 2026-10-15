@@ -30,9 +30,11 @@ export function route<P extends { orgSlug: string }>(options: RouteOptions, hand
       if (options.mutation === true) {
         assertCsrf(request, auth)
       }
+
       if (options.minRole !== undefined) {
         assertRole(auth, options.minRole)
       }
+
       return await handler({ request, params, auth })
     } catch (error) {
       return errorResponse(error)

@@ -12,11 +12,13 @@ export const dynamic = "force-dynamic"
 export const GET = route<{ orgSlug: string }>({}, async ({ request, auth }) => {
   const enums = await loadOrgEnums(auth.scope.orgId)
   const query = buildClientListQuery(request.nextUrl.searchParams, enums)
+
   return ok(await listClients(auth.scope, query))
 })
 
 export const POST = route<{ orgSlug: string }>({ mutation: true }, async ({ request, auth }) => {
   const enums = await loadOrgEnums(auth.scope.orgId)
   const input = parseCreateClient(await readJsonObject(request), enums)
+
   return created(await withApiAudit(auth, (scope) => createClient(scope, input)))
 })

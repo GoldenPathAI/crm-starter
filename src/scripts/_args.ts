@@ -5,6 +5,7 @@ const args = (): string[] => process.argv.slice(2)
 export const argValue = (flag: string): string | undefined => {
   const list = args()
   const index = list.indexOf(flag)
+
   return index >= 0 ? list[index + 1] : undefined
 }
 

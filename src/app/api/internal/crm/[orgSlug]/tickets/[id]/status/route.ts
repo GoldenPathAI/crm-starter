@@ -17,11 +17,13 @@ export async function POST(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     const enums = await loadOrgEnums(scope.orgId)
     const body = await readJsonObject(request)
+
     return ok(await updateTicketStatus(scope, id, parseTicketStatus(body, enums)))
   } catch (error) {
     return errorResponse(error)

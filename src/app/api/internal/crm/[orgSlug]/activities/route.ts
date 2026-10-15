@@ -18,6 +18,7 @@ export async function GET(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest, context: Context) {
     if (clientId === undefined || clientId.length === 0) {
       return badRequest("Chybí parametr clientId.")
     }
+
     return ok(await listActivitiesByClient(scope.orgId, clientId))
   } catch (error) {
     return errorResponse(error)
@@ -36,11 +38,13 @@ export async function POST(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     const enums = await loadOrgEnums(scope.orgId)
     const body = await readJsonObject(request)
+
     return created(await addActivity(scope, parseAddActivity(body, enums)))
   } catch (error) {
     return errorResponse(error)

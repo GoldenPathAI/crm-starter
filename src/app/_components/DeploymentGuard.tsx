@@ -16,17 +16,20 @@ export function DeploymentGuard({ currentDeployId }: { currentDeployId: string }
     if (currentDeployId === "dev") {
       return
     }
+
     let cancelled = false
 
     const check = async (): Promise<void> => {
       if (sessionStorage.getItem(RELOADED_FLAG) === currentDeployId) {
         return
       }
+
       try {
         const res = await fetch("/api/version", { cache: "no-store" })
         if (!res.ok) {
           return
         }
+
         const data: { deployId?: string } = await res.json()
         if (
           !cancelled &&
@@ -54,6 +57,7 @@ export function DeploymentGuard({ currentDeployId }: { currentDeployId: string }
       void check()
     }, POLL_INTERVAL_MS)
     document.addEventListener("visibilitychange", onVisible)
+
     return () => {
       cancelled = true
       clearInterval(timer)

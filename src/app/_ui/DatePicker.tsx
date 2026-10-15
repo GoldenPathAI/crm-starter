@@ -110,6 +110,7 @@ export const DatePicker = ({
                 const isCurrentMonth = isSameMonth(day, viewMonth)
                 const isSelected = selected !== null && isSameDay(day, selected)
                 const isCurrentDay = isToday(day)
+
                 return (
                   <button
                     key={day.toISOString()}

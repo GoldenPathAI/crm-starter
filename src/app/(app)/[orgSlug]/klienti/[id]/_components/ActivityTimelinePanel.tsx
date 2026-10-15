@@ -23,6 +23,7 @@ const previewText = (item: TimelineItem): string | undefined => {
   if (item.body === undefined) {
     return undefined
   }
+
   return normalizeActivityBody(item.body).replace(/\s+/g, " ").trim()
 }
 

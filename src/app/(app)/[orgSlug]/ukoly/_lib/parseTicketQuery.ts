@@ -63,6 +63,7 @@ const cleanList = (value: string | string[] | undefined): string[] =>
 
 const allowedList = (value: string | string[] | undefined, allowed: readonly string[]): string[] => {
   const matched = cleanList(value).filter((entry) => allowed.includes(entry))
+
   return [...new Set(matched)]
 }
 
@@ -70,7 +71,9 @@ const parsePage = (value: string | undefined): number => {
   if (value === undefined) {
     return 1
   }
+
   const parsed = Number.parseInt(value, 10)
+
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 

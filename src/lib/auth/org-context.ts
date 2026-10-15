@@ -34,6 +34,7 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
   if (session === null) {
     return null;
   }
+
   return { id: session.user.id, name: session.user.name, email: session.user.email };
 });
 
@@ -81,12 +82,15 @@ export async function requireOrgContext(orgSlug: string): Promise<OrgContext> {
   if (result.status === "no-session") {
     redirect("/login");
   }
+
   if (result.status === "org-not-found") {
     notFound();
   }
+
   if (result.status === "no-membership") {
     redirect("/no-access");
   }
+
   return result.context;
 }
 

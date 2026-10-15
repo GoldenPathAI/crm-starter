@@ -17,7 +17,9 @@ const single = (params: URLSearchParams, key: string): string | undefined => {
   if (value === null) {
     return undefined
   }
+
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -37,6 +39,7 @@ const enumSingle = <T extends string>(
   allowed: readonly T[],
 ): T | undefined => {
   const value = single(params, key)
+
   return value !== undefined ? allowed.find((candidate) => candidate === value) : undefined
 }
 
@@ -53,12 +56,15 @@ const parsePage = (params: URLSearchParams): number => {
   if (value === undefined) {
     return 1
   }
+
   const parsed = Number.parseInt(value, 10)
+
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 
 const parseDirection = (params: URLSearchParams): SortDirection => {
   const value = single(params, "sortDir")?.toLowerCase()
+
   return value === "desc" ? SortDirection.Desc : SortDirection.Asc
 }
 

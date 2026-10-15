@@ -28,6 +28,7 @@ export function HistoryFilter({ orgSlug, value, options }: HistoryFilterProps) {
     if (next !== ALL_VALUE) {
       url.searchParams.set("entity", next)
     }
+
     startTransition(() => {
       router.push(`${url.pathname}${url.search}`)
     })

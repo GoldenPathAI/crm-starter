@@ -13,9 +13,11 @@ const validateBulkIds = (ids: string[]): string | null => {
   if (ids.length === 0) {
     return "Nejsou vybraní žádní klienti."
   }
+
   if (ids.length > BULK_LIMIT) {
     return `Najednou lze upravit nejvýše ${BULK_LIMIT} klientů.`
   }
+
   return null
 }
 
@@ -38,17 +40,21 @@ export async function bulkSetClientStatusAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   if (status.length === 0) {
     return { status: "error", message: "Vyberte status." }
   }
+
   try {
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       for (const clientId of clientIds) {
         await updateClient(scope, clientId, { status })
       }
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/klienti"))
+
     return {
       status: "success",
       message: clientBulkMessage(clientIds.length, ["upraven", "upraveni", "upraveno"]),
@@ -74,6 +80,7 @@ export async function bulkDeleteClientsAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   try {
     const outcome = await withUiAudit(ctx, async (scope, reqId) => {
       let deleted = 0
@@ -86,6 +93,7 @@ export async function bulkDeleteClientsAction(
           failed += 1
         }
       }
+
       return { requestId: reqId, deleted, failed }
     })
     if (outcome.deleted === 0) {
@@ -97,6 +105,7 @@ export async function bulkDeleteClientsAction(
             : "Vybrané klienty nelze smazat (mají navázané záznamy).",
       }
     }
+
     revalidatePath(orgHref(orgSlug, "/klienti"))
     const deletedPart = clientBulkMessage(outcome.deleted, ["smazán", "smazáni", "smazáno"])
     const failedPart =
@@ -105,6 +114,7 @@ export async function bulkDeleteClientsAction(
         : outcome.failed === 1
           ? ", 1 nelze smazat (má navázané záznamy)"
           : `, ${outcome.failed} nelze smazat (mají navázané záznamy)`
+
     return {
       status: "success",
       message: `${deletedPart}${failedPart}`,

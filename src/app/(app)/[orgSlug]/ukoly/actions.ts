@@ -12,6 +12,7 @@ import type { ActionState } from "@/app/_lib/actionState"
 
 const optionalText = (value: string): string | undefined => {
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -21,9 +22,11 @@ const validateBulkIds = (ids: string[]): string | null => {
   if (ids.length === 0) {
     return "Nejsou vybrané žádné úkoly."
   }
+
   if (ids.length > BULK_LIMIT) {
     return `Najednou lze upravit nejvýše ${BULK_LIMIT} úkolů.`
   }
+
   return null
 }
 
@@ -54,6 +57,7 @@ export async function quickEditTicketAction(
   if (input.title.trim().length === 0) {
     return { status: "error", message: "Vyplňte název úkolu." }
   }
+
   try {
     await withUiAudit(ctx, (scope) =>
       updateTicket(scope, input.ticketId, {
@@ -67,6 +71,7 @@ export async function quickEditTicketAction(
     )
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return { status: "success", message: "Úkol byl upraven." }
   } catch (error) {
     return {
@@ -89,6 +94,7 @@ export async function quickSetTicketStatusAction(
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
     const doneOption = await getBySemantic(ctx.scope.orgId, "ticket_status", "done")
+
     return {
       status: "success",
       message:
@@ -113,16 +119,19 @@ export async function bulkCompleteTicketsAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   try {
     const doneOption = await getBySemantic(ctx.scope.orgId, "ticket_status", "done")
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       for (const ticketId of ticketIds) {
         await updateTicketStatus(scope, ticketId, doneOption.value)
       }
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return {
       status: "success",
       message: ticketBulkMessage(ticketIds.length, ["dokončen", "dokončeny", "dokončeno"]),
@@ -146,18 +155,22 @@ export async function bulkSetTicketPriorityAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   if (priority.length === 0) {
     return { status: "error", message: "Vyberte prioritu." }
   }
+
   try {
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       for (const ticketId of ticketIds) {
         await patchTicket(scope, ticketId, { priority })
       }
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return {
       status: "success",
       message: ticketBulkMessage(ticketIds.length, ["upraven", "upraveny", "upraveno"]),
@@ -181,18 +194,22 @@ export async function bulkAssignTicketsAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   if (userIds.length === 0) {
     return { status: "error", message: "Vyberte alespoň jednoho člena." }
   }
+
   try {
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       for (const ticketId of ticketIds) {
         await setTicketAssignees(scope, ticketId, userIds)
       }
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return {
       status: "success",
       message: ticketBulkMessage(ticketIds.length, ["přiřazen", "přiřazeny", "přiřazeno"]),
@@ -215,15 +232,18 @@ export async function bulkDeleteTicketsAction(
   if (invalid !== null) {
     return { status: "error", message: invalid }
   }
+
   try {
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       for (const ticketId of ticketIds) {
         await deleteTicket(scope, ticketId)
       }
+
       return reqId
     })
     revalidatePath(orgHref(orgSlug, "/ukoly"))
     revalidatePath(orgHref(orgSlug, "/projekty"))
+
     return {
       status: "success",
       message: ticketBulkMessage(ticketIds.length, ["smazán", "smazány", "smazáno"]),

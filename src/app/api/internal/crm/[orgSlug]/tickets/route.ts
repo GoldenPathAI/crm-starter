@@ -21,6 +21,7 @@ export async function GET(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -29,10 +30,13 @@ export async function GET(request: NextRequest, context: Context) {
       if (due !== "dnes" && due !== "tyden") {
         return badRequest("Parametr due musí být dnes nebo tyden.")
       }
+
       return ok(await listTicketsDue(scope.orgId, due))
     }
+
     const enums = await loadOrgEnums(scope.orgId)
     const query = buildTicketListQuery(request.nextUrl.searchParams, enums)
+
     return ok(await listTickets(scope, query))
   } catch (error) {
     return errorResponse(error)
@@ -44,6 +48,7 @@ export async function POST(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -55,6 +60,7 @@ export async function POST(request: NextRequest, context: Context) {
     if (assigneeIds !== undefined) {
       await setTicketAssignees(scope, ticket.id, assigneeIds)
     }
+
     return created(ticket)
   } catch (error) {
     return errorResponse(error)

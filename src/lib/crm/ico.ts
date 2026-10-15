@@ -5,12 +5,15 @@ export function normalizeIco(value: string | null | undefined): string | null {
   if (value === null || value === undefined) {
     return null
   }
+
   const digits = value.replace(/\s+/g, "")
   if (digits.length === 0) {
     return null
   }
+
   if (/^\d{1,8}$/.test(digits)) {
     return digits.padStart(8, "0")
   }
+
   return digits
 }

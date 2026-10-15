@@ -74,12 +74,16 @@ export function ProjectActions({ project, clientOptions, statusOptions, ticketCo
   const save = () => {
     if (values.clientId.length === 0) {
       setError("Vyberte klienta.")
+
       return
     }
+
     if (values.name.trim().length === 0) {
       setError("Vyplňte název projektu.")
+
       return
     }
+
     setError(null)
     startSave(async () => {
       const result = await updateProjectAction(orgSlug, {
@@ -181,8 +185,10 @@ const ticketNoun = (count: number): string => {
   if (count === 1) {
     return "úkol"
   }
+
   if (count >= 2 && count <= 4) {
     return "úkoly"
   }
+
   return "úkolů"
 }

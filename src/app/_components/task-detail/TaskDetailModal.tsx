@@ -82,11 +82,13 @@ const projectClientMap = (options: TaskDetailOptions | null): Record<string, str
   if (options === null) {
     return map
   }
+
   for (const [clientId, projects] of Object.entries(options.projectsByClient)) {
     for (const project of projects) {
       map[project.value] = clientId
     }
   }
+
   return map
 }
 
@@ -99,24 +101,31 @@ const applyPatch = (
   if (patch.title !== undefined) {
     next.title = patch.title
   }
+
   if (patch.description !== undefined) {
     next.description = patch.description ?? ""
   }
+
   if (patch.status !== undefined) {
     next.status = patch.status
   }
+
   if (patch.priority !== undefined) {
     next.priority = patch.priority
   }
+
   if (patch.dueAt !== undefined) {
     next.dueAt = patch.dueAt
   }
+
   if (patch.labels !== undefined) {
     next.labels = patch.labels
   }
+
   if (patch.recurrence !== undefined) {
     next.recurrence = patch.recurrence
   }
+
   if (patch.projectId !== undefined) {
     next.projectId = patch.projectId
     if (patch.projectId === null) {
@@ -131,10 +140,12 @@ const applyPatch = (
       }
     }
   }
+
   if (patch.clientId !== undefined && options !== null) {
     next.clientId = patch.clientId
     next.clientName = options.clients.find((c) => c.value === patch.clientId)?.label ?? patch.clientId
   }
+
   return next
 }
 
@@ -198,6 +209,7 @@ function EditView({
     if (data === null) {
       return
     }
+
     const previous = data
     setData(applyPatch(data, patch, options))
     startSave(async () => {
@@ -213,10 +225,12 @@ function EditView({
     if (data === null) {
       return
     }
+
     const trimmed = title.trim()
     if (trimmed.length === 0 || trimmed === data.title) {
       return
     }
+
     savePatch({ title: trimmed })
   }
 
@@ -224,6 +238,7 @@ function EditView({
     if (data === null || description === data.description) {
       return
     }
+
     savePatch({ description: description.length > 0 ? description : null })
   }
 
@@ -231,6 +246,7 @@ function EditView({
     if (data === null) {
       return
     }
+
     const previous = data
     const nextAssignees = userIds
       .map((id) => options?.members.find((member) => member.userId === id))
@@ -250,6 +266,7 @@ function EditView({
     if (data === null) {
       return
     }
+
     const previous = data
     setData({
       ...data,
@@ -270,6 +287,7 @@ function EditView({
     if (data === null) {
       return
     }
+
     const tempId = `temp_${Date.now()}`
     setData({
       ...data,
@@ -290,8 +308,10 @@ function EditView({
               },
         )
         toast({ variant: "error", title: result.message })
+
         return
       }
+
       await reload()
     })
   }
@@ -300,6 +320,7 @@ function EditView({
     if (data === null) {
       return
     }
+
     const previous = data
     setData({ ...data, subtasks: data.subtasks.filter((subtask) => subtask.id !== subtaskId) })
     startSave(async () => {
@@ -327,6 +348,7 @@ function EditView({
     if (!loading && data === null) {
       return <p className="py-10 text-center text-[13px] text-muted-soft">Úkol nebyl nalezen</p>
     }
+
     return (
       <div className="flex items-center justify-center py-16">
         <Spinner className="size-5 text-muted-soft" />
@@ -484,6 +506,7 @@ function CreateView({
     if (draft.clientId.length > 0 || draft.projectId === null || options === null) {
       return
     }
+
     const owner = projectClientMap(options)[draft.projectId]
     if (owner !== undefined) {
       setDraft((prev) => ({ ...prev, clientId: owner }))
@@ -497,12 +520,14 @@ function CreateView({
     if (options === null) {
       return
     }
+
     setDraft((prev) => {
       const statusOk = options.statusOptions.some((option) => option.value === prev.status)
       const priorityOk = options.priorityOptions.some((option) => option.value === prev.priority)
       if (statusOk && priorityOk) {
         return prev
       }
+
       const nextStatus = statusOk
         ? prev.status
         : (options.statusOptions.find((option) => option.semantic === "todo") ??
@@ -511,6 +536,7 @@ function CreateView({
         ? prev.priority
         : (options.priorityOptions.find((option) => option.semantic === "medium") ??
             options.priorityOptions[0])?.value ?? prev.priority
+
       return { ...prev, status: nextStatus, priority: nextPriority }
     })
   }, [options])
@@ -519,39 +545,50 @@ function CreateView({
     if (fields.title !== undefined && fields.title.trim().length > 0) {
       setErrors((prev) => (prev.title === undefined ? prev : { ...prev, title: undefined }))
     }
+
     if (fields.clientId !== undefined || fields.projectId !== undefined) {
       setErrors((prev) => (prev.client === undefined ? prev : { ...prev, client: undefined }))
     }
+
     setDraft((prev) => {
       const next = { ...prev }
       if (fields.title !== undefined) {
         next.title = fields.title
       }
+
       if (fields.description !== undefined) {
         next.description = fields.description ?? ""
       }
+
       if (fields.status !== undefined) {
         next.status = fields.status
       }
+
       if (fields.priority !== undefined) {
         next.priority = fields.priority
       }
+
       if (fields.dueAt !== undefined) {
         next.dueAt = fields.dueAt
       }
+
       if (fields.labels !== undefined) {
         next.labels = fields.labels
       }
+
       if (fields.recurrence !== undefined) {
         next.recurrence = fields.recurrence
       }
+
       if (fields.clientId !== undefined) {
         next.clientId = fields.clientId
         next.projectId = null
       }
+
       if (fields.projectId !== undefined) {
         next.projectId = fields.projectId
       }
+
       return next
     })
   }
@@ -567,16 +604,20 @@ function CreateView({
     if (draft.title.trim().length === 0) {
       nextErrors.title = "Vyplňte název úkolu."
     }
+
     if (draft.clientId.length === 0 && draft.projectId === null) {
       nextErrors.client = "Vyberte klienta."
     }
+
     if (nextErrors.title !== undefined || nextErrors.client !== undefined) {
       setErrors(nextErrors)
       if (nextErrors.title !== undefined) {
         titleInputRef.current?.focus()
       }
+
       return
     }
+
     setErrors({})
     startSubmit(async () => {
       const result = await createTaskAction(orgSlug, {
@@ -673,6 +714,7 @@ function TopBar({
 }) {
   const { orgSlug } = useOrg()
   const { openTask } = useTaskDetail()
+
   return (
     <div className="flex items-center justify-between gap-3 pr-8">
       <nav className="flex min-w-0 flex-wrap items-center gap-1 text-xs text-muted">
@@ -810,6 +852,7 @@ function RecurrenceRow({
               <div className="flex min-w-44 flex-col gap-0.5">
                 {RECURRENCE_OPTIONS.map((option) => {
                   const isActive = option.value === value
+
                   return (
                     <button
                       key={option.value ?? "none"}

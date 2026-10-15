@@ -43,6 +43,7 @@ export function ClientTasksCard({ clientId, tasks, today, priorityView }: Client
     .sort((a, b) => {
       const aDue = a.dueAt ?? "9999-99-99"
       const bDue = b.dueAt ?? "9999-99-99"
+
       return aDue.localeCompare(bDue)
     })
 
@@ -73,6 +74,7 @@ export function ClientTasksCard({ clientId, tasks, today, priorityView }: Client
           openTasks.map((task) => {
             const overdue = isOverdue(task, today)
             const priority = badgeFor(priorityView, task.priority)
+
             return (
               <div
                 key={task.id}

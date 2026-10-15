@@ -26,6 +26,7 @@ export function takeInvitationEmailOutcome(email: string): boolean | undefined {
   const key = email.trim().toLowerCase()
   const outcome = invitationEmailOutcomes.get(key)
   invitationEmailOutcomes.delete(key)
+
   return outcome
 }
 

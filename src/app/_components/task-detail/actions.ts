@@ -30,6 +30,7 @@ import type {
 
 const optionalText = (value: string): string | undefined => {
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -38,6 +39,7 @@ const pickValue = (options: EnumOption[], semantic: string): string => {
   if (chosen === undefined) {
     throw new Error("Číselník úkolů neobsahuje žádnou hodnotu.")
   }
+
   return chosen.value
 }
 
@@ -63,11 +65,13 @@ export async function loadTaskAction(
   if (detail === null) {
     return null
   }
+
   const { ticket, clientName, projectName, parent, subtasks } = detail
   const [assigneesByTicket, doneOption] = await Promise.all([
     getTicketAssignees(ctx.scope, [ticket.id, ...subtasks.map((subtask) => subtask.id)]),
     getBySemantic(ctx.scope.orgId, "ticket_status", "done"),
   ])
+
   return {
     id: ticket.id,
     clientId: ticket.clientId,
@@ -105,6 +109,7 @@ export async function loadTaskHistoryAction(
     { tableName: "tickets", rowId: ticketId, fkColumn: "ticket_id" },
     8,
   )
+
   return buildHistoryItems(entries)
 }
 
@@ -148,6 +153,7 @@ export async function setTicketAssigneesAction(
     if (before !== null) {
       revalidateScope(orgSlug, before.ticket.clientId, before.ticket.projectId ?? null)
     }
+
     return { status: "success", message: "Řešitelé byli uloženi." }
   } catch (error) {
     return {
@@ -168,6 +174,7 @@ export async function patchTaskAction(
   if (input.patch.title !== undefined && input.patch.title.trim().length === 0) {
     return { status: "error", message: "Název úkolu nesmí být prázdný." }
   }
+
   if (
     input.patch.recurrence !== undefined &&
     input.patch.recurrence !== null &&
@@ -175,6 +182,7 @@ export async function patchTaskAction(
   ) {
     return { status: "error", message: "Neplatná hodnota opakování." }
   }
+
   try {
     const before = await getTicketDetail(ctx.scope, input.ticketId)
     const normalized: TaskFieldPatch =
@@ -187,7 +195,9 @@ export async function patchTaskAction(
     if (before !== null) {
       revalidateScope(orgSlug, before.ticket.clientId, before.ticket.projectId ?? null)
     }
+
     revalidateScope(orgSlug, updated.clientId, updated.projectId ?? null)
+
     return { status: "success", message: "Úkol byl uložen." }
   } catch (error) {
     return {
@@ -207,13 +217,16 @@ export async function createTaskAction(
   if (projectId === undefined && clientId === undefined) {
     return { status: "error", message: "Vyberte klienta nebo projekt." }
   }
+
   if (input.title.trim().length === 0) {
     return { status: "error", message: "Vyplňte název úkolu." }
   }
+
   const recurrence = optionalText(input.recurrence)
   if (recurrence !== undefined && !isTicketRecurrence(recurrence)) {
     return { status: "error", message: "Neplatná hodnota opakování." }
   }
+
   try {
     const ticket = await withUiAudit(ctx, (scope) =>
       createTicket(scope, {
@@ -229,6 +242,7 @@ export async function createTaskAction(
       }),
     )
     revalidateScope(orgSlug, ticket.clientId, ticket.projectId ?? null)
+
     return { status: "success", message: "Úkol byl vytvořen." }
   } catch (error) {
     return {
@@ -249,11 +263,13 @@ export async function addSubtaskAction(
   if (input.title.trim().length === 0) {
     return { status: "error", message: "Vyplňte název podúkolu." }
   }
+
   try {
     const parent = await getTicketDetail(ctx.scope, input.parentId)
     if (parent === null) {
       return { status: "error", message: "Nadřazený úkol nebyl nalezen." }
     }
+
     const enums = await loadOrgEnums(ctx.scope.orgId)
     await withUiAudit(ctx, (scope) =>
       createTicket(scope, {
@@ -266,6 +282,7 @@ export async function addSubtaskAction(
       }),
     )
     revalidateScope(orgSlug, parent.ticket.clientId, parent.ticket.projectId ?? null)
+
     return { status: "success", message: "Podúkol byl přidán." }
   } catch (error) {
     return {
@@ -283,6 +300,7 @@ export async function toggleSubtaskAction(
   try {
     const updated = await withUiAudit(ctx, (scope) => toggleSubtask(scope, input.subtaskId))
     revalidateScope(orgSlug, updated.clientId, updated.projectId ?? null)
+
     return { status: "success", message: "Podúkol byl aktualizován." }
   } catch (error) {
     return {
@@ -301,11 +319,13 @@ export async function deleteTaskAction(
     const before = await getTicketDetail(ctx.scope, input.ticketId)
     const requestId = await withUiAudit(ctx, async (scope, reqId) => {
       await deleteTicket(scope, input.ticketId)
+
       return reqId
     })
     if (before !== null) {
       revalidateScope(orgSlug, before.ticket.clientId, before.ticket.projectId ?? null)
     }
+
     return { status: "success", message: "Úkol byl smazán.", requestId }
   } catch (error) {
     return {

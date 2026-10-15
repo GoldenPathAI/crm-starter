@@ -48,6 +48,7 @@ export function NewPersonButton({
     if (trimmed.length === 0) {
       return
     }
+
     startTransition(async () => {
       try {
         await crmApi<Person>(orgSlug, "POST", "/people", {

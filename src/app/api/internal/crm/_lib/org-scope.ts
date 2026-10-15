@@ -25,5 +25,6 @@ export async function resolveOrgIdentity(
   if (org === undefined) {
     throw new HttpError(404, `Workspace ${orgSlug} nebyl nalezen.`)
   }
+
   return { scope: { orgId: org.id, actor: { type: "system" } }, name: org.name }
 }

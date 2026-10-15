@@ -8,10 +8,12 @@ export default async function RootPage() {
   if (user === null) {
     redirect("/login")
   }
+
   const memberships = await listUserMemberships(user.id)
   const first = memberships[0]
   if (first === undefined) {
     redirect("/no-access")
   }
+
   redirect(orgHref(first.slug, "/prehled"))
 }

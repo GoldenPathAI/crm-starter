@@ -19,7 +19,9 @@ export const cleanText = (value: string | undefined): string | undefined => {
   if (value === undefined) {
     return undefined
   }
+
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -42,6 +44,7 @@ export const enumList = <T extends string>(
 
 export const cleanIsoDate = (value: string | undefined): string | undefined => {
   const trimmed = cleanText(value)
+
   return trimmed !== undefined && ISO_DATE.test(trimmed) ? trimmed : undefined
 }
 
@@ -49,7 +52,9 @@ export const parsePage = (value: string | undefined): number => {
   if (value === undefined) {
     return 1
   }
+
   const parsed = Number.parseInt(value, 10)
+
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 
@@ -69,8 +74,10 @@ export const parseGroupLevels = <T extends string>(
   if (single(value) === "none") {
     return []
   }
+
   if (value === undefined) {
     return options.default.slice(0, options.maxLevels)
   }
+
   return enumList(value, allowed).slice(0, options.maxLevels)
 }

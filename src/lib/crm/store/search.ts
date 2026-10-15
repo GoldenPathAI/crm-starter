@@ -26,16 +26,19 @@ export function buildMatchExcerpt(body: string, query: string, maxLength = 120):
   if (normalized.length <= maxLength) {
     return normalized
   }
+
   const matchIndex = normalized.toLowerCase().indexOf(query.toLowerCase())
   if (matchIndex < 0) {
     return `${normalized.slice(0, maxLength).trimEnd()}…`
   }
+
   const pad = Math.floor((maxLength - Math.min(query.length, maxLength)) / 2)
   const end = Math.min(normalized.length, Math.max(matchIndex + query.length, matchIndex + pad) + pad)
   const start = Math.max(0, end - maxLength)
   const slice = normalized.slice(start, end).trim()
   const prefix = start > 0 ? "…" : ""
   const suffix = end < normalized.length ? "…" : ""
+
   return `${prefix}${slice}${suffix}`
 }
 
@@ -53,6 +56,7 @@ const PER_TYPE_LIMIT = 5
 
 const joinSubtitle = (parts: Array<string | null>): string | null => {
   const clean = parts.filter((part): part is string => part !== null && part.length > 0)
+
   return clean.length > 0 ? clean.join(" · ") : null
 }
 
@@ -61,6 +65,7 @@ export async function searchEntities(scope: OrgScope, rawQuery: string): Promise
   if (q.length < 2) {
     return []
   }
+
   const pattern = `%${q}%`
   const dbc = resolveDbc(scope)
 
@@ -199,6 +204,7 @@ export async function searchEntities(scope: OrgScope, rawQuery: string): Promise
 
   const emailResults: SearchResult[] = emailRows.map((row) => {
     const directionLabel = outboundValues.has(row.type) ? "Odesláno" : "Přijato"
+
     return {
       type: "email",
       id: row.id,

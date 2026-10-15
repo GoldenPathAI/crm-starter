@@ -19,13 +19,16 @@ export async function applyDefaultSavedView(
   if (Object.keys(searchParams).length > 0) {
     return
   }
+
   const view = await getDefaultSavedView(ctx.scope, ctx.user.id, pageKey)
   if (view === undefined) {
     return
   }
+
   const query = normalizeBrowserQuery(view.query)
   if (query.length === 0) {
     return
   }
+
   redirect(`${orgHref(orgSlug, `/${pageKey}`)}?${query}`)
 }

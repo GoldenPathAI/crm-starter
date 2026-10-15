@@ -16,13 +16,16 @@ export const GET = route<{ orgSlug: string }>({}, async ({ request, auth }) => {
   if (clientId !== undefined && clientId.length > 0) {
     return ok(await getPeopleByClientId(auth.scope, clientId))
   }
+
   const enums = await loadOrgEnums(auth.scope.orgId)
   const query = buildRapportPeopleQuery(request.nextUrl.searchParams, enums)
+
   return ok(await listRapportPeople(auth.scope, query))
 })
 
 export const POST = route<{ orgSlug: string }>({ mutation: true }, async ({ request, auth }) => {
   const enums = await loadOrgEnums(auth.scope.orgId)
   const input = parseCreatePerson(await readJsonObject(request), enums)
+
   return created(await withApiAudit(auth, (scope) => createPerson(scope, input)))
 })

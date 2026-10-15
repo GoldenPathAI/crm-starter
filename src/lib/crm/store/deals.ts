@@ -89,6 +89,7 @@ export async function listDealsByStage(scope: OrgScope): Promise<DealStageColumn
           0,
           differenceInCalendarDays(today, parseISO(deal.stageChangedAt)),
         );
+
         return {
           ...deal,
           clientName: names.get(deal.clientId) ?? deal.clientId,
@@ -101,6 +102,7 @@ export async function listDealsByStage(scope: OrgScope): Promise<DealStageColumn
         };
       })
       .sort((a, b) => a.order - b.order);
+
     return {
       stage: option.value,
       label: option.label,
@@ -123,6 +125,7 @@ export async function listClientOptions(scope: OrgScope): Promise<ClientOption[]
     .from(clients)
     .where(eq(clients.organizationId, scope.orgId))
     .orderBy(asc(clients.name));
+
   return rows.map((row) => ({ id: row.id, name: row.name }));
 }
 
@@ -155,6 +158,7 @@ export async function createDeal(scope: OrgScope, input: CreateDealInput): Promi
     if (clientRows[0] === undefined) {
       throw new Error("Klient nebyl nalezen.");
     }
+
     const maxRow = await tx
       .select({ m: max(deals.order) })
       .from(deals)
@@ -183,6 +187,7 @@ export async function createDeal(scope: OrgScope, input: CreateDealInput): Promi
     if (row === undefined) {
       throw new Error("Deal se nepodařilo vytvořit.");
     }
+
     await tx.insert(activities).values({
       id: createId("ac"),
       organizationId: scope.orgId,
@@ -193,6 +198,7 @@ export async function createDeal(scope: OrgScope, input: CreateDealInput): Promi
       occurredAt: now,
       ...activityActor(scope),
     });
+
     return row;
   });
 
@@ -244,6 +250,7 @@ export async function updateDeal(scope: OrgScope, input: UpdateDealInput): Promi
     if (current === undefined) {
       throw new Error("Deal nebyl nalezen.");
     }
+
     if (input.clientId !== undefined && input.clientId !== current.clientId) {
       const clientRows = await tx
         .select({ id: clients.id })
@@ -254,9 +261,11 @@ export async function updateDeal(scope: OrgScope, input: UpdateDealInput): Promi
         throw new Error("Klient nebyl nalezen.");
       }
     }
+
     if (Object.keys(patch).length === 0) {
       return current;
     }
+
     const rows = await tx
       .update(deals)
       .set(patch)
@@ -266,6 +275,7 @@ export async function updateDeal(scope: OrgScope, input: UpdateDealInput): Promi
     if (row === undefined) {
       throw new Error("Deal nebyl nalezen.");
     }
+
     return row;
   });
 
@@ -297,6 +307,7 @@ const defaultOpenProjectStatus = (enums: OrgEnums): string | undefined =>
 // back to the last option in the ciselnik when no "low" semantic exists.
 const defaultTicketPriority = (enums: OrgEnums): string | undefined => {
   const list = enums.ticket_priority;
+
   return (list.find((option) => option.semantic === "low") ?? list[list.length - 1] ?? list[0])
     ?.value;
 };
@@ -319,11 +330,13 @@ async function createWonProject(
   if (existing[0] !== undefined) {
     return null;
   }
+
   const status = defaultOpenProjectStatus(enums);
   const priority = defaultTicketPriority(enums);
   if (status === undefined || priority === undefined) {
     return null;
   }
+
   const project = await createProject(scope, {
     clientId: deal.clientId,
     name: deal.title,
@@ -335,6 +348,7 @@ async function createWonProject(
   for (const title of WON_PROJECT_CHECKLIST) {
     await createTicket(scope, { projectId: project.id, title, priority });
   }
+
   return project;
 }
 
@@ -378,6 +392,7 @@ export async function moveDealStage(
     if (dealRow === undefined) {
       throw new Error("Deal nebyl nalezen.");
     }
+
     // Land the deal at the end of the target stage so it keeps a stable position.
     const maxRow = await tx
       .select({ m: max(deals.order) })
@@ -401,6 +416,7 @@ export async function moveDealStage(
     if (row === undefined) {
       throw new Error("Deal nebyl nalezen.");
     }
+
     await tx.insert(activities).values({
       id: createId("ac"),
       organizationId: scope.orgId,
@@ -415,12 +431,14 @@ export async function moveDealStage(
       stageOption?.semantic === "won"
         ? await createWonProject({ ...scope, db: tx }, row, enums)
         : null;
+
     return { row, wonProject };
   });
 
   if (wonProject !== null) {
     await notifyDealWon(scope, updated);
   }
+
   return toDeal(updated);
 }
 
@@ -456,6 +474,7 @@ export async function reorderDeal(
     if (current === undefined) {
       throw new Error("Deal nebyl nalezen.");
     }
+
     const stageChanged = current.stage !== stage;
     let moved = current;
     for (let index = 0; index < orderedIds.length; index += 1) {
@@ -463,6 +482,7 @@ export async function reorderDeal(
       if (id === undefined) {
         continue;
       }
+
       const patch =
         id === dealId
           ? {
@@ -482,6 +502,7 @@ export async function reorderDeal(
         moved = row;
       }
     }
+
     if (stageChanged) {
       await tx.insert(activities).values({
         id: createId("ac"),
@@ -494,6 +515,7 @@ export async function reorderDeal(
         ...activityActor(scope),
       });
     }
+
     return moved;
   });
 

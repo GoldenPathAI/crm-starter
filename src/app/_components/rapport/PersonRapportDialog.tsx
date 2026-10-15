@@ -81,6 +81,7 @@ export function PersonRapportDialog({
     if (!open) {
       return
     }
+
     setEntries(null)
     reloadEntries()
   }, [open, reloadEntries])
@@ -366,6 +367,7 @@ function KindControl({
           {options.map((option) => {
             const style = badgeStyleFor(option.value, styles)
             const selected = option.value === value
+
             return (
               <button
                 key={option.value}
@@ -445,6 +447,7 @@ function ClientLinkControl({
         <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto">
           {filtered.map((option) => {
             const active = option.id === value
+
             return (
               <button
                 key={option.id}
@@ -495,9 +498,11 @@ const dayLabel = (iso: string): string => {
   if (iso === today) {
     return "Dnes"
   }
+
   if (iso === format(addDays(parseISO(today), -1), "yyyy-MM-dd")) {
     return "Včera"
   }
+
   return formatCzechDate(iso)
 }
 
@@ -511,11 +516,14 @@ interface EntryDayGroup {
 const groupEntriesByDay = (rows: RapportEntry[]): EntryDayGroup[] => {
   const sorted = [...rows].sort((a, b) => {
     const byDay = entryDateIso(b).localeCompare(entryDateIso(a))
+
     return byDay !== 0 ? byDay : b.createdAt.localeCompare(a.createdAt)
   })
+
   return sorted.reduce<EntryDayGroup[]>((groups, entry) => {
     const date = entryDateIso(entry)
     const last = groups[groups.length - 1]
+
     return last !== undefined && last.date === date
       ? [...groups.slice(0, -1), { date, rows: [...last.rows, entry] }]
       : [...groups, { date, rows: [entry] }]
@@ -552,6 +560,7 @@ function EntriesSection({
     if (trimmed.length === 0 || submitting) {
       return
     }
+
     startSubmit(async () => {
       try {
         await crmApi(orgSlug, "POST", `/people/${personId}/rapport`, {
@@ -608,7 +617,9 @@ function EntriesSection({
               if (count === 0) {
                 return null
               }
+
               const style = badgeStyleFor(option.value, styles)
+
               return (
                 <FilterChip
                   key={option.value}
@@ -630,6 +641,7 @@ function EntriesSection({
           {entryKindOptions.map((option) => {
             const style = badgeStyleFor(option.value, styles)
             const active = option.value === kind
+
             return (
               <button
                 key={option.value}
@@ -694,6 +706,7 @@ function EntriesSection({
               </div>
               {group.rows.map((entry) => {
                 const style = badgeStyleFor(entry.kind, styles)
+
                 return (
                   <div
                     key={entry.id}

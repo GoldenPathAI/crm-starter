@@ -4,7 +4,9 @@ export const optionalText = (value: FormDataEntryValue | null): string | undefin
   if (typeof value !== "string") {
     return undefined
   }
+
   const trimmed = value.trim()
+
   return trimmed.length > 0 ? trimmed : undefined
 }
 
@@ -29,6 +31,8 @@ export const parseMrr = (value: FormDataEntryValue | null): number | undefined =
   if (raw === undefined) {
     return undefined
   }
+
   const parsed = Number.parseInt(raw.replace(/\s/g, ""), 10)
+
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
 }

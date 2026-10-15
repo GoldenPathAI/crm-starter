@@ -21,6 +21,7 @@ export function AvatarStack({ members, size = "sm", max = 3, className }: Avatar
   if (members.length === 0) {
     return null
   }
+
   const visible = members.slice(0, max)
   const overflow = members.length - visible.length
   const names = members.map((member) => member.name).join(", ")

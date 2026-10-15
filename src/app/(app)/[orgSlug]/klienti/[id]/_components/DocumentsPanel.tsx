@@ -58,6 +58,7 @@ export function DocumentsPanel({ clientId, documents, docKindView }: DocumentsPa
     if (result.status === "success") {
       router.refresh()
     }
+
     return result
   }
 
@@ -65,10 +66,12 @@ export function DocumentsPanel({ clientId, documents, docKindView }: DocumentsPa
     if (editing === null) {
       return { status: "error" as const, message: "Chybí dokument." }
     }
+
     const result = await updateDocumentAction(orgSlug, editing.id, clientId, values)
     if (result.status === "success") {
       router.refresh()
     }
+
     return result
   }
 

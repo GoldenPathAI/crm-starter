@@ -69,17 +69,21 @@ function dealGroupBadge(semantic: string | undefined): DealGroupBadge {
   if (semantic === "parked") {
     return { label: "Zaparkováno", className: "bg-surface-3/60 text-muted" }
   }
+
   if (semantic === "won") {
     return { label: "Vyhráno", className: "bg-green-soft text-green-text" }
   }
+
   if (semantic === "lost") {
     return { label: "Prohráno", className: "bg-red-soft text-red-text" }
   }
+
   return { label: "Otevřené", className: "bg-blue-soft text-blue-text" }
 }
 
 function isRequired(kind: EnumKind, semantic: string | undefined): boolean {
   const required = REQUIRED_SEMANTICS[kind]
+
   return semantic !== undefined && required !== undefined && required.includes(semantic)
 }
 
@@ -102,10 +106,12 @@ function reorderIds(ids: string[], sourceId: string, targetId: string, edge: Edg
   if (fromIndex === -1 || targetIndex === -1) {
     return ids
   }
+
   const insertAt = targetIndex + (edge === "bottom" ? 1 : 0)
   const without = ids.filter((id) => id !== sourceId)
   const adjusted = fromIndex < insertAt ? insertAt - 1 : insertAt
   without.splice(adjusted, 0, sourceId)
+
   return without
 }
 
@@ -141,6 +147,7 @@ export function EnumEditor({
     if (orderedIds.join("|") === currentIds.join("|")) {
       return
     }
+
     const rank = new Map(orderedIds.map((id, index) => [id, index]))
     const previous = rows
     setRows((prev) =>
@@ -150,6 +157,7 @@ export function EnumEditor({
         if (ra === undefined || rb === undefined) {
           return a.position - b.position
         }
+
         return ra - rb
       }),
     )
@@ -171,6 +179,7 @@ export function EnumEditor({
     if (!canEdit) {
       return
     }
+
     return monitorForElements({
       canMonitor: ({ source }) => isRowDragData(source.data) && source.data.kind === kind,
       onDrop: ({ source, location }) => {
@@ -178,9 +187,11 @@ export function EnumEditor({
         if (target === undefined || !isRowDragData(source.data) || !isRowDragData(target.data)) {
           return
         }
+
         if (source.data.id === target.data.id) {
           return
         }
+
         runReorderRef.current(source.data.id, target.data.id, extractClosestEdge(target.data))
       },
     })
@@ -266,6 +277,7 @@ export function EnumEditor({
             <div className="flex flex-col gap-1.5 px-3 pb-3">
               {archived.map((option) => {
                 const style = optionBadgeStyle(option)
+
                 return (
                   <div key={option.id} className="flex items-center gap-2 opacity-60">
                     <span aria-hidden className={cn("size-2 shrink-0 rounded-full", style.dot)} />
@@ -300,12 +312,15 @@ function normalizeLocal(patch: {
   if (patch.label !== undefined) {
     next.label = patch.label
   }
+
   if (patch.color !== undefined) {
     next.color = patch.color
   }
+
   if (patch.defaultProbability !== undefined) {
     next.defaultProbability = patch.defaultProbability ?? undefined
   }
+
   return next
 }
 
@@ -348,6 +363,7 @@ function OptionRow({
     if (handle === null || row === null || !canEdit) {
       return
     }
+
     return combine(
       draggable({
         element: row,
@@ -369,8 +385,10 @@ function OptionRow({
         onDrag: ({ self, source }) => {
           if (isRowDragData(source.data) && source.data.id === option.id) {
             setClosestEdge(null)
+
             return
           }
+
           setClosestEdge(extractClosestEdge(self.data))
         },
         onDragLeave: () => setClosestEdge(null),
@@ -384,8 +402,10 @@ function OptionRow({
     setEditingLabel(false)
     if (trimmed.length === 0 || trimmed === option.label) {
       setLabelDraft(option.label)
+
       return
     }
+
     onLabelChange(trimmed)
   }
 
@@ -501,6 +521,7 @@ function EdgeLine({ position }: { position: "top" | "bottom" }) {
 
 function DealGroupTag({ semantic }: { semantic: string | undefined }) {
   const badge = dealGroupBadge(semantic)
+
   return (
     <span
       className={cn(
@@ -534,13 +555,17 @@ function ProbabilityInput({
       if (value !== undefined) {
         onCommit(null)
       }
+
       return
     }
+
     const parsed = Number.parseInt(trimmed, 10)
     if (Number.isNaN(parsed) || parsed < 0 || parsed > 100) {
       setDraft(value === undefined ? "" : String(value))
+
       return
     }
+
     if (parsed !== value) {
       onCommit(parsed)
     }
@@ -599,6 +624,7 @@ function ColorPicker({
         <div className="grid grid-cols-5 gap-1.5">
           {COLOR_TOKENS.map((token) => {
             const style = optionBadgeStyle({ label: "", color: token })
+
             return (
               <button
                 key={token}
@@ -649,6 +675,7 @@ function AddOptionRow({ kind, orgSlug }: { kind: EnumKind; orgSlug: string }) {
     if (!canSubmit) {
       return
     }
+
     startTransition(async () => {
       const result = await createEnumOptionAction(orgSlug, kind, {
         value: effectiveValue,

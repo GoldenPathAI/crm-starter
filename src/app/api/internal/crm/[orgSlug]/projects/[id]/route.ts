@@ -17,6 +17,7 @@ export async function GET(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -24,6 +25,7 @@ export async function GET(request: NextRequest, context: Context) {
     if (detail === null) {
       return notFound("Projekt nebyl nalezen.")
     }
+
     return ok(detail)
   } catch (error) {
     return errorResponse(error)
@@ -35,6 +37,7 @@ export async function PATCH(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
@@ -44,6 +47,7 @@ export async function PATCH(request: NextRequest, context: Context) {
     if (existing === null) {
       return notFound("Projekt nebyl nalezen.")
     }
+
     return ok(await updateProject(scope, id, parseUpdateProject(existing.project, body, enums)))
   } catch (error) {
     return errorResponse(error)
@@ -55,10 +59,12 @@ export async function DELETE(request: NextRequest, context: Context) {
   if (unauthorized) {
     return unauthorized
   }
+
   try {
     const { orgSlug, id } = await context.params
     const scope = await resolveOrgScope(orgSlug)
     await deleteProject(scope, id)
+
     return ok({ ok: true })
   } catch (error) {
     return errorResponse(error)

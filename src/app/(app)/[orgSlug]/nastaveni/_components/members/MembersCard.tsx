@@ -32,6 +32,7 @@ export function MembersCard({
           const rowIsOwner = member.role === "owner"
           const canEditRow = canManage && (!rowIsOwner || viewerRole === "owner")
           const removable = canEditRow && !(rowIsOwner && ownerCount === 1)
+
           return (
             <MemberRow
               key={member.memberId}

@@ -377,6 +377,7 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   if (group === "service") {
     return serviceView.options
       .map((option) => ({
@@ -387,10 +388,12 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   const known = industryOptions.map((option) => option.value)
   const industries = [...new Set([...known, ...rows.map((row) => row.industry)])].sort((a, b) =>
     a.localeCompare(b, "cs"),
   )
+
   return industries
     .map((industry) => ({
       key: industry,
@@ -404,8 +407,10 @@ function LabelChips({ labels }: { labels: string[] }) {
   if (labels.length === 0) {
     return <span className="text-[13px] text-muted-soft">-</span>
   }
+
   const visible = labels.slice(0, 3)
   const hidden = labels.length - visible.length
+
   return (
     <div className="flex flex-wrap items-center gap-1">
       {visible.map((label) => (
@@ -428,6 +433,7 @@ function LabelChips({ labels }: { labels: string[] }) {
 function ServiceChips({ services, serviceView }: { services: string[]; serviceView: EnumView }) {
   const visible = services.slice(0, 2)
   const hidden = services.length - visible.length
+
   return (
     <div className="flex flex-wrap items-center gap-1">
       {visible.map((service) => (

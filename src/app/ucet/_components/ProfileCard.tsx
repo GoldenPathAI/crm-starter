@@ -27,14 +27,18 @@ export function ProfileCard({ name, email }: { name: string; email: string }) {
     const trimmed = draft.trim()
     if (trimmed.length === 0 || trimmed === name) {
       cancel()
+
       return
     }
+
     startTransition(async () => {
       const result = await authClient.updateUser({ name: trimmed })
       if (result.error !== null) {
         toast({ variant: "error", title: "Jméno se nepodařilo uložit" })
+
         return
       }
+
       toast({ variant: "success", title: "Jméno uloženo" })
       setEditing(false)
       router.refresh()

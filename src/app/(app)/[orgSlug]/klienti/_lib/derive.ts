@@ -13,6 +13,7 @@ export interface TicketCounts {
 
 export const ticketCountsFor = (tickets: Ticket[], projectId: string): TicketCounts => {
   const scoped = tickets.filter((ticket) => ticket.projectId === projectId)
+
   return {
     done: scoped.filter((ticket) => ticket.status === "done").length,
     total: scoped.length,

@@ -12,13 +12,16 @@ export function normalizeOfferUrl(raw: string): string | null {
   } catch {
     return null
   }
+
   const host = url.hostname.toLowerCase()
   let path = url.pathname
   if (path.length > 1 && path.endsWith("/")) {
     path = path.slice(0, -1)
   }
+
   if (path === "/") {
     path = ""
   }
+
   return `${url.protocol}//${host}${path}`
 }

@@ -19,6 +19,7 @@ export function useTaskDetail(): TaskDetailContextValue {
   if (value === null) {
     throw new Error("useTaskDetail must be used within a TaskDetailProvider")
   }
+
   return value
 }
 
@@ -33,6 +34,7 @@ export function TaskDetailProvider({ children }: { children: React.ReactNode }) 
     if (options !== null || loadingOptions.current) {
       return
     }
+
     loadingOptions.current = true
     void loadTaskOptionsAction(orgSlug)
       .then(setOptions)

@@ -17,12 +17,16 @@ const emit = (
   const line = JSON.stringify(record)
   if (level === "error") {
     console.error(line)
+
     return
   }
+
   if (level === "warn") {
     console.warn(line)
+
     return
   }
+
   console.info(line)
 }
 

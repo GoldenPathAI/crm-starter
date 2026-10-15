@@ -45,6 +45,7 @@ export function SavedViewsMenu({ orgSlug, pageKey, currentQuery, onApply }: Save
           setViews([])
         }
       })
+
     return () => {
       active = false
     }
@@ -65,6 +66,7 @@ export function SavedViewsMenu({ orgSlug, pageKey, currentQuery, onApply }: Save
     if (!canSave) {
       return
     }
+
     void saveSavedViewAction(orgSlug, pageKey, trimmedName, currentQuery).then(({ views: next }) =>
       setViews(next),
     )
@@ -116,6 +118,7 @@ export function SavedViewsMenu({ orgSlug, pageKey, currentQuery, onApply }: Save
             {views.map((view) => {
               const active = activeView !== undefined && activeView.id === view.id
               const deletePending = pendingDeleteId === view.id
+
               return (
                 <div key={view.id} className="flex items-center gap-1">
                   <button

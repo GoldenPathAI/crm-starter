@@ -20,17 +20,20 @@ export async function fetchNotificationsAction(orgSlug: string): Promise<Notific
     listNotifications(ctx.scope, ctx.user.id, { limit: 30 }),
     unreadCount(ctx.scope, ctx.user.id),
   ])
+
   return { items, unread }
 }
 
 export async function unreadCountAction(orgSlug: string): Promise<number> {
   const ctx = await requireOrgContext(orgSlug)
+
   return unreadCount(ctx.scope, ctx.user.id)
 }
 
 export async function markNotificationReadAction(orgSlug: string, id: string): Promise<number> {
   const ctx = await requireOrgContext(orgSlug)
   await markRead(ctx.scope, ctx.user.id, id)
+
   return unreadCount(ctx.scope, ctx.user.id)
 }
 

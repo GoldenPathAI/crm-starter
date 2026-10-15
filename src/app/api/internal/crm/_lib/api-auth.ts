@@ -32,12 +32,15 @@ export async function resolveApiAuth(request: NextRequest, orgSlug: string): Pro
     if (result.status === "org-not-found") {
       throw new HttpError(404, `Workspace ${orgSlug} nebyl nalezen.`)
     }
+
     if (result.status === "no-membership") {
       throw new HttpError(403, "Do tohoto workspace nemáš přístup.")
     }
+
     if (result.status === "no-session") {
       throw new HttpError(401, "Nepřihlášen.")
     }
+
     return { scope: result.context.scope, via: "session", role: result.context.role }
   }
 
@@ -48,7 +51,9 @@ export async function resolveApiAuth(request: NextRequest, orgSlug: string): Pro
       tokenFailure.status === 503 ? "Internal API není nakonfigurováno." : "Neautorizováno.",
     )
   }
+
   const scope = await resolveOrgScope(orgSlug)
+
   return { scope, via: "token", role: null }
 }
 
@@ -56,6 +61,7 @@ export function assertCsrf(request: NextRequest, auth: ApiAuth): void {
   if (auth.via !== "session") {
     return
   }
+
   if (request.headers.get(CSRF_HEADER) !== "1") {
     throw new HttpError(403, "Chybí CSRF hlavička.")
   }
@@ -66,6 +72,7 @@ export function assertRole(auth: ApiAuth, minRole: OrgRole): void {
   if (auth.via !== "session") {
     return
   }
+
   if (auth.role === null || !roleAtLeast(auth.role, minRole)) {
     throw new HttpError(403, "Na tuto akci nemáš dostatečné oprávnění.")
   }
@@ -93,5 +100,6 @@ export async function withApiAudit<T>(
       (tx) => fn({ ...auth.scope, db: tx }, requestId),
     )
   }
+
   return fn(auth.scope, requestId)
 }

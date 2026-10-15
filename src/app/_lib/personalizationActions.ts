@@ -19,6 +19,7 @@ export async function loadPalettePersonalizationAction(
     listPinnedClients(ctx.scope, ctx.user.id),
     listRecentItems(ctx.scope, ctx.user.id),
   ])
+
   return { pins, recents }
 }
 
@@ -37,6 +38,7 @@ export async function isClientPinnedAction(
   clientId: string,
 ): Promise<{ pinned: boolean }> {
   const ctx = await requireOrgContext(orgSlug)
+
   return { pinned: await isClientPinned(ctx.scope, ctx.user.id, clientId) }
 }
 
@@ -47,6 +49,7 @@ export async function togglePinnedClientAction(
   const ctx = await requireOrgContext(orgSlug)
   try {
     const pinned = await togglePinnedClient(ctx.scope, ctx.user.id, input)
+
     return { status: "success", message: pinned ? "Připnuto" : "Odepnuto", pinned }
   } catch (error) {
     return {

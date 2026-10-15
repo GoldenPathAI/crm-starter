@@ -21,5 +21,6 @@ export function normalizeBrowserQuery(query: string): string {
   for (const [key, value] of entries) {
     normalized.append(key, value)
   }
+
   return normalized.toString()
 }

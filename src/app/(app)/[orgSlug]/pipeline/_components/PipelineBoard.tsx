@@ -110,12 +110,14 @@ const resolveDropPosition = (
   for (const target of dropTargets) {
     if (isDealCardData(target.data)) {
       const edge = extractClosestEdge(target.data)
+
       return {
         stage: target.data.stage,
         index: target.data.index + (edge === "bottom" ? 1 : 0),
         onSource: target.data.dealId === sourceDealId,
       }
     }
+
     if (isStageDropData(target.data)) {
       return {
         stage: target.data.stage,
@@ -124,6 +126,7 @@ const resolveDropPosition = (
       }
     }
   }
+
   return null
 }
 
@@ -139,6 +142,7 @@ const useStageDropTarget = (
     if (element === null) {
       return
     }
+
     return dropTargetForElements({
       element,
       canDrop: ({ source }) => isDealCardData(source.data),
@@ -148,6 +152,7 @@ const useStageDropTarget = (
       onDrop: () => setDragOverStage(null),
     })
   }, [stage, setDragOverStage])
+
   return ref
 }
 
@@ -164,6 +169,7 @@ const useDealCardDraggable = (
     if (element === null) {
       return
     }
+
     return combine(
       draggable({
         element,
@@ -185,6 +191,7 @@ const useDealCardDraggable = (
       }),
     )
   }, [dealId, stage, index, canDrag, setDraggingId])
+
   return ref
 }
 
@@ -206,6 +213,7 @@ const columnAccent = (semantic: string | undefined): ColumnAccent => {
       card: "bg-surface/80",
     }
   }
+
   if (semantic === "lost") {
     return {
       header: "bg-red-soft/70",
@@ -215,6 +223,7 @@ const columnAccent = (semantic: string | undefined): ColumnAccent => {
       card: "bg-surface/80",
     }
   }
+
   return {
     header: "bg-surface-2",
     label: "text-foreground",
@@ -241,12 +250,14 @@ const applyMove = (
   if (source === undefined || moving === undefined || source.stage === toStage) {
     return board
   }
+
   const movedCard: DealCard = {
     ...moving,
     stage: toStage,
     daysInStage: 0,
     isStale: false,
   }
+
   return board.map((column) => {
     if (column.stage === source.stage) {
       return recomputeColumn(
@@ -254,10 +265,13 @@ const applyMove = (
         column.deals.filter((deal) => deal.id !== dealId),
       )
     }
+
     if (column.stage === toStage) {
       const deals = [...column.deals, movedCard].sort((a, b) => b.valueCzk - a.valueCzk)
+
       return recomputeColumn(column, deals)
     }
+
     return column
   })
 }
@@ -333,6 +347,7 @@ export function PipelineBoard({
     if (consumedDeepLink.current || initialOpenDealId === undefined) {
       return
     }
+
     consumedDeepLink.current = true
     const exists = columns.some((column) =>
       column.deals.some((deal) => deal.id === initialOpenDealId),
@@ -382,17 +397,21 @@ export function PipelineBoard({
     if (wonStage === undefined) {
       return false
     }
+
     const previous = board
     setBoard((prev) => applyMove(prev, dealId, wonStage))
     const result = await moveDealStageAction(orgSlug, dealId, wonStage)
     if (result.status === "success") {
       toastWithUndo(result, () => router.refresh())
+
       return true
     }
+
     if (result.status === "error") {
       toast({ variant: "error", title: result.message })
       setBoard(previous)
     }
+
     return false
   }
 
@@ -400,17 +419,21 @@ export function PipelineBoard({
     if (lostStage === undefined) {
       return false
     }
+
     const previous = board
     setBoard((prev) => applyMove(prev, dealId, lostStage))
     const result = await markDealLostAction(orgSlug, dealId, reason)
     if (result.status === "success") {
       toastWithUndo(result, () => router.refresh())
+
       return true
     }
+
     if (result.status === "error") {
       toast({ variant: "error", title: result.message })
       setBoard(previous)
     }
+
     return false
   }
 
@@ -469,18 +492,23 @@ export function PipelineBoard({
     if (source === undefined || source.stage === toStage) {
       return
     }
+
     if (toStage === lostStage) {
       setOpenDealId(null)
       clearDealParam()
       setLostTargetId(dealId)
+
       return
     }
+
     if (toStage === wonStage) {
       setOpenDealId(null)
       clearDealParam()
       setWonTargetId(dealId)
+
       return
     }
+
     commitMove(dealId, toStage)
   }
 
@@ -494,6 +522,7 @@ export function PipelineBoard({
     if (source === undefined || dest === undefined || moving === undefined) {
       return
     }
+
     const originalIndex = dest.deals.findIndex((deal) => deal.id === dealId)
     // targetIndex counts the column as shown (the dragged card is still visible),
     // so a same-column down move needs to shift one slot up after removal.
@@ -515,12 +544,15 @@ export function PipelineBoard({
           column.deals.filter((deal) => deal.id !== dealId),
         )
       }
+
       if (column.stage === toStage) {
         const ordered = [...column.deals.filter((deal) => deal.id !== dealId), movedCard].sort(
           (a, b) => (rank.get(a.id) ?? 0) - (rank.get(b.id) ?? 0),
         )
+
         return recomputeColumn(column, ordered)
       }
+
       return column
     })
     setBoard(next)
@@ -558,6 +590,7 @@ export function PipelineBoard({
           if (!isDealCardData(source.data)) {
             return
           }
+
           const resolved = resolveDropPosition(
             source.data.dealId,
             location.current.dropTargets,
@@ -581,6 +614,7 @@ export function PipelineBoard({
           if (!isDealCardData(source.data)) {
             return
           }
+
           const resolved = resolveDropPosition(
             source.data.dealId,
             location.current.dropTargets,
@@ -589,10 +623,13 @@ export function PipelineBoard({
           if (resolved === null) {
             return
           }
+
           if (isClosedStageRef.current(resolved.stage)) {
             requestMoveRef.current(source.data.dealId, resolved.stage)
+
             return
           }
+
           applyReorderRef.current(source.data.dealId, resolved.stage, resolved.index)
         },
       }),
@@ -743,6 +780,7 @@ function StageColumn({
   const dotClass = option !== undefined ? optionBadgeStyle(option).dot : "bg-border-strong"
   const dropRef = useStageDropTarget(column.stage, setDragOverStage)
   const showEndHint = dropHint?.stage === column.stage && dropHint.index >= column.deals.length
+
   return (
     <section ref={dropRef} className="flex min-w-[216px] flex-1 flex-col">
       <header
@@ -789,6 +827,7 @@ function StageColumn({
         ) : (
           column.deals.map((deal, index) => {
             const showHintBefore = dropHint?.stage === column.stage && dropHint.index === index
+
             return (
               <div key={deal.id} className="flex flex-col gap-2.5">
                 {showHintBefore ? <DropLine /> : null}
@@ -827,6 +866,7 @@ function ClosedRail({ column, option, isDropTarget, setDragOverStage, onExpand }
   const accent = columnAccent(option?.semantic)
   const dotClass = option !== undefined ? optionBadgeStyle(option).dot : "bg-border-strong"
   const dropRef = useStageDropTarget(column.stage, setDragOverStage)
+
   return (
     <section ref={dropRef} className="flex shrink-0">
       <button
@@ -874,13 +914,16 @@ const closeChip = (deal: DealCard): CloseChip | null => {
   if (deal.expectedClose === undefined || deal.closeDaysUntil === undefined) {
     return null
   }
+
   const date = formatShortDate(deal.expectedClose)
   if (deal.closeDaysUntil < 0) {
     return { label: `${date} po termínu`, className: "bg-red-soft text-red-text" }
   }
+
   if (deal.closeDaysUntil <= 7) {
     return { label: date, className: "bg-orange-soft text-orange-text" }
   }
+
   return { label: date, className: "bg-surface-3/60 text-muted" }
 }
 
@@ -930,6 +973,7 @@ function DealCardView({
     !menuOpen && !nextStepOpen,
     setDraggingId,
   )
+
   return (
     <div
       ref={dragRef}

@@ -232,6 +232,7 @@ interface PersonFieldsProps {
 
 function PersonFields({ idPrefix, initial }: PersonFieldsProps) {
   const id = (name: string) => `${idPrefix}-${name}`
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div className="sm:col-span-2">

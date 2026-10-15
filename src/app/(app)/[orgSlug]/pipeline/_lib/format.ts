@@ -11,6 +11,7 @@ export const formatCzk = (value: number): string => {
   const digits = Math.abs(rounded)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, NBSP)
+
   return `${sign}${digits}${NBSP}Kč`
 }
 
@@ -21,11 +22,14 @@ export const formatCzkCompact = (value: number): string => {
   const abs = Math.abs(value)
   if (abs >= 1_000_000) {
     const millions = value / 1_000_000
+
     return `${millions.toFixed(abs >= 10_000_000 ? 0 : 1).replace(".", ",")}${NBSP}mil.`
   }
+
   if (abs >= 1_000) {
     return `${Math.round(value / 1_000)}${NBSP}tis.`
   }
+
   return `${value}`
 }
 
@@ -33,9 +37,11 @@ const dayWord = (days: number): string => {
   if (days === 1) {
     return "den"
   }
+
   if (days >= 2 && days <= 4) {
     return "dny"
   }
+
   return "dní"
 }
 

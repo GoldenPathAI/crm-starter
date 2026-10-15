@@ -27,5 +27,6 @@ export function useOrg(): OrgContextValue {
   if (value === null) {
     throw new Error("useOrg must be used within an OrgProvider")
   }
+
   return value
 }

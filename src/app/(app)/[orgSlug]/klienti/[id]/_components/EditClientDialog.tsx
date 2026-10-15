@@ -68,6 +68,7 @@ export function EditClientDialog({ client, hasRelated, statusView, serviceView }
         } else if (result.status === "error") {
           toast({ variant: "error", title: result.message })
         }
+
         resolve()
       })
     })

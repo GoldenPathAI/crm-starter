@@ -25,6 +25,7 @@ const createHandle = (): DbHandle => {
   if (connectionString === undefined || connectionString.length === 0) {
     throw new Error("DATABASE_URL environment variable is not set")
   }
+
   // The database host may be shared with other apps. Keep max small and force
   // Postgres to abort any transaction left idle so a stuck request can never pin a
   // connection and starve the live app.
@@ -32,6 +33,7 @@ const createHandle = (): DbHandle => {
     max: 10,
     connection: { idle_in_transaction_session_timeout: 60_000 },
   })
+
   return { db: drizzle(sql, { schema }), sql }
 }
 
@@ -39,12 +41,14 @@ const getHandle = (): DbHandle => {
   if (handle === null) {
     handle = createHandle()
   }
+
   return handle
 }
 
 export const db: CrmDb = new Proxy({} as CrmDb, {
   get(_target, prop) {
     const active = getHandle().db
+
     return active[prop as keyof CrmDb]
   },
 })

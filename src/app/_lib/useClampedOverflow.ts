@@ -15,12 +15,15 @@ export const useClampedOverflow = <T extends HTMLElement>(expanded: boolean, con
     if (node === null || expanded) {
       return
     }
+
     const measure = () => {
       setOverflowing(node.scrollHeight > node.clientHeight + 1)
     }
+
     measure()
     const observer = new ResizeObserver(measure)
     observer.observe(node)
+
     return () => {
       observer.disconnect()
     }

@@ -33,12 +33,14 @@ export async function consumeRateLimit(
       },
     })
     .returning({ count: apiRateLimits.count });
+
   return (rows[0]?.count ?? rule.limit + 1) <= rule.limit;
 }
 
 const clientFingerprint = (request: Request): string => {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   const address = forwarded ?? request.headers.get("x-real-ip") ?? "unavailable";
+
   return createHash("sha256").update(address).digest("hex");
 };
 
@@ -53,5 +55,6 @@ export async function allowPublicRequest(
     consumeRateLimit(`${bucket}:client:${fingerprint}`, clientRule),
     consumeRateLimit(`${bucket}:global`, globalRule),
   ]);
+
   return clientAllowed && globalAllowed;
 }

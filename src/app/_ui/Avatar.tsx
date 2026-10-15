@@ -25,10 +25,13 @@ export function initials(name: string): string {
   if (first === undefined) {
     return "?"
   }
+
   if (parts.length === 1) {
     return first.slice(0, 2).toUpperCase()
   }
+
   const last = parts[parts.length - 1] ?? first
+
   return `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase()
 }
 
@@ -38,6 +41,7 @@ const paletteClass = (seed: string): string => {
   for (let index = 0; index < seed.length; index += 1) {
     hash = (hash * 31 + seed.charCodeAt(index)) | 0
   }
+
   return AVATAR_PALETTE[Math.abs(hash) % AVATAR_PALETTE.length] ?? AVATAR_PALETTE[0]
 }
 

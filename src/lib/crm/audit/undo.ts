@@ -56,6 +56,7 @@ async function currentMatchesAfter(
     WHERE t.${sql.identifier(def.pk)} = ${rowId}
   `)
   const row = rows[0]
+
   return row !== undefined && row.ok === true
 }
 
@@ -63,29 +64,36 @@ async function rowAbsent(tx: CrmDbc, def: UndoTable, rowId: string): Promise<boo
   const rows = await tx.execute<{ present: number }>(sql`
     SELECT 1 AS present FROM ${def.table} AS t WHERE t.${sql.identifier(def.pk)} = ${rowId} LIMIT 1
   `)
+
   return rows.length === 0
 }
 
 async function applyInverse(tx: CrmDbc, entry: AuditEntry, def: UndoTable): Promise<void> {
   if (entry.operation === "INSERT") {
     await tx.execute(sql`DELETE FROM ${def.table} WHERE ${sql.identifier(def.pk)} = ${entry.rowId}`)
+
     return
   }
+
   if (entry.operation === "DELETE") {
     if (entry.before === null) {
       return
     }
+
     await tx.execute(sql`
       INSERT INTO ${def.table}
       SELECT * FROM jsonb_populate_record(NULL::${def.table}, ${JSON.stringify(entry.before)}::jsonb)
     `)
+
     return
   }
+
   // UPDATE inverse: a true UPDATE that rewrites every non-pk column from the before
   // snapshot, so it fires an UPDATE trigger (delete+reinsert would fire the wrong ones).
   if (entry.before === null) {
     return
   }
+
   const assignments = columnNames(def.table)
     .filter((name) => name !== def.pk)
     .map((name) => sql`${sql.identifier(name)} = p.${sql.identifier(name)}`)
@@ -111,9 +119,11 @@ export async function undoBatch(
   if (entries.length === 0) {
     throw new Error("Dávku k vrácení se nepodařilo najít nebo je prázdná.")
   }
+
   if (await isBatchUndone(orgId, requestId)) {
     throw new Error("Tato dávka už byla vrácena.")
   }
+
   for (const entry of entries) {
     if (UNDO_TABLES[entry.tableName] === undefined) {
       throw new Error(`Tabulku ${entry.tableName} nelze vrátit.`)
@@ -137,22 +147,27 @@ export async function undoBatch(
       for (const entry of entries) {
         lastPerRow.set(`${entry.tableName}:${entry.rowId}`, entry)
       }
+
       const conflicts: string[] = []
       for (const entry of lastPerRow.values()) {
         const def = UNDO_TABLES[entry.tableName]
         if (def === undefined) {
           continue
         }
+
         if (entry.operation === "DELETE") {
           if (!(await rowAbsent(tx, def, entry.rowId))) {
             conflicts.push(`${entry.tableName}#${entry.rowId}`)
           }
+
           continue
         }
+
         if (entry.after === null || !(await currentMatchesAfter(tx, def, entry.rowId, entry.after))) {
           conflicts.push(`${entry.tableName}#${entry.rowId}`)
         }
       }
+
       if (conflicts.length > 0) {
         throw new Error(
           `Nelze vrátit: záznamy se mezitím změnily (${conflicts.join(", ")}). Nic nebylo provedeno.`,
@@ -166,13 +181,16 @@ export async function undoBatch(
         if (entry === undefined) {
           continue
         }
+
         const def = UNDO_TABLES[entry.tableName]
         if (def === undefined) {
           continue
         }
+
         await applyInverse(tx, entry, def)
         count += 1
       }
+
       return count
     },
   )

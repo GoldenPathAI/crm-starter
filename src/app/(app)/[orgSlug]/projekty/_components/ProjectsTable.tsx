@@ -10,7 +10,7 @@ import type {
 import { badgeStyleFor, optionBadgeStyle, styleMap, todayIso, type BadgeStyle } from "@/lib/crm/config"
 import { formatCzechDate } from "@/lib/dates"
 import { cn } from "@/lib/cn"
-import { SortDirection } from "@/core/types/query.types"
+import type { SortDirection } from "@/core/types/query.types"
 import type { EnumOption } from "@/core/types/crm.types"
 import type { ProjectListItem } from "@/lib/crm/queries"
 import { useOrg } from "@/app/_components/org/OrgProvider"
@@ -44,8 +44,10 @@ function buildGroups(rows: ProjectListItem[], urlValue: string, statusOptions: E
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   const labels = new Map(rows.map((project) => [project.clientId, project.clientName]))
   const ids = [...new Set(rows.map((project) => project.clientId))]
+
   return ids
     .map((id) => ({
       key: id,
@@ -166,6 +168,7 @@ function TicketsProgress({ project }: { project: ProjectListItem }) {
   const total = project.ticketsTotal
   const done = project.ticketsDone
   const ratio = total > 0 ? done / total : 0
+
   return (
     <div className="flex items-center gap-2.5">
       <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-muted">

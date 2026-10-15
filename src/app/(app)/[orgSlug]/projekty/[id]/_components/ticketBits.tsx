@@ -22,7 +22,9 @@ export function DueTag({ dueAt, done }: { dueAt?: string; done: boolean }) {
   if (dueAt === undefined) {
     return null
   }
+
   const overdue = !done && dueAt < todayIso()
+
   return (
     <span
       className={cn(

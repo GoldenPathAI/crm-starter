@@ -77,12 +77,14 @@ export function DealForm({
     if (assigneeIds === undefined || onAssigneeIdsChange === undefined) {
       return
     }
+
     onAssigneeIdsChange(
       assigneeIds.includes(userId)
         ? assigneeIds.filter((id) => id !== userId)
         : [...assigneeIds, userId],
     )
   }
+
   // Suggested win probability per stage seeds the slider so Filip rarely touches it and
   // keeps the weighted-pipeline number honest without a free-text field to fat-finger.
   const stageProbability = (value: string): number =>
@@ -118,17 +120,22 @@ export function DealForm({
     if (clientId.trim().length === 0) {
       nextErrors.clientId = "Vyberte klienta."
     }
+
     if (title.trim().length === 0) {
       nextErrors.title = "Vyplňte název dealu."
     }
+
     const valueNumber = valueCzk.trim().length === 0 ? Number.NaN : Number(valueCzk)
     if (!Number.isFinite(valueNumber) || valueNumber < 0) {
       nextErrors.valueCzk = "Zadejte nezápornou hodnotu."
     }
+
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors)
+
       return
     }
+
     setErrors({})
     onSubmit(
       {
@@ -148,6 +155,7 @@ export function DealForm({
     if (!isDealStage(value)) {
       return
     }
+
     setStage(value)
     if (!probabilityTouched) {
       setProbability(stageProbability(value))

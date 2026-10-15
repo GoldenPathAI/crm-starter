@@ -59,6 +59,7 @@ export async function createNotification(
   if (row === undefined) {
     throw new Error("Notifikaci se nepodařilo vytvořit.")
   }
+
   return toNotification(row)
 }
 
@@ -74,6 +75,7 @@ export async function listNotifications(
     .where(and(eq(notifications.organizationId, scope.orgId), eq(notifications.userId, userId)))
     .orderBy(desc(notifications.createdAt))
     .limit(options.limit ?? 30)
+
   return rows.map(toNotification)
 }
 
@@ -89,6 +91,7 @@ export async function unreadCount(scope: OrgScope, userId: string): Promise<numb
         isNull(notifications.readAt),
       ),
     )
+
   return rows[0]?.count ?? 0
 }
 
@@ -138,6 +141,7 @@ export async function notifyAssignment(
   if (input.recipientUserIds.length === 0) {
     return
   }
+
   const title =
     input.entityType === "ticket"
       ? `Byl ti přiřazen úkol ${input.entityTitle}`

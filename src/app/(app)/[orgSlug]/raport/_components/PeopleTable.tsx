@@ -92,6 +92,7 @@ export function PeopleTable({
       },
       cell: (row) => {
         const style = badgeStyleFor(row.kind, kindStyles)
+
         return (
           <span
             className={cn(
@@ -229,6 +230,7 @@ function buildGroups(
       }))
       .filter((bucket) => bucket.rows.length > 0)
   }
+
   const names = [...new Set(rows.map((row) => row.clientName ?? ""))]
     .filter((name) => name.length > 0)
     .sort((a, b) => a.localeCompare(b, "cs"))
@@ -238,6 +240,7 @@ function buildGroups(
     rows: rows.filter((row) => row.clientName === name),
   }))
   const unlinked = rows.filter((row) => row.clientName === undefined)
+
   return unlinked.length > 0
     ? [...buckets, { key: "__none", label: "Bez klienta", rows: unlinked }]
     : buckets

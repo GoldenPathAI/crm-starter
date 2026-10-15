@@ -33,6 +33,7 @@ export function ClientCombobox({
     if (needle.length === 0) {
       return options
     }
+
     return options.filter((option) => option.name.toLowerCase().includes(needle))
   }, [options, query])
 
@@ -80,6 +81,7 @@ export function ClientCombobox({
           ) : (
             filtered.map((option) => {
               const active = option.id === value
+
               return (
                 <button
                   key={option.id}

@@ -23,21 +23,26 @@ export const PATCH = route<Params>({ mutation: true }, async ({ request, params,
   if (!hasPersonPatch(patch) && !promote) {
     return badRequest("Žádná pole k aktualizaci.")
   }
+
   // Primary is set through its own store mutation to keep the one-primary invariant.
   const person = await withApiAudit(auth, async (scope) => {
     let updated: Person | undefined
     if (hasPersonPatch(patch)) {
       updated = await updatePerson(scope, params.id, patch)
     }
+
     if (promote) {
       updated = await setPrimaryPerson(scope, params.id)
     }
+
     return updated
   })
+
   return ok(person)
 })
 
 export const DELETE = route<Params>({ mutation: true }, async ({ params, auth }) => {
   await withApiAudit(auth, (scope) => deletePerson(scope, params.id))
+
   return ok({ ok: true })
 })

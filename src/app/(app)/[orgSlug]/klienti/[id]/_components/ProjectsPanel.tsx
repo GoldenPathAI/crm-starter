@@ -33,6 +33,7 @@ export function ProjectsPanel({ orgSlug, projects, tickets, statusView }: Projec
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {projects.map((project) => {
         const counts = ticketCountsFor(tickets, project.id)
+
         return (
           <Link
             key={project.id}
