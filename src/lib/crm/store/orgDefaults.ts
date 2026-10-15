@@ -1,12 +1,11 @@
 import { DEFAULT_ENUM_OPTIONS, DEFAULT_ORG_SETTINGS } from "@/core/enumDefaults"
-import type { EnumKind } from "@/core/types/crm.types"
+import { ENUM_KINDS } from "@/core/types/crm.types"
 import { db } from "@/lib/db/client"
 import { enumOptions, organizationSettings } from "@/lib/db/schema/crm"
 import { createId } from "@/lib/ids"
 
 export async function seedOrganizationDefaults(organizationId: string): Promise<void> {
-  const kinds = Object.keys(DEFAULT_ENUM_OPTIONS) as EnumKind[]
-  const rows = kinds.flatMap((kind) =>
+  const rows = ENUM_KINDS.flatMap((kind) =>
     DEFAULT_ENUM_OPTIONS[kind].map((option, index) => ({
       id: createId("eo"),
       organizationId,

@@ -1,24 +1,14 @@
 import { and, asc, eq, isNull } from "drizzle-orm"
 import { cache } from "react"
-import type { EnumKind, EnumOption } from "@/core/types/crm.types"
+import { ENUM_KINDS, type EnumKind, type EnumOption } from "@/core/types/crm.types"
+import { recordFromKeys } from "@/lib/collections"
 import { toEnumOption } from "@/lib/crm/store/mappers"
 import { db } from "@/lib/db/client"
 import { enumOptions } from "@/lib/db/schema/crm"
 
 export type OrgEnums = Record<EnumKind, EnumOption[]>
 
-const emptyOrgEnums = (): OrgEnums => ({
-  deal_stage: [],
-  client_status: [],
-  service_kind: [],
-  project_status: [],
-  ticket_status: [],
-  ticket_priority: [],
-  doc_kind: [],
-  activity_type: [],
-  person_kind: [],
-  rapport_entry_kind: [],
-})
+const emptyOrgEnums = (): OrgEnums => recordFromKeys(ENUM_KINDS, (): EnumOption[] => [])
 
 export async function loadOrgEnumsUncached(orgId: string): Promise<OrgEnums> {
   const rows = await db
