@@ -6,6 +6,7 @@ import { toActivity, toDoc, toTicket } from "@/lib/crm/store/mappers"
 import { attachTicketAssignees } from "@/lib/crm/store/assignees"
 import { isOverdueTicket } from "@/lib/crm/store/predicates"
 import { todayIso } from "@/lib/dates"
+import { getBySemantic } from "@/lib/crm/enums/service"
 import { HttpError } from "./http"
 import type { TicketListItem } from "@/lib/crm/store/tickets"
 import type { Paginated } from "@/core/types/query.types"
@@ -72,6 +73,9 @@ export async function listTicketsDue(
 ): Promise<Paginated<TicketListItem>> {
   const today = todayIso()
   const until = window === "dnes" ? today : format(addDays(new Date(), 7), "yyyy-MM-dd")
+  // Branch on the semantic, never on a value slug: a workspace may name its done status
+  // anything.
+  const doneValue = (await getBySemantic(orgId, "ticket_status", "done")).value
 
   const [ticketRows, clientRows, projectRows, childRows] = await Promise.all([
     db
@@ -82,7 +86,7 @@ export async function listTicketsDue(
           eq(tickets.organizationId, orgId),
           isNull(tickets.parentId),
           isNotNull(tickets.dueAt),
-          ne(tickets.status, "done"),
+          ne(tickets.status, doneValue),
           lte(tickets.dueAt, until),
         ),
       )
@@ -114,7 +118,7 @@ export async function listTicketsDue(
     projectName:
       ticket.projectId === undefined ? null : projectNames.get(ticket.projectId) ?? ticket.projectId,
     subtaskCount: subtaskCounts.get(ticket.id) ?? 0,
-    isOverdue: isOverdueTicket(ticket, today, "done"),
+    isOverdue: isOverdueTicket(ticket, today, doneValue),
   }))
   const items: TicketListItem[] = await attachTicketAssignees(
     { orgId, actor: { type: "system" } },
