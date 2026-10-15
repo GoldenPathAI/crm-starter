@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { ToastProvider } from "@/app/_ui/Toast"
-import { getSessionUser } from "@/lib/auth/org-context"
+import { getSessionUser } from "@/lib/auth/orgContext"
 import { PasswordCard } from "./_components/PasswordCard"
 import { ProfileCard } from "./_components/ProfileCard"
 

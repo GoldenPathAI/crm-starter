@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import type { ActionState } from "@/app/_lib/actionState"
 import type { EnumKind } from "@/core/types/crm.types"
-import { requireOrgContext, requireRole } from "@/lib/auth/org-context"
+import { requireOrgContext, requireRole } from "@/lib/auth/orgContext"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import {
   archiveEnumOption,
@@ -13,7 +13,7 @@ import {
   updateEnumOption,
   type CreateEnumOptionInput,
   type UpdateEnumOptionPatch,
-} from "@/lib/crm/store/enum-options"
+} from "@/lib/crm/store/enumOptions"
 
 // Enum edits change every surface that renders a badge or column, so the whole org
 // subtree is revalidated, not just the settings page.

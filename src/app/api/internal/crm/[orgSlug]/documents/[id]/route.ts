@@ -1,10 +1,10 @@
-import { requireInternalToken } from "@/lib/auth/internal-token"
+import { requireInternalToken } from "@/lib/auth/internalToken"
 import { deleteDocument, updateDocument } from "@/lib/crm/store/documents"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { getDocumentById } from "@/app/api/internal/crm/_lib/reads"
-import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/orgScope"
 import { readJsonObject, errorResponse, notFound, ok } from "@/app/api/internal/crm/_lib/http"
-import { parseUpdateDocument } from "@/app/api/internal/crm/_lib/parse-body"
+import { parseUpdateDocument } from "@/app/api/internal/crm/_lib/parseBody"
 import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"
 

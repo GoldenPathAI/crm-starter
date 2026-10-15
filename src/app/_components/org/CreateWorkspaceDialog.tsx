@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 

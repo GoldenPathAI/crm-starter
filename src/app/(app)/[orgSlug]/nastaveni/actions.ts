@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 import type { OrgRole } from "@/core/types/crm.types"
 import { auth, takeInvitationEmailOutcome } from "@/lib/auth/auth"
-import { requireOrgContext, requireRole } from "@/lib/auth/org-context"
+import { requireOrgContext, requireRole } from "@/lib/auth/orgContext"
 import {
   isLastOwnerDemotion,
   isLastOwnerRemoval,

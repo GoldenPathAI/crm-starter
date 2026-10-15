@@ -1,13 +1,13 @@
 "use server"
 
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import {
   isClientPinned,
   listPinnedClients,
   listRecentItems,
   recordRecentItem,
   togglePinnedClient,
-} from "@/lib/crm/store/user-personalization"
+} from "@/lib/crm/store/userPersonalization"
 import type { PinnedClient, RecentItem, RecentItemType } from "@/app/_lib/recentItems"
 import type { ActionState } from "@/app/_lib/actionState"
 

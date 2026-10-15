@@ -1,4 +1,4 @@
-import { DEFAULT_ENUM_OPTIONS, DEFAULT_ORG_SETTINGS } from "@/core/enum-defaults"
+import { DEFAULT_ENUM_OPTIONS, DEFAULT_ORG_SETTINGS } from "@/core/enumDefaults"
 import type { EnumKind } from "@/core/types/crm.types"
 import { db } from "@/lib/db/client"
 import { enumOptions, organizationSettings } from "@/lib/db/schema/crm"

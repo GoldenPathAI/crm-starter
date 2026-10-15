@@ -1,6 +1,6 @@
 "use server"
 
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import {
   listNotifications,
   markAllRead,

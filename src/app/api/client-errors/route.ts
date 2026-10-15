@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { readLimitedText } from "@/lib/http/body";
-import { allowPublicRequest, consumeRateLimit } from "@/lib/http/rate-limit";
+import { allowPublicRequest, consumeRateLimit } from "@/lib/http/rateLimit";
 import { createServerLogger } from "@/lib/logger";
 import type { NextRequest } from "next/server";
 

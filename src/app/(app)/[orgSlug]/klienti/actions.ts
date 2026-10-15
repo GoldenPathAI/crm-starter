@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { deleteClient, updateClient } from "@/lib/crm/store/clients"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import type { ActionState } from "@/app/_lib/actionState"

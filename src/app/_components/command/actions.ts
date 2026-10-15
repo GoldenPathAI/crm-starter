@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import { updateTicketStatus } from "@/lib/crm/mutations"

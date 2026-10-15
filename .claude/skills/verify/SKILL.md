@@ -37,7 +37,7 @@ DATABASE_URL="$TEST_DATABASE_URL" pnpm bootstrap:admin \
   --email verify@example.com --name Verifier --password Verify12345 --org test
 ```
 
-This creates the org, seeds its enum defaults from `src/core/enum-defaults.ts` and makes
+This creates the org, seeds its enum defaults from `src/core/enumDefaults.ts` and makes
 the user its owner. New enum kinds get exercised on the way.
 
 ## Drive it

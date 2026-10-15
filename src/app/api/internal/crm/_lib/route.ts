@@ -1,6 +1,6 @@
-import { resolveApiAuth, assertCsrf, assertRole } from "./api-auth"
+import { resolveApiAuth, assertCsrf, assertRole } from "./apiAuth"
 import { errorResponse } from "./http"
-import type { ApiAuth } from "./api-auth"
+import type { ApiAuth } from "./apiAuth"
 import type { OrgRole } from "@/core/types/crm.types"
 import type { NextRequest, NextResponse } from "next/server"
 

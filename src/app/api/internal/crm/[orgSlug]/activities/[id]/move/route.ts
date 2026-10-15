@@ -1,6 +1,6 @@
-import { requireInternalToken } from "@/lib/auth/internal-token"
+import { requireInternalToken } from "@/lib/auth/internalToken"
 import { reassignActivityClient } from "@/lib/crm/store/activities"
-import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/orgScope"
 import { readJsonObject, errorResponse, ok, asTrimmed, HttpError } from "@/app/api/internal/crm/_lib/http"
 import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"

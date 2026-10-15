@@ -4,7 +4,7 @@ import { PageShell } from "@/app/_ui/PageShell"
 import { StatCard } from "@/app/_ui/Stat"
 import { listClientOptions, listDealsByStage } from "@/lib/crm/store/deals"
 import { listOrgMembers } from "@/lib/crm/store/members"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import {
   cleanList,

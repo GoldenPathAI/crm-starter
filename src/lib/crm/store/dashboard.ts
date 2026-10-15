@@ -5,7 +5,7 @@ import { clients, deals, projects, tickets } from "@/lib/db/schema/crm"
 import { toClient, toDeal, toProject, toTicket } from "@/lib/crm/store/mappers"
 import { isOverdueTicket } from "@/lib/crm/store/predicates"
 import { loadOrgEnums, type OrgEnums } from "@/lib/crm/enums/service"
-import { getOrgSettings } from "@/lib/crm/store/org-settings"
+import { getOrgSettings } from "@/lib/crm/store/orgSettings"
 import { todayIso } from "@/lib/dates"
 import type { DealStage, EnumKind, OrgScope, TicketPriority } from "@/core/types/crm.types"
 

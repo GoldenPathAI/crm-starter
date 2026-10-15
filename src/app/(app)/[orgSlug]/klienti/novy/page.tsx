@@ -1,6 +1,6 @@
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { toEnumView } from "../_lib/enums"
 import { NewClientForm } from "./_components/NewClientForm"

@@ -9,7 +9,7 @@ import { Button } from "@/app/_ui/Button"
 import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 
 export function LoginForm() {
   const router = useRouter()

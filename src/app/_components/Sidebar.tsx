@@ -15,7 +15,7 @@ import { Kbd } from "@/app/_ui/Kbd"
 import { Popover, PopoverContent, PopoverTrigger } from "@/app/_ui/Popover"
 import { cn } from "@/lib/cn"
 import type { UserMembership } from "@/lib/crm/store/members"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 import { orgHref } from "@/lib/nav"
 
 function initials(name: string): string {

@@ -12,7 +12,7 @@ import {
   type UpdateClientPatch,
 } from "@/lib/crm/mutations"
 import { deleteActivity, updateActivity } from "@/lib/crm/store/activities"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import {

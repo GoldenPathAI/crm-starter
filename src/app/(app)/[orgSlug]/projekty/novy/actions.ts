@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { createProject } from "@/lib/crm/store/projects"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { withUiAudit } from "@/app/_lib/auditedAction"
 import type { ActionState } from "@/app/_lib/actionState"

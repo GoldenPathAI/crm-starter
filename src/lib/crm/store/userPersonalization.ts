@@ -5,7 +5,7 @@ import {
   userPinnedClients,
   userRecentItems,
   userSavedViews,
-} from "@/lib/db/schema/user-personalization"
+} from "@/lib/db/schema/userPersonalization"
 import { createId } from "@/lib/ids"
 import {
   RECENT_ITEM_TYPES,

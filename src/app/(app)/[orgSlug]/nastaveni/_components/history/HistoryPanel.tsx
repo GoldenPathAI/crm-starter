@@ -1,4 +1,4 @@
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { listRecentAudit, listUndoneBatches } from "@/lib/crm/audit/queries"
 import { entityLabel } from "@/lib/crm/audit/humanize"
 import { HistoryList } from "./HistoryList"

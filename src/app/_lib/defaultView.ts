@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { normalizeBrowserQuery } from "@/app/_components/browser/savedViews"
-import type { OrgContext } from "@/lib/auth/org-context"
-import { getDefaultSavedView } from "@/lib/crm/store/user-personalization"
+import type { OrgContext } from "@/lib/auth/orgContext"
+import { getDefaultSavedView } from "@/lib/crm/store/userPersonalization"
 import { orgHref } from "@/lib/nav"
 
 // Applies the user's default saved view for a list page: a bare URL (no search

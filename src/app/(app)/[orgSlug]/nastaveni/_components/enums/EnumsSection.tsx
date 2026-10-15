@@ -1,6 +1,6 @@
 import type { EnumKind } from "@/core/types/crm.types"
-import { requireOrgContext } from "@/lib/auth/org-context"
-import { listAllOptions } from "@/lib/crm/store/enum-options"
+import { requireOrgContext } from "@/lib/auth/orgContext"
+import { listAllOptions } from "@/lib/crm/store/enumOptions"
 import { EnumsManager, type EnumGroup } from "./EnumsManager"
 
 const KINDS: ReadonlyArray<{ kind: EnumKind; title: string }> = [

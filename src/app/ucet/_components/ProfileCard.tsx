@@ -9,7 +9,7 @@ import { Input } from "@/app/_ui/Input"
 import { Label } from "@/app/_ui/Label"
 import { Spinner } from "@/app/_ui/Spinner"
 import { useToast } from "@/app/_ui/Toast"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 
 export function ProfileCard({ name, email }: { name: string; email: string }) {
   const { toast } = useToast()

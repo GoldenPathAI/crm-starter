@@ -6,7 +6,7 @@ import { TaskDetailProvider } from "@/app/_components/task-detail/TaskDetailProv
 import { TitleSync } from "@/app/_components/TitleSync";
 import { TopBar } from "@/app/_components/TopBar";
 import { ToastProvider } from "@/app/_ui/Toast";
-import { requireOrgContext } from "@/lib/auth/org-context";
+import { requireOrgContext } from "@/lib/auth/orgContext";
 import { listUserMemberships } from "@/lib/crm/store/members";
 import { config } from "@/lib/config";
 

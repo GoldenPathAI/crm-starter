@@ -1,5 +1,5 @@
-import { requireOrgContext } from "@/lib/auth/org-context"
-import { getOrgSettings } from "@/lib/crm/store/org-settings"
+import { requireOrgContext } from "@/lib/auth/orgContext"
+import { getOrgSettings } from "@/lib/crm/store/orgSettings"
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/_ui/Card"
 import { OrgSettingsForm } from "./OrgSettingsForm"
 

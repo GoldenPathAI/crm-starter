@@ -1,9 +1,9 @@
-import { requireInternalToken } from "@/lib/auth/internal-token"
+import { requireInternalToken } from "@/lib/auth/internalToken"
 import { updateTicketStatus } from "@/lib/crm/store/tickets"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/orgScope"
 import { readJsonObject, errorResponse, ok } from "@/app/api/internal/crm/_lib/http"
-import { parseTicketStatus } from "@/app/api/internal/crm/_lib/parse-body"
+import { parseTicketStatus } from "@/app/api/internal/crm/_lib/parseBody"
 import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"
 

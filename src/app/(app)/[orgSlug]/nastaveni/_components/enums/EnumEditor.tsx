@@ -21,7 +21,7 @@ import {
   type Edge,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge"
 import type { ColorToken, EnumKind, EnumOption } from "@/core/types/crm.types"
-import { REQUIRED_SEMANTICS } from "@/core/enum-defaults"
+import { REQUIRED_SEMANTICS } from "@/core/enumDefaults"
 import { optionBadgeStyle } from "@/lib/crm/config"
 import { cn } from "@/lib/cn"
 import { Button } from "@/app/_ui/Button"

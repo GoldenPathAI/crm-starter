@@ -1,9 +1,9 @@
-import { requireInternalToken } from "@/lib/auth/internal-token"
+import { requireInternalToken } from "@/lib/auth/internalToken"
 import { deleteProject, getProject, updateProject } from "@/lib/crm/store/projects"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
-import { resolveOrgScope } from "@/app/api/internal/crm/_lib/org-scope"
+import { resolveOrgScope } from "@/app/api/internal/crm/_lib/orgScope"
 import { readJsonObject, errorResponse, notFound, ok } from "@/app/api/internal/crm/_lib/http"
-import { parseUpdateProject } from "@/app/api/internal/crm/_lib/parse-body"
+import { parseUpdateProject } from "@/app/api/internal/crm/_lib/parseBody"
 import type { RouteContext } from "@/app/api/internal/crm/_lib/http"
 import type { NextRequest } from "next/server"
 

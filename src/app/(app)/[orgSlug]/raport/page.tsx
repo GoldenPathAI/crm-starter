@@ -1,7 +1,7 @@
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { PageShell } from "@/app/_ui/PageShell"
 import { applyDefaultSavedView } from "@/app/_lib/defaultView"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { listClients } from "@/lib/crm/queries"
 import { listRapportPeople } from "@/lib/crm/store/people"

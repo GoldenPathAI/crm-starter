@@ -1,6 +1,6 @@
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { listClients } from "@/lib/crm/store/clients"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { loadOrgEnums } from "@/lib/crm/enums/service"
 import { orgHref } from "@/lib/nav"
 import type { ProjectFormValues } from "../_components/ProjectFormFields"

@@ -1,4 +1,4 @@
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { PageHeader } from "@/app/_ui/PageHeader"
 import { CommandsPanel } from "./_components/CommandsPanel"
 import { DbStatusPanel } from "./_components/DbStatusPanel"

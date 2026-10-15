@@ -13,10 +13,10 @@ import {
   loadOrgEnums,
   type OrgEnums,
 } from "@/lib/crm/enums/service";
-import { getOrgSettings } from "@/lib/crm/store/org-settings";
-import { WON_PROJECT_CHECKLIST } from "@/core/won-checklist";
+import { getOrgSettings } from "@/lib/crm/store/orgSettings";
+import { WON_PROJECT_CHECKLIST } from "@/core/wonChecklist";
 import { todayIso } from "@/lib/dates";
-import { normalizeOfferUrl } from "@/lib/crm/offer-url";
+import { normalizeOfferUrl } from "@/lib/crm/offerUrl";
 import { createId } from "@/lib/ids";
 import type {
   Deal,

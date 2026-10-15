@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/app/_ui/Button"
 import { Spinner } from "@/app/_ui/Spinner"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 
 export function InviteEmailMismatch({
   invitationId,

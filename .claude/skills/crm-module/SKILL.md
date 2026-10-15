@@ -15,7 +15,7 @@ the layers drift.
 not a literal union: they are validated per workspace at the boundary.
 
 If the entity needs its own číselník, add the kind to `EnumKind`, its defaults to
-`DEFAULT_ENUM_OPTIONS` in `src/core/enum-defaults.ts`, and any semantic the code branches
+`DEFAULT_ENUM_OPTIONS` in `src/core/enumDefaults.ts`, and any semantic the code branches
 on to `REQUIRED_SEMANTICS`. Code must branch on `semantic`, never on a value slug.
 
 ## 2. Schema and migration
@@ -63,7 +63,7 @@ call store                      ->  409 on a store refusal
 JSON                            ->  200
 ```
 
-Body parsers go in `_lib/parse-body.ts`, query builders in `_lib/query.ts`. Enum values
+Body parsers go in `_lib/parseBody.ts`, query builders in `_lib/query.ts`. Enum values
 are validated against `loadOrgEnums(scope.orgId)`, loaded once per request and passed into
 the parser. Routes stay thin: auth, validate, call store, respond.
 

@@ -13,7 +13,7 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "code:check": "pnpm lint && pnpm typecheck && pnpm test",
     "crm": "tsx src/scripts/cli.ts",
-    "bootstrap:admin": "tsx --env-file-if-exists=.env src/scripts/bootstrap-admin.ts",
+    "bootstrap:admin": "tsx --env-file-if-exists=.env src/scripts/bootstrapAdmin.ts",
     "db:migrate": "tsx --env-file-if-exists=.env src/scripts/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },

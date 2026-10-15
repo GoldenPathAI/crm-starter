@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { getSessionUser } from "@/lib/auth/org-context"
+import { getSessionUser } from "@/lib/auth/orgContext"
 import { getInvitationForAcceptance } from "@/lib/crm/store/members"
 import { AcceptInvite } from "../_components/AcceptInvite"
 import { InviteEmailMismatch } from "../_components/InviteEmailMismatch"

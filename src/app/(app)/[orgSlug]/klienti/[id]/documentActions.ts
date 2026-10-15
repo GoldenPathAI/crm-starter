@@ -7,7 +7,7 @@ import {
   getDocumentById,
   updateDocument,
 } from "@/lib/crm/store/documents"
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import { orgHref } from "@/lib/nav"
 import { config } from "@/lib/config"
 import {

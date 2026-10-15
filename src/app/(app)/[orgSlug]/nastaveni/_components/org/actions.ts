@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache"
 import type { ActionState } from "@/app/_lib/actionState"
-import { requireOrgContext, requireRole } from "@/lib/auth/org-context"
+import { requireOrgContext, requireRole } from "@/lib/auth/orgContext"
 import { withUiAudit } from "@/app/_lib/auditedAction"
-import { updateOrgSettings, type UpdateOrgSettingsPatch } from "@/lib/crm/store/org-settings"
+import { updateOrgSettings, type UpdateOrgSettingsPatch } from "@/lib/crm/store/orgSettings"
 import { updateOrganizationName } from "@/lib/crm/store/organizations"
 
 function revalidateOrg(orgSlug: string): void {

@@ -9,7 +9,7 @@ import { Field } from "@/app/_ui/Field"
 import { Input } from "@/app/_ui/Input"
 import { Spinner } from "@/app/_ui/Spinner"
 import { useToast } from "@/app/_ui/Toast"
-import { authClient } from "@/lib/auth/auth-client"
+import { authClient } from "@/lib/auth/authClient"
 
 const MIN_PASSWORD_LENGTH = 8
 

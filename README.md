@@ -51,7 +51,7 @@ pnpm dev
 
 Do `.env` patří `DATABASE_URL`, `BETTER_AUTH_SECRET` a `INTERNAL_API_TOKEN`.
 `bootstrap:admin` založí workspace, prvního uživatele jako ownera a nasype do workspace
-výchozí číselníky z `src/core/enum-defaults.ts`. Pak se přihlas na
+výchozí číselníky z `src/core/enumDefaults.ts`. Pak se přihlas na
 `http://localhost:4325`.
 
 CLI proti běžícímu serveru:
@@ -65,9 +65,9 @@ pnpm crm tickets dnes --brief
 ## Co si upravit jako první
 
 `src/lib/config.ts` je název aplikace, timezone, měna, doména a S3 bucket.
-`src/core/enum-defaults.ts` jsou fáze pipeline, stavy a typy služeb.
+`src/core/enumDefaults.ts` jsou fáze pipeline, stavy a typy služeb.
 `src/app/globals.css` jsou barvy a fonty.
-`src/core/won-checklist.ts` je seznam úkolů, který se založí, když deal vyhraješ.
+`src/core/wonChecklist.ts` je seznam úkolů, který se založí, když deal vyhraješ.
 
 `CLAUDE.md` popisuje architekturu a konvence tak, aby v tom Claude Code uměl stavět dál.
 Skilly v `.claude/skills/` pokrývají přidání nového modulu, nového seznamu nad datagridem

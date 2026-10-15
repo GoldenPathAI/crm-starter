@@ -22,7 +22,7 @@ base URL lives in `src/lib/config.ts`.
 Tenancy tables live in the `crm` schema: `organizations`, `organization_members` (roles
 `owner` > `admin` > `member`), `organization_invitations`. The workspace slug lives in the
 URL path, so pages sit under `src/app/(app)/[orgSlug]/...` and internal API routes under
-`/api/internal/crm/[orgSlug]/...`. `src/lib/auth/org-context.ts` resolves the request
+`/api/internal/crm/[orgSlug]/...`. `src/lib/auth/orgContext.ts` resolves the request
 once: `requireOrgContext(orgSlug)` redirects to `/login` without a session, `notFound()`
 on an unknown slug, `/no-access` when the user is not a member; `requireRole(ctx, "admin")`
 gates member management and org settings. `src/lib/nav.ts` `orgHref(slug, path)` builds
@@ -39,8 +39,8 @@ validates a target user is an org member before assigning.
 ## Enum číselníky (per workspace)
 
 Enum options are per-org rows in `crm.enum_options`, not TypeScript unions. They are
-seeded from `src/core/enum-defaults.ts` on org creation via `seedOrganizationDefaults`
-(`src/lib/crm/store/org-defaults.ts`, wired into the better-auth org-creation hook).
+seeded from `src/core/enumDefaults.ts` on org creation via `seedOrganizationDefaults`
+(`src/lib/crm/store/orgDefaults.ts`, wired into the better-auth org-creation hook).
 Domain types (`DealStage`, `TicketStatus`, ...) are plain `string`; values are validated
 at the action and API boundary against the org's enum service
 (`src/lib/crm/enums/service.ts`: `loadOrgEnums`, `listOptions`, `getBySemantic`,
@@ -66,7 +66,7 @@ Required semantics per kind:
 | person_kind | `client`, `prospect` |
 | rapport_entry_kind | `fact` |
 
-Adding an enum value means editing one array in `src/core/enum-defaults.ts` for new
+Adding an enum value means editing one array in `src/core/enumDefaults.ts` for new
 workspaces, or adding the row through Nastavení for an existing one. Never re-declare an
 enum's members as a literal list in a second file.
 
@@ -145,11 +145,11 @@ set explicitly on rows, headers, chips and popover items).
 ## Internal REST API and its auth
 
 Token-authenticated machine API under `src/app/api/internal/crm/[orgSlug]/*`. Every
-handler calls `requireInternalToken(request)` from `src/lib/auth/internal-token.ts`, which
+handler calls `requireInternalToken(request)` from `src/lib/auth/internalToken.ts`, which
 compares the `x-internal-token` header against `INTERNAL_API_TOKEN` with
 `timingSafeEqual`. Missing or mismatched token gives 401, an unset secret gives 503. After
 the token check the handler resolves the workspace from the `orgSlug` path segment via
-`resolveOrgScope(orgSlug)` (`_lib/org-scope.ts`): unknown slug 404, known slug a
+`resolveOrgScope(orgSlug)` (`_lib/orgScope.ts`): unknown slug 404, known slug a
 `{ orgId, actor: { type: "system" } }` scope passed to every store call, so a token holder
 only ever touches the addressed workspace. Enum values are validated per org: routes load
 `loadOrgEnums(scope.orgId)` once and pass it into the body and query parsers, which reject
@@ -157,7 +157,7 @@ unknown values with a 400.
 
 Shared helpers sit in `src/app/api/internal/crm/_lib/` (underscore-prefixed so Next does
 not route them): `http.ts` (responses, body parsing, field coercion, `HttpError`),
-`enums.ts`, `query.ts`, `parse-body.ts` (per-entity body validation mapped to the store
+`enums.ts`, `query.ts`, `parseBody.ts` (per-entity body validation mapped to the store
 input types; dates are calendar-checked, not just pattern-matched), `reads.ts`. Routes
 stay thin: auth, validate, call store, JSON.
 

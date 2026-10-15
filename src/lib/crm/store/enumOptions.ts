@@ -1,5 +1,5 @@
 import { and, asc, count, eq, isNull, max } from "drizzle-orm"
-import { REQUIRED_SEMANTICS } from "@/core/enum-defaults"
+import { REQUIRED_SEMANTICS } from "@/core/enumDefaults"
 import type { ColorToken, EnumKind, EnumOption, OrgScope } from "@/core/types/crm.types"
 import { toEnumOption } from "@/lib/crm/store/mappers"
 import { db } from "@/lib/db/client"

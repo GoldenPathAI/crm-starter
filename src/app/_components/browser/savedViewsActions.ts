@@ -1,12 +1,12 @@
 "use server"
 
-import { requireOrgContext } from "@/lib/auth/org-context"
+import { requireOrgContext } from "@/lib/auth/orgContext"
 import {
   deleteSavedView,
   listSavedViews,
   saveSavedView,
   setDefaultSavedView,
-} from "@/lib/crm/store/user-personalization"
+} from "@/lib/crm/store/userPersonalization"
 import type { SavedView } from "@/app/_components/browser/savedViews"
 
 export async function listSavedViewsAction(
