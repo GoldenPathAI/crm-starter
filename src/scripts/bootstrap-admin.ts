@@ -13,6 +13,7 @@ interface Args {
   name: string
   password: string
   orgSlug: string
+  orgName: string
 }
 
 function parseArgs(): Args {
@@ -20,25 +21,19 @@ function parseArgs(): Args {
   const name = argValue("--name")
   const password = argValue("--password")
   const orgSlug = argValue("--org") ?? process.env.CRM_ORG ?? "default"
+  const orgName = argValue("--org-name") ?? orgSlug
   if (email === undefined || name === undefined || password === undefined) {
     console.error(
-      "Použití: pnpm bootstrap:admin --email <email> --name <jméno> --password <heslo> [--org <slug>]",
+      "Použití: pnpm bootstrap:admin --email <email> --name <jméno> --password <heslo> [--org <slug>] [--org-name <název>]",
     )
     console.error("Vyžaduje v prostředí BETTER_AUTH_SECRET a DATABASE_URL (pro testy TEST_DATABASE_URL).")
     process.exit(1)
   }
-  return { email, name, password, orgSlug }
+  return { email, name, password, orgSlug, orgName }
 }
 
 async function main(): Promise<void> {
-  const { email, name, password, orgSlug } = parseArgs()
-
-  const org = await getOrgBySlug(orgSlug)
-  if (org === null) {
-    console.error(`Workspace '${orgSlug}' neexistuje.`)
-    await getSql().end()
-    process.exit(1)
-  }
+  const { email, name, password, orgSlug, orgName } = parseArgs()
 
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1)
   let userId = existing[0]?.id
@@ -48,6 +43,17 @@ async function main(): Promise<void> {
     console.log(`Uživatel vytvořen: ${email} (${userId})`)
   } else {
     console.log(`Uživatel už existuje: ${email} (${userId})`)
+  }
+
+  // Created through better-auth so the afterCreateOrganization hook seeds the číselníky.
+  let org = await getOrgBySlug(orgSlug)
+  if (org === null) {
+    await auth.api.createOrganization({ body: { name: orgName, slug: orgSlug, userId } })
+    org = await getOrgBySlug(orgSlug)
+    if (org === null) {
+      throw new Error(`Workspace '${orgSlug}' se nepodařilo založit.`)
+    }
+    console.log(`Workspace založen: ${orgName} (${orgSlug})`)
   }
 
   await db

@@ -45,7 +45,7 @@ Potřebuješ Node 22+, pnpm a Postgres 17.
 pnpm install
 cp .env.example .env
 pnpm db:migrate
-pnpm bootstrap:admin --email ty@firma.cz --name "Tvoje jméno" --password "..." --org firma
+pnpm bootstrap:admin --email ty@firma.cz --name "Tvoje jméno" --password "..." --org firma --org-name "Firma"
 pnpm dev
 ```
 
