@@ -558,7 +558,7 @@ function ProbabilityInput({
         inputMode="numeric"
         value={draft}
         disabled={disabled}
-        placeholder="—"
+        placeholder="-"
         onChange={(event) => setDraft(event.target.value.replace(/[^0-9]/g, ""))}
         onBlur={commit}
         onKeyDown={(event) => {
